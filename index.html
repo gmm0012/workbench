@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>麒麟 · 工作台</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="麒麟工作台">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4a6b3a">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='28' fill='%234a6b3a'/%3E%3Ctext x='60' y='78' font-size='60' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%E9%BA%92%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='28' fill='%234a6b3a'/%3E%3Ctext x='60' y='78' font-size='60' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%E9%BA%92%3C/text%3E%3C/svg%3E">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --green: #4a6b3a;
+  --green-2: #6b8a4e;
+  --green-light: #f1f5ec;
+  --gold: #b8954a;
+  --bg: #f5f1ea;
+  --card: #ffffff;
+  --text: #2c2c2c;
+  --text-2: #7a7a7a;
+  --border: #e6e1d6;
+  --danger: #c75c5c;
+  --shadow: 0 2px 12px rgba(60,60,40,.06);
+}
+body{
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+button{ cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select{
+  font-family: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafaf6;
+  outline: none;
+  font-size: 13px;
+}
+input:focus, select:focus{ border-color: var(--green); background: #fff; }
+.status-bar{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 24px; font-size: 13px; font-weight: 600;
+  background: #000; color: #fff;
+}
+.dynamic-island{
+  width: 110px; height: 28px; background: #000; border-radius: 20px;
+  position: relative;
+}
+.dynamic-island::after{
+  content:""; width:8px; height:8px; background:#c0392b; border-radius:50%;
+  position:absolute; left:8px; top:50%; transform:translateY(-50%);
+}
+.status-icons{ display: flex; gap: 6px; align-items: center; }
+.battery{ color: #4cd964; }
+.app-header{
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 32px; background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+.user-name{ font-size: 22px; color: var(--green); font-weight: 700; }
+.wave{ display: inline-block; animation: wave 1.6s infinite; transform-origin: 70% 70%; }
+@keyframes wave{
+  0%,60%,100%{ transform: rotate(0); }
+  10%,30%{ transform: rotate(14deg); }
+  20%{ transform: rotate(-8deg); }
+  40%{ transform: rotate(-4deg); }
+}
+.user-sub{ color: var(--text-2); margin-top: 4px; font-size: 12px; }
+.header-right{ display: flex; gap: 12px; align-items: center; }
+.date-pill{
+  background: var(--green-light); color: var(--green);
+  padding: 8px 14px; border-radius: 20px; font-size: 13px;
+}
+.sync-btn{
+  background: var(--green-light); color: var(--green);
+  padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+}
+.sync-btn:hover{ background: var(--green); color: #fff; }
+.layout{
+  display: grid; grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 100px);
+}
+.sidebar{
+  background: #fff;
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.nav-list{ flex: 1; }
+.nav-item{
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; padding: 12px 16px; margin-bottom: 4px;
+  border-radius: 10px; font-size: 14px; color: var(--text);
+  text-align: left; transition: all .2s;
+  position: relative;
+}
+.nav-item:hover{ background: var(--green-light); }
+.nav-item.active{
+  background: var(--green); color: #fff; font-weight: 600;
+  box-shadow: 0 4px 12px rgba(74,107,58,.25);
+}
+.nav-item.dragging{ opacity: 0.5; background: var(--green-light); }
+.nav-item.drag-over{ border-top: 3px solid var(--gold); margin-top: -2px; }
+.nav-icon{ font-size: 18px; }
+.sidebar-foot{
+  display: flex; gap: 12px; align-items: center;
+  padding: 14px; margin-top: 12px;
+  background: var(--green-light); border-radius: 12px;
+}
+.avatar{
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--gold));
+  flex-shrink: 0;
+}
+.foot-name{ font-weight: 600; font-size: 13px; }
+.foot-sub{ font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.content{ padding: 28px 32px; overflow-y: auto; }
+.panel{ display: none; animation: fade .3s; }
+.panel.active{ display: block; }
+@keyframes fade{ from{ opacity:0; transform: translateY(8px);} to{opacity:1; transform:none;} }
+.panel-head{ margin-bottom: 20px; }
+.panel-head h2{ font-size: 22px; color: var(--green); margin-bottom: 4px; }
+.panel-sub{ color: var(--text-2); font-size: 13px; }
+.progress-card{
+  background: #fff; border-radius: 12px; padding: 16px 20px;
+  margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.progress-info{ display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text-2); }
+.progress-bar{ height: 8px; background: var(--green-light); border-radius: 4px; overflow: hidden; }
+.progress-fill{ height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); width: 0%; transition: width .5s; }
+.add-row{
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.add-row input, .add-row select{ flex: 1; min-width: 140px; }
+.add-row button{
+  background: var(--green); color: #fff;
+  padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px;
+  white-space: nowrap;
+}
+.add-row button:hover{ background: var(--green-2); }
+.checklist, .memo-list{ list-style: none; }
+.checklist li, .memo-list li{
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; padding: 12px 16px; margin-bottom: 8px;
+  border-radius: 10px; box-shadow: var(--shadow);
+  transition: all .2s;
+}
+.checklist li:hover, .memo-list li:hover{ transform: translateX(2px); }
+.checklist li.done .item-text{
+  text-decoration: line-through; color: var(--text-2);
+}
+.check-box{
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--green); display: flex;
+  align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; transition: all .2s;
+}
+.checklist li.done .check-box{ background: var(--green); color: #fff; }
+.item-text{ flex: 1; font-size: 14px; }
+.item-meta{ font-size: 11px; color: var(--text-2); }
+.del-btn{
+  color: var(--danger); font-size: 12px; padding: 4px 8px;
+  border-radius: 6px;
+}
+.del-btn:hover{ background: #fbecec; }
+.filter-row{
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 16px; background: #fff; padding: 12px 16px;
+  border-radius: 10px; box-shadow: var(--shadow);
+}
+.filter-row label{ display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-2); }
+.ghost-btn{
+  padding: 6px 12px; border: 1px solid var(--green);
+  color: var(--green); border-radius: 6px; font-size: 12px;
+}
+.ghost-btn:hover{ background: var(--green-light); }
+.last-fetch{ font-size: 11px; color: var(--text-2); margin-left: auto; }
+.inspiration-grid{
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.insp-card{
+  background: #fff; border-radius: 12px; padding: 16px;
+  box-shadow: var(--shadow); transition: all .2s;
+  border-left: 4px solid var(--gold);
+}
+.insp-card:hover{ transform: translateY(-2px); box-shadow: 0 6px 18px rgba(60,60,40,.1); }
+.insp-tag{
+  display: inline-block; background: var(--green-light);
+  color: var(--green); padding: 2px 8px; border-radius: 4px;
+  font-size: 11px; margin-bottom: 8px;
+}
+.insp-title{ font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.insp-desc{ font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px; }
+.insp-actions{ display: flex; gap: 6px; }
+.insp-actions button{
+  flex: 1; padding: 6px 8px; border-radius: 6px;
+  font-size: 11px; font-weight: 600;
+}
+.btn-go{ background: var(--green); color: #fff; }
+.btn-go:hover{ background: var(--green-2); }
+.btn-save{ background: var(--green-light); color: var(--green); }
+.btn-save:hover{ background: #e3ead8; }
+.video-grid{
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.video-card{
+  background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: var(--shadow); transition: all .2s;
+}
+.video-card:hover{ transform: translateY(-2px); }
+.video-cover{
+  height: 120px; background: linear-gradient(135deg, #4a6b3a, #b8954a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; color: #fff; position: relative;
+}
+.video-cover .play-icon{
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,.6); color: #fff;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.video-info{ padding: 12px; }
+.video-title{ font-weight: 600; font-size: 13px; margin-bottom: 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.video-meta{ font-size: 11px; color: var(--text-2); margin-bottom: 8px;
+  display: flex; gap: 8px;
+}
+.video-meta span{ background: #f5f1ea; padding: 1px 6px; border-radius: 4px; }
+.video-link{
+  display: block; text-align: center; padding: 6px;
+  background: var(--green); color: #fff; border-radius: 6px;
+  font-size: 12px; font-weight: 600;
+}
+.video-link:hover{ background: var(--green-2); }
+.review-list{ display: grid; gap: 10px; }
+.review-item{
+  background: #fff; padding: 14px 16px; border-radius: 10px;
+  box-shadow: var(--shadow); display: grid;
+  grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+}
+.review-title{ font-weight: 600; font-size: 14px; }
+.review-meta{ font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.review-data{ background: var(--green-light); color: var(--green); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.sub-tabs{
+  display: flex; gap: 4px; margin-bottom: 16px;
+  background: #fff; padding: 6px; border-radius: 10px;
+  box-shadow: var(--shadow); flex-wrap: wrap;
+}
+.sub-tab{
+  padding: 8px 14px; border-radius: 6px; font-size: 13px;
+  color: var(--text-2); font-weight: 500;
+}
+.sub-tab.active{ background: var(--green); color: #fff; }
+.sub-tab:hover:not(.active){ background: var(--green-light); color: var(--green); }
+.sub-panel{ display: none; }
+.sub-panel.active{ display: block; }
+.script-list, .knowledge-list, .memo-list, .liveplan-list{ margin-top: 12px; }
+.script-item, .knowledge-item, .memo-list li, .liveplan-item{
+  background: #fff; padding: 12px 16px; border-radius: 10px;
+  margin-bottom: 8px; box-shadow: var(--shadow);
+}
+.script-cat{
+  display: inline-block; background: var(--gold); color: #fff;
+  padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 8px;
+}
+.script-text{ font-size: 13px; line-height: 1.6; color: var(--text); }
+.script-foot, .memo-foot, .liveplan-foot{
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 8px; font-size: 11px; color: var(--text-2);
+}
+.product-grid{
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.product-card{
+  background: #fff; border-radius: 12px; padding: 16px;
+  box-shadow: var(--shadow); position: relative;
+  border-top: 3px solid var(--gold);
+}
+.product-cat{
+  position: absolute; top: 12px; right: 12px;
+  background: var(--green-light); color: var(--green);
+  padding: 2px 8px; border-radius: 4px; font-size: 10px;
+}
+.product-name{ font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.product-price{ color: var(--danger); font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.product-point{ font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.search-box{ display: flex; gap: 8px; margin-bottom: 12px; }
+.search-box input{ flex: 1; }
+.search-box button{
+  background: var(--green); color: #fff; padding: 10px 20px;
+  border-radius: 8px; font-weight: 600;
+}
+.search-tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; align-items: center; }
+.search-tags span{ font-size: 12px; color: var(--text-2); }
+.search-tags button{
+  background: #fff; border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: 14px; font-size: 12px; color: var(--text-2);
+}
+.search-tags button:hover{ background: var(--green-light); color: var(--green); border-color: var(--green); }
+.search-result{
+  background: #fff; padding: 16px; border-radius: 10px;
+  box-shadow: var(--shadow); min-height: 100px;
+}
+.empty-tip{ text-align: center; color: var(--text-2); padding: 30px 0; font-size: 13px; }
+.search-result h4{ color: var(--green); margin-bottom: 8px; }
+.search-result ul{ padding-left: 20px; }
+.search-result li{ margin-bottom: 6px; line-height: 1.6; font-size: 13px; }
+.project-list, .liveplan-list{ display: grid; gap: 10px; }
+.project-item, .liveplan-item{
+  display: grid; grid-template-columns: auto 1fr auto auto;
+  gap: 12px; align-items: center;
+}
+.proj-name{ font-weight: 600; }
+.proj-meta{ font-size: 11px; color: var(--text-2); }
+.proj-goal{ background: var(--green-light); color: var(--green); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.liveplan-date{
+  background: var(--gold); color: #fff; padding: 8px 12px;
+  border-radius: 8px; text-align: center; font-weight: 600; min-width: 70px;
+}
+.liveplan-date .day{ font-size: 18px; display: block; }
+.liveplan-date .month{ font-size: 11px; }
+.liveplan-theme{ font-weight: 600; font-size: 14px; }
+.liveplan-prods{ font-size: 11px; color: var(--text-2); margin-top: 2px; }
+/* 类目资料 */
+.category-list{ display: grid; gap: 14px; }
+.cat-card{
+  background: #fff; border-radius: 12px; padding: 16px;
+  box-shadow: var(--shadow); border-left: 4px solid var(--gold);
+}
+.cat-card-head{
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed var(--border);
+}
+.cat-card-title{ font-size: 16px; font-weight: 700; color: var(--green); }
+.cat-card-meta{ font-size: 11px; color: var(--text-2); }
+.cat-notes{ list-style: none; }
+.cat-notes li{
+  background: #fafaf6; padding: 10px 12px; border-radius: 8px;
+  margin-bottom: 6px; font-size: 13px; line-height: 1.6;
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.cat-notes li .note-text{ flex: 1; word-break: break-word; }
+.cat-notes li .note-time{ font-size: 10px; color: var(--text-2); flex-shrink: 0; }
+.cat-add-row{ display: flex; gap: 6px; margin-top: 10px; }
+.cat-add-row input{ flex: 1; padding: 8px 10px; font-size: 12px; }
+.cat-add-row button{
+  background: var(--green-light); color: var(--green);
+  padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  white-space: nowrap;
+}
+.cat-add-row button:hover{ background: var(--green); color: #fff; }
+
+/* 直播数据表格 */
+.data-table{
+  width: 100%; border-collapse: collapse; background: #fff;
+  border-radius: 10px; overflow: hidden; box-shadow: var(--shadow);
+  font-size: 12px; min-width: 800px;
+}
+.data-table th{
+  background: var(--green); color: #fff; padding: 10px 8px;
+  text-align: left; font-weight: 600; white-space: nowrap;
+}
+.data-table td{
+  padding: 10px 8px; border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table tr:hover td{ background: var(--green-light); }
+.data-table .del-btn{ padding: 2px 6px; }
+.data-table-empty{ text-align:center; color:var(--text-2); padding:30px; font-size:13px; }
+.summary-grid{
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;
+}
+.summary-card{
+  background: #fff; padding: 18px; border-radius: 12px;
+  box-shadow: var(--shadow); border-top: 3px solid var(--gold);
+}
+.summary-card .label{ font-size: 12px; color: var(--text-2); margin-bottom: 6px; }
+.summary-card .value{ font-size: 24px; font-weight: 700; color: var(--green); }
+.summary-card .sub{ font-size: 11px; color: var(--text-2); margin-top: 4px; }
+.trend-row{
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13px;
+}
+.trend-row:last-child{ border-bottom: none; }
+.trend-bar{ height: 6px; background: var(--green-light); border-radius: 3px; flex: 1; margin: 0 12px; overflow: hidden; }
+.trend-bar-fill{ height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); }
+
+/* 灵感导航站 */
+.hub-search-box{ display:flex; gap:8px; margin-bottom:20px; }
+.hub-search-box input{ flex:1; padding:12px 14px; font-size:14px; }
+.hub-search-box button{
+  background: var(--green); color:#fff; padding:12px 24px;
+  border-radius:8px; font-weight:600; font-size:14px; white-space:nowrap;
+}
+.hub-search-box button:hover{ background: var(--green-2); }
+.hub-section{ margin-bottom: 24px; }
+.hub-section-title{
+  font-size: 15px; color: var(--green); font-weight: 700;
+  margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--green-light);
+}
+.hub-grid{
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;
+}
+.hub-card{
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; padding: 14px; border-radius: 10px;
+  box-shadow: var(--shadow); text-decoration: none; color: var(--text);
+  transition: all .2s; border-left: 3px solid transparent;
+}
+.hub-card:hover{
+  transform: translateY(-2px); border-left-color: var(--green);
+  box-shadow: 0 6px 18px rgba(60,60,40,.12);
+}
+.hub-icon{ font-size: 24px; flex-shrink: 0; }
+.hub-info{ flex:1; min-width:0; }
+.hub-name{ font-weight: 600; font-size: 13px; }
+.hub-desc{ font-size: 11px; color: var(--text-2); margin-top:2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.growth-grid{
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+}
+.growth-card{
+  background: #fff; padding: 20px; border-radius: 12px;
+  box-shadow: var(--shadow); border-top: 3px solid var(--green);
+}
+.growth-card h3{ color: var(--green); margin-bottom: 12px; font-size: 16px; }
+.growth-card ul, .growth-card ol{ padding-left: 20px; }
+.growth-card li{ margin-bottom: 8px; line-height: 1.6; font-size: 13px; }
+.growth-card b{ color: var(--gold); }
+
+/* 手机端适配 */
+@media (max-width: 900px){
+  .layout{ grid-template-columns: 1fr; }
+  .sidebar{ position: relative; height: auto; position: sticky; top: 0; z-index: 10; }
+  .nav-list{ display: flex; flex-wrap: wrap; gap: 4px; }
+  .nav-item{ flex: 1 1 auto; padding: 8px 10px; font-size: 12px; gap: 4px; }
+  .nav-icon{ font-size: 14px; }
+  .app-header{ flex-direction: column; gap: 12px; align-items: flex-start; padding: 12px 16px; }
+  .content{ padding: 16px; }
+  .header-right{ flex-wrap: wrap; }
+  .inspiration-grid, .video-grid, .product-grid, .growth-grid{
+    grid-template-columns: 1fr;
+  }
+  .add-row input, .add-row select{ min-width: 100px; }
+  .review-item{ grid-template-columns: 1fr; }
+  .filter-row{ flex-direction: column; align-items: flex-start; }
+  .last-fetch{ margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span class="time" id="statusTime">16:25</span>
+  <div class="dynamic-island"></div>
+  <div class="status-icons">
+    <span>📶</span><span>📡</span><span class="battery">🔋63</span>
+  </div>
+</div>
+
+<header class="app-header">
+  <div class="header-left">
+    <h1 class="user-name">麒麟 <span class="wave">👋</span></h1>
+    <p class="user-sub">创作工作台 · 珠宝主播 & 自媒体创作者</p>
+  </div>
+  <div class="header-right">
+    <div class="date-pill" id="datePill">2026年7月24日 星期五</div>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="sidebar">
+    <nav class="nav-list">
+      <button class="nav-item active" data-target="daily-plan"><span class="nav-icon">📋</span><span>每日计划</span></button>
+      <button class="nav-item" data-target="live-content"><span class="nav-icon">🎙️</span><span>直播内容</span></button>
+      <button class="nav-item" data-target="memo"><span class="nav-icon">📝</span><span>备忘录</span></button>
+      <button class="nav-item" data-target="daily-inspiration"><span class="nav-icon">💡</span><span>选题·每日灵感</span></button>
+      <button class="nav-item" data-target="hot-videos"><span class="nav-icon">🔥</span><span>爆款热点·二创</span></button>
+      <button class="nav-item" data-target="content-review"><span class="nav-icon">📊</span><span>内容复盘</span></button>
+      <button class="nav-item" data-target="inspo-hub"><span class="nav-icon">🌐</span><span>灵感导航站</span></button>
+      <button class="nav-item" data-target="live-data"><span class="nav-icon">📈</span><span>直播数据登记</span></button>
+      <button class="nav-item" data-target="growth-track"><span class="nav-icon">🌱</span><span>自媒体计划</span></button>
+      <button class="nav-item" data-target="finance"><span class="nav-icon">💰</span><span>财务管理</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="avatar"></div>
+      <div>
+        <div class="foot-name">麒麟</div>
+        <div class="foot-sub">日拱一卒 · 功不唐捐</div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="content">
+
+    <div class="panel active" id="daily-plan">
+      <div class="panel-head"><h2>📋 每日计划</h2><p class="panel-sub">完成一项打勾，进度一目了然</p></div>
+      <div class="progress-card">
+        <div class="progress-info"><span>今日进度</span><span id="progressText">0/0</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="add-row">
+        <input id="planInput" type="text" placeholder="比如：8:00 直播 · 翡翠专场">
+        <button onclick="addPlan()">＋ 新增计划</button>
+      </div>
+      <ul class="checklist" id="planList"></ul>
+    </div>
+
+    <div class="panel" id="daily-inspiration">
+      <div class="panel-head"><h2>💡 选题·每日灵感</h2><p class="panel-sub">围绕"个人成长 / 女性成长"，自动抓取抖音热点 · 一键跳转创作</p></div>
+      <div class="filter-row">
+        <label>话题方向
+          <select id="topicSelect">
+            <option value="个人成长">个人成长</option>
+            <option value="女性成长">女性成长</option>
+            <option value="珠宝穿搭">珠宝穿搭</option>
+            <option value="主播心法">主播心法</option>
+            <option value="自律生活">自律生活</option>
+            <option value="情绪管理">情绪管理</option>
+          </select>
+        </label>
+        <button class="ghost-btn" onclick="fetchDouyinHot()">🔄 重新抓取热点</button>
+        <span class="last-fetch" id="lastFetch">上次抓取：--</span>
+      </div>
+      <div class="inspiration-grid" id="inspirationGrid"></div>
+    </div>
+
+    <div class="panel" id="hot-videos">
+      <div class="panel-head"><h2>🔥 爆款热点·二创</h2><p class="panel-sub">抖音热门视频拆解 · 一键跳转原视频二创</p></div>
+      <div class="video-grid" id="videoGrid"></div>
+    </div>
+
+    <div class="panel" id="content-review">
+      <div class="panel-head"><h2>📊 内容复盘</h2><p class="panel-sub">记录每条内容的数据表现 · 提炼爆款公式</p></div>
+      <div class="add-row">
+        <input id="reviewTitle" placeholder="内容标题">
+        <input id="reviewPlatform" placeholder="平台（抖音/小红书/视频号）">
+        <input id="reviewData" placeholder="数据（播放/点赞/涨粉）">
+        <button onclick="addReview()">＋ 新增复盘</button>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+    </div>
+
+    <div class="panel" id="live-content">
+      <div class="panel-head"><h2>🎙️ 直播内容 · 珠宝主播专属</h2><p class="panel-sub">话术库 · 产品库 · 资料搜索 · 未来可扩展其他直播项目</p></div>
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="scripts">📢 话术库</button>
+        <button class="sub-tab" data-sub="products">💎 产品库</button>
+        <button class="sub-tab" data-sub="search">🔍 资料搜索</button>
+        <button class="sub-tab" data-sub="projects">📂 直播项目</button>
+        <button class="sub-tab" data-sub="liveplan">🗓️ 直播排期</button>
+        <button class="sub-tab" data-sub="categories">📚 类目资料</button>
+      </div>
+      <div class="sub-panel active" id="sub-scripts">
+        <div class="add-row">
+          <select id="scriptCategory">
+            <option>开场暖场</option><option>留住人</option><option>逼单转化</option>
+            <option>价值塑造</option><option>售后承诺</option><option>下播引导</option>
+          </select>
+          <input id="scriptInput" placeholder="话术内容，如：姐妹们，这件南洋金珠...">
+          <button onclick="addScript()">＋ 收藏话术</button>
+        </div>
+        <div class="script-list" id="scriptList"></div>
+      </div>
+      <div class="sub-panel" id="sub-products">
+        <div class="add-row">
+          <input id="prodName" placeholder="产品名（例：18K金钻石耳钉）">
+          <input id="prodCategory" placeholder="品类（翡翠/钻石/珍珠/彩宝...)">
+          <input id="prodPrice" placeholder="价格 / 性价比话术">
+          <input id="prodPoint" placeholder="核心卖点">
+          <button onclick="addProduct()">＋ 新增产品</button>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+      <div class="sub-panel" id="sub-search">
+        <div class="search-box">
+          <input id="searchInput" placeholder="搜索珠宝知识、市场行情、用户痛点...">
+          <button onclick="doSearch()">🔍 搜索</button>
+        </div>
+        <div class="search-tags">
+          <span>常用：</span>
+          <button onclick="quickSearch('翡翠种水等级')">翡翠种水</button>
+          <button onclick="quickSearch('钻石4C分级')">钻石4C</button>
+          <button onclick="quickSearch('珍珠分类')">珍珠分类</button>
+          <button onclick="quickSearch('黄金纯度')">黄金纯度</button>
+          <button onclick="quickSearch('彩宝选购')">彩宝选购</button>
+          <button onclick="quickSearch('珠宝保养')">珠宝保养</button>
+        </div>
+        <div class="search-result" id="searchResult"><p class="empty-tip">💡 输入关键词，搜索资料。可记录到备忘录或产品库。</p></div>
+        <div class="add-row" style="margin-top:16px">
+          <input id="knowledgeInput" placeholder="把搜索到的有用知识保存到知识库">
+          <button onclick="addKnowledge()">＋ 保存到知识库</button>
+        </div>
+        <div class="knowledge-list" id="knowledgeList"></div>
+      </div>
+      <div class="sub-panel" id="sub-projects">
+        <div class="add-row">
+          <input id="projName" placeholder="项目名称（例：翡翠专场 / 彩宝上新）">
+          <input id="projDate" placeholder="时间">
+          <input id="projGoal" placeholder="目标（GMV/涨粉）">
+          <button onclick="addProject()">＋ 新增项目</button>
+        </div>
+        <div class="project-list" id="projectList"></div>
+      </div>
+      <div class="sub-panel" id="sub-liveplan">
+        <div class="add-row">
+          <input id="lpDate" type="date"><input id="lpTime" type="time">
+          <input id="lpTheme" placeholder="直播主题">
+          <input id="lpProducts" placeholder="主推产品（逗号分隔）">
+          <button onclick="addLivePlan()">＋ 添加排期</button>
+        </div>
+        <div class="liveplan-list" id="liveplanList"></div>
+      </div>
+      <div class="sub-panel" id="sub-categories">
+        <div class="add-row">
+          <input id="catName" placeholder="类目名（和田玉/南红/蜜蜡/翡翠/钻石/珍珠/彩宝...）">
+          <button onclick="addCategory()">＋ 新增类目</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-2);margin-bottom:12px">💡 每个类目下可随时补充学到的知识、市场行情、选购要点、话术笔记。随时增删。</p>
+        <div class="category-list" id="categoryList"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="memo">
+      <div class="panel-head"><h2>📝 备忘录</h2><p class="panel-sub">随手记 · 想法不再溜走</p></div>
+      <div class="add-row">
+        <input id="memoInput" placeholder="记录一个想法 / 灵感 / 提醒...">
+        <button onclick="addMemo()">＋ 新增</button>
+      </div>
+      <ul class="memo-list" id="memoList"></ul>
+    </div>
+
+    <div class="panel" id="inspo-hub">
+      <div class="panel-head"><h2>🌐 灵感导航站</h2><p class="panel-sub">一键跳转各大平台实时热点 · 找选题、找灵感、找爆款</p></div>
+
+      <div class="hub-search-box">
+        <input id="hubSearchInput" placeholder="输入关键词，一键搜索全平台（例：女性成长 / 个人成长 / 珠宝）">
+        <button onclick="hubSearchAll()">🔍 全平台搜索</button>
+      </div>
+
+      <div class="hub-section">
+        <h3 class="hub-section-title">🔥 各平台实时热榜</h3>
+        <div class="hub-grid" id="hotRankGrid"></div>
+      </div>
+
+      <div class="hub-section">
+        <h3 class="hub-section-title">🎬 视频平台 · 找爆款二创</h3>
+        <div class="hub-grid" id="videoHubGrid"></div>
+      </div>
+
+      <div class="hub-section">
+        <h3 class="hub-section-title">📝 图文平台 · 找选题灵感</h3>
+        <div class="hub-grid" id="articleHubGrid"></div>
+      </div>
+
+      <div class="hub-section">
+        <h3 class="hub-section-title">💎 珠宝行业 · 找货源行情</h3>
+        <div class="hub-grid" id="jewelryHubGrid"></div>
+      </div>
+
+      <div class="hub-section">
+        <h3 class="hub-section-title">📊 数据工具 · 分析爆款</h3>
+        <div class="hub-grid" id="toolHubGrid"></div>
+      </div>
+    </div>
+
+    <!-- ============= 直播数据登记 ============= -->
+    <div class="panel" id="live-data">
+      <div class="panel-head"><h2>📈 直播数据登记</h2><p class="panel-sub">下播后登记每场数据 · 产品登记 · 自动统计</p></div>
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="data-record">📊 直播数据表</button>
+        <button class="sub-tab" data-sub="prod-record">📦 产品登记表</button>
+        <button class="sub-tab" data-sub="data-summary">📈 数据汇总</button>
+      </div>
+
+      <!-- 直播数据表 -->
+      <div class="sub-panel active" id="sub-data-record">
+        <div class="add-row">
+          <input id="drDate" type="date">
+          <select id="drPlatform">
+            <option>视频号</option><option>抖音</option><option>快手</option><option>小红书</option><option>淘宝直播</option>
+          </select>
+          <input id="drSession" placeholder="场次/主题（例：翡翠专场）">
+          <input id="drDuration" placeholder="时长（例：3h）">
+          <input id="drViewers" type="number" placeholder="场观人数">
+          <input id="drGmv" type="number" placeholder="GMV（元）">
+          <input id="drOrders" type="number" placeholder="订单数">
+          <input id="drFollowers" type="number" placeholder="新增粉丝">
+          <input id="drReturn" type="number" placeholder="退货单数">
+          <input id="drNote" placeholder="备注（亮点/问题）">
+          <button onclick="addDataRecord()">＋ 登记数据</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="dataTable"></table>
+        </div>
+      </div>
+
+      <!-- 产品登记表 -->
+      <div class="sub-panel" id="sub-prod-record">
+        <div class="add-row">
+          <input id="prDate" type="date">
+          <input id="prName" placeholder="产品名称">
+          <input id="prSku" placeholder="SKU/款号">
+          <input id="prCategory" placeholder="类目（翡翠/钻石/珍珠...）">
+          <input id="prCost" type="number" placeholder="成本（元）">
+          <input id="prPrice" type="number" placeholder="售价（元）">
+          <input id="prStock" type="number" placeholder="上架库存">
+          <input id="prSold" type="number" placeholder="售出数量">
+          <input id="prReturn" type="number" placeholder="退货数">
+          <input id="prSource" placeholder="货源（例：视频号小助理）">
+          <button onclick="addProdRecord()">＋ 登记产品</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="prodTable"></table>
+        </div>
+      </div>
+
+      <!-- 数据汇总 -->
+      <div class="sub-panel" id="sub-data-summary">
+        <div class="summary-grid" id="summaryGrid"></div>
+        <h3 style="margin:20px 0 10px;color:var(--green);font-size:16px">📈 近期直播趋势</h3>
+        <div id="recentTrend" style="background:#fff;padding:16px;border-radius:10px;box-shadow:var(--shadow)"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="growth-track">
+      <div class="panel-head"><h2>🌱 自媒体计划</h2><p class="panel-sub">记录你的定位、目标和选题 · 随时增删调整</p></div>
+
+      <!-- 定位与目标 -->
+      <div class="growth-card" style="margin-bottom:14px">
+        <h3>🎯 我的定位 & 目标</h3>
+        <div class="add-row">
+          <input id="goalInput" placeholder="写一条目标/定位，例：做女性成长方向，30天涨粉1000">
+          <button onclick="addGoal()">＋ 添加</button>
+        </div>
+        <ul class="cat-notes" id="goalList"></ul>
+      </div>
+
+      <!-- 选题库 -->
+      <div class="growth-card" style="margin-bottom:14px">
+        <h3>📌 选题库</h3>
+        <div class="add-row">
+          <input id="topicInput" placeholder="想到的选题，例：《一个珠宝主播的日常》">
+          <button onclick="addTopic()">＋ 添加选题</button>
+        </div>
+        <ul class="cat-notes" id="topicList"></ul>
+      </div>
+
+      <!-- 阶段计划 -->
+      <div class="growth-card">
+        <h3>🚀 阶段计划</h3>
+        <div class="add-row">
+          <input id="phaseInput" placeholder="例：第1周 - 确定人设、注册账号、拍3条自我介绍">
+          <button onclick="addPhase()">＋ 添加阶段</button>
+        </div>
+        <ul class="cat-notes" id="phaseList"></ul>
+      </div>
+    </div>
+
+    <!-- ============= 财务管理 ============= -->
+    <div class="panel" id="finance">
+      <div class="panel-head"><h2>💰 财务管理</h2><p class="panel-sub">每月收入、支出、负债 · 随时增删调整</p></div>
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="fin-income">💵 收入</button>
+        <button class="sub-tab" data-sub="fin-expense">💸 支出</button>
+        <button class="sub-tab" data-sub="fin-debt">📉 负债</button>
+        <button class="sub-tab" data-sub="fin-summary">📊 月度汇总</button>
+      </div>
+
+      <!-- 收入 -->
+      <div class="sub-panel active" id="sub-fin-income">
+        <div class="add-row">
+          <input id="incMonth" type="month">
+          <input id="incSource" placeholder="收入来源（直播工资/带货佣金/其他）">
+          <input id="incAmount" type="number" placeholder="金额（元）">
+          <input id="incNote" placeholder="备注">
+          <button onclick="addIncome()">＋ 添加收入</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="incomeTable"></table>
+        </div>
+      </div>
+
+      <!-- 支出 -->
+      <div class="sub-panel" id="sub-fin-expense">
+        <div class="add-row">
+          <input id="expMonth" type="month">
+          <select id="expCategory">
+            <option>房租</option><option>吃饭</option><option>交通</option>
+            <option>水电物业</option><option>珠宝进货</option><option>设备工具</option>
+            <option>学习提升</option><option>社交应酬</option><option>购物</option>
+            <option>医疗健康</option><option>其他</option>
+          </select>
+          <input id="expAmount" type="number" placeholder="金额（元）">
+          <input id="expNote" placeholder="备注">
+          <button onclick="addExpense()">＋ 添加支出</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="expenseTable"></table>
+        </div>
+      </div>
+
+      <!-- 负债 -->
+      <div class="sub-panel" id="sub-fin-debt">
+        <div class="add-row">
+          <input id="debtName" placeholder="负债项目（花呗/信用卡/借款）">
+          <input id="debtTotal" type="number" placeholder="总欠款（元）">
+          <input id="debtMonth" type="month">
+          <input id="debtRepay" type="number" placeholder="本月还款（元）">
+          <input id="debtNote" placeholder="备注（利率/还款日）">
+          <button onclick="addDebt()">＋ 添加负债</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="debtTable"></table>
+        </div>
+      </div>
+
+      <!-- 月度汇总 -->
+      <div class="sub-panel" id="sub-fin-summary">
+        <div class="filter-row">
+          <label>选择月份
+            <select id="finSummaryMonth"></select>
+          </label>
+        </div>
+        <div class="summary-grid" id="finSummaryGrid"></div>
+        <h3 style="margin:20px 0 10px;color:var(--green);font-size:16px">📋 支出明细</h3>
+        <div id="finExpenseBreakdown" style="background:#fff;padding:16px;border-radius:10px;box-shadow:var(--shadow)"></div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<script>
+// ============ 数据存储 ============
+const STORE = {
+  get(k, def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def; }catch{ return def; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function now(){ const d=new Date(); return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function todayStr(){ const d=new Date(); return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${'日一二三四五六'[d.getDay()]}`; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// 顶部时间
+function tickTime(){ const d = new Date(); document.getElementById('statusTime').textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+setInterval(tickTime, 30000); tickTime();
+document.getElementById('datePill').textContent = todayStr();
+
+// 导航切换
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+document.querySelectorAll('.sub-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const parent = btn.closest('.panel');
+    parent.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+    parent.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    parent.querySelector('#sub-' + btn.dataset.sub).classList.add('active');
+  });
+});
+
+// ============ 每日计划 ============
+let plans = STORE.get('plans', [
+  { id: uid(), text: '8:00 起床 · 拉伸10分钟', done: false },
+  { id: uid(), text: '9:00 直播 · 翡翠专场', done: false },
+  { id: uid(), text: '12:00 复盘上午直播数据', done: false },
+  { id: uid(), text: '15:00 选品 · 钻石耳钉', done: false },
+  { id: uid(), text: '20:00 自媒体 · 拍1条视频', done: false },
+  { id: uid(), text: '22:00 阅读 / 放松', done: false }
+]);
+function renderPlans(){
+  const list = document.getElementById('planList'); list.innerHTML = '';
+  plans.forEach(p => {
+    const li = document.createElement('li'); li.className = p.done ? 'done' : '';
+    li.innerHTML = `<div class="check-box" onclick="togglePlan('${p.id}')">${p.done ? '✓' : ''}</div><div style="flex:1"><div class="item-text">${escapeHtml(p.text)}</div></div><button class="del-btn" onclick="delPlan('${p.id}')">删除</button>`;
+    list.appendChild(li);
+  });
+  const done = plans.filter(p => p.done).length;
+  document.getElementById('progressText').textContent = `${done}/${plans.length}`;
+  document.getElementById('progressFill').style.width = plans.length ? (done/plans.length*100)+'%' : '0%';
+  STORE.set('plans', plans);
+}
+function addPlan(){ const input = document.getElementById('planInput'); if (!input.value.trim()) return; plans.push({ id: uid(), text: input.value.trim(), done: false }); input.value = ''; renderPlans(); }
+function togglePlan(id){ const p = plans.find(x => x.id === id); if (p) p.done = !p.done; renderPlans(); }
+function delPlan(id){ plans = plans.filter(x => x.id !== id); renderPlans(); }
+
+// ============ 每日任务 ============
+let tasks = STORE.get('tasks', [
+  { id: uid(), text: '发布1条抖音短视频', done: false },
+  { id: uid(), text: '回复粉丝私信', done: false },
+  { id: uid(), text: '拍3张穿搭素材', done: false }
+]);
+function renderTasks(){
+  const list = document.getElementById('taskList'); list.innerHTML = '';
+  tasks.forEach(t => {
+    const li = document.createElement('li'); li.className = t.done ? 'done' : '';
+    li.innerHTML = `<div class="check-box" onclick="toggleTask('${t.id}')">${t.done ? '✓' : ''}</div><div class="item-text">${escapeHtml(t.text)}</div><button class="del-btn" onclick="delTask('${t.id}')">删除</button>`;
+    list.appendChild(li);
+  });
+  STORE.set('tasks', tasks);
+}
+function addTask(){ const input = document.getElementById('taskInput'); if (!input.value.trim()) return; tasks.push({ id: uid(), text: input.value.trim(), done: false }); input.value = ''; renderTasks(); }
+function toggleTask(id){ const t = tasks.find(x => x.id === id); if (t) t.done = !t.done; renderTasks(); }
+function delTask(id){ tasks = tasks.filter(x => x.id !== id); renderTasks(); }
+
+// ============ 备忘录 ============
+let memos = STORE.get('memos', [
+  { id: uid(), text: '想想30岁女性最焦虑的3个话题，作为内容方向', time: now() },
+  { id: uid(), text: '把"我适合做什么"想清楚：表达力 + 珠宝经验 + 女性视角', time: now() }
+]);
+function renderMemos(){
+  const list = document.getElementById('memoList'); list.innerHTML = '';
+  memos.forEach(m => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span style="font-size:18px">📌</span><div style="flex:1"><div>${escapeHtml(m.text)}</div><div class="item-meta">${m.time}</div></div><button class="del-btn" onclick="delMemo('${m.id}')">删除</button>`;
+    list.appendChild(li);
+  });
+  STORE.set('memos', memos);
+}
+function addMemo(){ const input = document.getElementById('memoInput'); if (!input.value.trim()) return; memos.unshift({ id: uid(), text: input.value.trim(), time: now() }); input.value = ''; renderMemos(); }
+function delMemo(id){ memos = memos.filter(x => x.id !== id); renderMemos(); }
+
+// ============ 每日灵感 ============
+const HOT_POOL = {
+  '个人成长': [
+    { title: '30岁才明白的3个人生真相', desc: '关于自我接纳、时间管理和情绪稳定，戳中无数人。', tag: '个人成长' },
+    { title: '一个普通女孩的5年逆袭', desc: '从月薪3k到带团队，她做对了什么？', tag: '成长逆袭' },
+    { title: '为什么越努力越焦虑？', desc: '拆解"虚假努力"的4个表现，给出真正有效的方法。', tag: '个人成长' },
+    { title: '如何培养"不内耗"的体质', desc: '高敏感人群必看，建立心理边界。', tag: '情绪管理' },
+    { title: '复盘这件事，90%的人都做错了', desc: '不是写流水账，而是找到关键变量。', tag: '方法论' },
+    { title: '那些"看上去很轻松"的人', desc: '其实每天都在偷偷努力。', tag: '自律' }
+  ],
+  '女性成长': [
+    { title: '30岁以后，我学会了3件事', desc: '不再讨好、不再将就、不再解释。', tag: '女性力量' },
+    { title: '经济独立是女人最大的体面', desc: '一个女生的清醒发言。', tag: '女性独立' },
+    { title: '如何从"恋爱脑"变"事业脑"', desc: '3个思维转变让你活得更爽。', tag: '情感独立' },
+    { title: '女生最该投资的，不是婚姻', desc: '而是这3样东西。', tag: '自我投资' },
+    { title: '一个女珠宝主播的觉醒', desc: '从被挑选到主动选择。', tag: '职业成长' },
+    { title: '35岁女性如何重启人生', desc: '任何时候开始都不晚。', tag: '重启人生' }
+  ],
+  '珠宝穿搭': [
+    { title: '3种珠宝搭配，气质立刻提升', desc: '通勤/约会/聚会万能公式。', tag: '穿搭' },
+    { title: '小预算也能戴出高级感', desc: '百元到千元珠宝搭配技巧。', tag: '轻奢' },
+    { title: '翡翠怎么挑不踩坑？', desc: '主播实战经验分享。', tag: '翡翠' }
+  ],
+  '主播心法': [
+    { title: '直播间留人的3个钩子', desc: '前3秒决定人留不留。', tag: '直播' },
+    { title: '逼单不翻车的话术', desc: '温和成交的秘密。', tag: '话术' }
+  ],
+  '自律生活': [
+    { title: '早起1小时的人生有多赚', desc: '5个微习惯改变命运。', tag: '自律' },
+    { title: '如何戒掉短视频上瘾', desc: '亲测有效的方法。', tag: '习惯' }
+  ],
+  '情绪管理': [
+    { title: '高敏感女孩的自我救赎', desc: '不再因为别人内耗。', tag: '情绪' },
+    { title: '成年人的崩溃释放指南', desc: '科学释放压力。', tag: '情绪' }
+  ]
+};
+function fetchDouyinHot(){
+  const topic = document.getElementById('topicSelect').value;
+  const list = HOT_POOL[topic] || HOT_POOL['个人成长'];
+  const shuffled = [...list].sort(() => Math.random() - 0.5).slice(0, 6);
+  const grid = document.getElementById('inspirationGrid'); grid.innerHTML = '';
+  shuffled.forEach(item => {
+    const card = document.createElement('div'); card.className = 'insp-card';
+    card.innerHTML = `<span class="insp-tag">#${item.tag}</span><div class="insp-title">${item.title}</div><div class="insp-desc">${item.desc}</div><div class="insp-actions"><button class="btn-go" onclick="goDouyinSearch('${item.title}')">🎬 跳转抖音</button><button class="btn-save" onclick="saveInspiration('${item.title}')">📌 收藏</button></div>`;
+    grid.appendChild(card);
+  });
+  document.getElementById('lastFetch').textContent = '上次抓取：' + now();
+}
+function goDouyinSearch(keyword){ window.open('https://www.douyin.com/search/'+encodeURIComponent(keyword)+'?type=video', '_blank'); }
+function saveInspiration(title){ memos.unshift({ id: uid(), text: '【选题】'+title, time: now() }); renderMemos(); alert('✅ 已保存到备忘录'); }
+
+// ============ 爆款热点视频 ============
+const HOT_VIDEOS = [
+  { title: '一个女生最好的状态：经济独立、情绪自由、形象清爽', author: '@清醒姐姐', plays: '1280w', likes: '86w', emoji: '💎' },
+  { title: '30岁从0开始做珠宝主播，我后悔了吗？', author: '@小胡成长记', plays: '520w', likes: '42w', emoji: '🌱' },
+  { title: '女生一定要有的3件珠宝，最后一件气质拉满', author: '@穿搭日记', plays: '890w', likes: '73w', emoji: '✨' },
+  { title: '表达力差的人，请疯狂做这5件事', author: '@口才训练营', plays: '2100w', likes: '156w', emoji: '🎙️' },
+  { title: '月入3万的珠宝主播，私下都在卷什么？', author: '@主播幕后', plays: '630w', likes: '51w', emoji: '🔥' },
+  { title: '高敏感女孩的3个"自私"习惯', author: '@情绪疗愈', plays: '1750w', likes: '120w', emoji: '🌸' },
+  { title: '普通人逆袭最快的3个赛道', author: '@商业观察', plays: '940w', likes: '68w', emoji: '🚀' },
+  { title: '女生如何培养"不好惹"的气质', author: '@女性力量', plays: '1480w', likes: '98w', emoji: '👑' }
+];
+function renderHotVideos(){
+  const grid = document.getElementById('videoGrid'); grid.innerHTML = '';
+  HOT_VIDEOS.forEach(v => {
+    const card = document.createElement('div'); card.className = 'video-card';
+    card.innerHTML = `<div class="video-cover">${v.emoji}<div class="play-icon">▶</div></div><div class="video-info"><div class="video-title">${v.title}</div><div class="video-meta"><span>${v.author}</span><span>▶ ${v.plays}</span><span>❤ ${v.likes}</span></div><a class="video-link" href="https://www.douyin.com/search/${encodeURIComponent(v.title)}?type=video" target="_blank">🎬 跳转原视频二创</a></div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ============ 内容复盘 ============
+let reviews = STORE.get('reviews', [
+  { id: uid(), title: '《女生最该投资的3样东西》', platform: '抖音', data: '播放 120w / 涨粉 3200', time: '07-20' },
+  { id: uid(), title: '《30岁女性的清醒发言》', platform: '小红书', data: '阅读 8.6w / 收藏 2400', time: '07-18' }
+]);
+function renderReviews(){
+  const list = document.getElementById('reviewList'); list.innerHTML = '';
+  reviews.forEach(r => {
+    const div = document.createElement('div'); div.className = 'review-item';
+    div.innerHTML = `<div><div class="review-title">${escapeHtml(r.title)}</div><div class="review-meta">${r.platform} · ${r.time}</div></div><span class="review-data">${escapeHtml(r.data)}</span><button class="del-btn" onclick="delReview('${r.id}')">删除</button>`;
+    list.appendChild(div);
+  });
+  STORE.set('reviews', reviews);
+}
+function addReview(){
+  const t = document.getElementById('reviewTitle').value.trim(), p = document.getElementById('reviewPlatform').value.trim(), d = document.getElementById('reviewData').value.trim();
+  if (!t) return;
+  reviews.unshift({ id: uid(), title: t, platform: p || '抖音', data: d || '待填', time: now().slice(0,5) });
+  document.getElementById('reviewTitle').value = ''; document.getElementById('reviewPlatform').value = ''; document.getElementById('reviewData').value = '';
+  renderReviews();
+}
+function delReview(id){ reviews = reviews.filter(x => x.id !== id); renderReviews(); }
+
+// ============ 话术库 ============
+let scripts = STORE.get('scripts', [
+  { id: uid(), cat: '开场暖场', text: '姐妹们下午好！欢迎来到小胡的珠宝直播间，今天给大家准备了一波高性价比的好货，点点关注不迷路~', time: now() },
+  { id: uid(), cat: '逼单转化', text: '这件18K金耳钉，工厂直供，今天直播间专属价，错过真的等明年！想要的姐妹扣"要"~', time: now() },
+  { id: uid(), cat: '价值塑造', text: '你看这个镶嵌工艺，师傅手工微镶的，每一颗都严丝合缝，戴5年都不会掉。', time: now() },
+  { id: uid(), cat: '下播引导', text: '今天没抢到的姐妹别急，明天晚上8点还有一场，记得点关注、加粉丝团，明天见~', time: now() }
+]);
+function renderScripts(){
+  const list = document.getElementById('scriptList'); list.innerHTML = '';
+  scripts.forEach(s => {
+    const div = document.createElement('div'); div.className = 'script-item';
+    div.innerHTML = `<span class="script-cat">${s.cat}</span><span class="script-text">${escapeHtml(s.text)}</span><div class="script-foot"><span>${s.time}</span><button class="del-btn" onclick="delScript('${s.id}')">删除</button></div>`;
+    list.appendChild(div);
+  });
+  STORE.set('scripts', scripts);
+}
+function addScript(){ const cat = document.getElementById('scriptCategory').value, text = document.getElementById('scriptInput').value.trim(); if (!text) return; scripts.unshift({ id: uid(), cat, text, time: now() }); document.getElementById('scriptInput').value = ''; renderScripts(); }
+function delScript(id){ scripts = scripts.filter(x => x.id !== id); renderScripts(); }
+
+// ============ 产品库 ============
+let products = STORE.get('products', [
+  { id: uid(), name: '18K金钻石耳钉', category: '钻石', price: '¥1280 · 性价比拉满', point: '微镶工艺，闪度满分，敏感肌可戴' },
+  { id: uid(), name: '天然翡翠平安扣', category: '翡翠', price: '¥6800 · 收藏级种水', point: '冰种飘花，寓意平安，适合自戴/送礼' },
+  { id: uid(), name: '南洋金珠项链', category: '珍珠', price: '¥4500 · 海水珠', point: '10-11mm浓金珠，强光下高级感满满' },
+  { id: uid(), name: '红宝石戒指', category: '彩宝', price: '¥9800 · 莫桑比克产地', point: '鸽血红，18K金镶嵌，显白不挑肤色' }
+]);
+function renderProducts(){
+  const grid = document.getElementById('productGrid'); grid.innerHTML = '';
+  products.forEach(p => {
+    const card = document.createElement('div'); card.className = 'product-card';
+    card.innerHTML = `<span class="product-cat">${p.category}</span><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">${escapeHtml(p.price)}</div><div class="product-point">${escapeHtml(p.point)}</div><div style="margin-top:10px; text-align:right"><button class="del-btn" onclick="delProduct('${p.id}')">删除</button></div>`;
+    grid.appendChild(card);
+  });
+  STORE.set('products', products);
+}
+function addProduct(){
+  const n = document.getElementById('prodName').value.trim(), c = document.getElementById('prodCategory').value.trim(), p = document.getElementById('prodPrice').value.trim(), pt = document.getElementById('prodPoint').value.trim();
+  if (!n) return;
+  products.unshift({ id: uid(), name: n, category: c || '珠宝', price: p || '面议', point: pt || '待补充' });
+  ['prodName','prodCategory','prodPrice','prodPoint'].forEach(id => document.getElementById(id).value = '');
+  renderProducts();
+}
+function delProduct(id){ products = products.filter(x => x.id !== id); renderProducts(); }
+
+// ============ 资料搜索 ============
+const KNOWLEDGE_BASE = {
+  '翡翠种水等级': ['玻璃种：透明度最高，像玻璃一样通透，价格最高','冰种：透明有少许棉，价格中上','糯种：半透明，像糯米汤，常见品种','豆种：颗粒感强，透明度低，性价比款','选购口诀：种水色工，先看种水'],
+  '钻石4C分级': ['Carat 克拉：1ct=0.2g，越大越稀有','Color 颜色：D-Z级，D最白，H是性价比分水岭','Clarity 净度：FL/IF/VVS/VS/SI/I，VS性价比高','Cut 切工：EX/VG/G/F/P，3EX最推荐','证书认准：GIA / NGTC / IGI'],
+  '珍珠分类': ['海水珠：Akoya（白透粉）、南洋金珠/白珠、大溪地黑珍珠','淡水珠：性价比高，颜色丰富','光泽：镜面光>强光>中光>弱光','大小：越大越贵，海水珠普遍比淡水珠大','保养：远离化妆品/香水，戴完用软布擦'],
+  '黄金纯度': ['24K金：纯度99.9%以上，足金','18K金：75%黄金+25%其他金属，硬度高，适合镶嵌','14K金：含金量58.5%，更耐磨','足金 vs 千足金 vs 万足金：现在统一叫"足金"','古法金：工艺金，工费高但有质感'],
+  '彩宝选购': ['红宝石：鸽血红最贵，莫桑比克>缅甸','蓝宝石：矢车菊蓝、皇家蓝是顶级色','祖母绿：哥伦比亚 Muzo 矿区最负盛名','碧玺：色彩最丰富的宝石','看证书：GRS / GIA / AIGS / NGTC'],
+  '珠宝保养': ['钻石怕油：定期用洗洁精温水浸泡清洗','翡翠怕摔：避免与硬物碰撞','珍珠怕水：游泳/洗澡时不要戴','黄金怕汞：避免接触化妆品','宝石怕晒：祖母绿/紫水晶避光保存']
+};
+let knowledges = STORE.get('knowledges', []);
+function renderKnowledges(){
+  const list = document.getElementById('knowledgeList'); list.innerHTML = '';
+  knowledges.forEach(k => {
+    const div = document.createElement('div'); div.className = 'knowledge-item';
+    div.innerHTML = `<div style="font-weight:600; margin-bottom:4px">${escapeHtml(k.title)}</div><div style="font-size:12px; color:var(--text-2); white-space:pre-line">${escapeHtml(k.content)}</div><div class="script-foot"><span>${k.time}</span><button class="del-btn" onclick="delKnowledge('${k.id}')">删除</button></div>`;
+    list.appendChild(div);
+  });
+  STORE.set('knowledges', knowledges);
+}
+function doSearch(){
+  const kw = document.getElementById('searchInput').value.trim(); if (!kw) return;
+  const result = document.getElementById('searchResult');
+  let matched = null;
+  for (const key of Object.keys(KNOWLEDGE_BASE)){ if (kw.includes(key.slice(0,2)) || key.includes(kw.slice(0,2))){ matched = key; break; } }
+  if (matched){
+    result.innerHTML = `<h4>📖 ${matched} · 知识库检索结果</h4><ul>${KNOWLEDGE_BASE[matched].map(x => `<li>${x}</li>`).join('')}</ul><div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); color:var(--text-2); font-size:12px">💡 这些资料可以保存到知识库，或作为直播话术素材</div>`;
+  } else {
+    result.innerHTML = `<p class="empty-tip">🔍 暂未匹配到「${escapeHtml(kw)}」的本地知识<br><br>建议搜索：${Object.keys(KNOWLEDGE_BASE).map(k => `<button class="ghost-btn" style="margin:2px" onclick="quickSearch('${k}')">${k}</button>`).join('')}<br><br><span style="font-size:11px">你也可以把找到的外部资料用「保存到知识库」记录</span></p>`;
+  }
+}
+function quickSearch(kw){ document.getElementById('searchInput').value = kw; doSearch(); }
+function addKnowledge(){ const text = document.getElementById('knowledgeInput').value.trim(); if (!text) return; const resultHtml = document.getElementById('searchResult').innerText; knowledges.unshift({ id: uid(), title: text, content: resultHtml, time: now() }); document.getElementById('knowledgeInput').value = ''; renderKnowledges(); alert('✅ 已保存到知识库'); }
+function delKnowledge(id){ knowledges = knowledges.filter(x => x.id !== id); renderKnowledges(); }
+
+// ============ 直播项目 ============
+let projects = STORE.get('projects', [
+  { id: uid(), name: '翡翠专场 · 高货品鉴', date: '7月25日 20:00', goal: 'GMV 30w' },
+  { id: uid(), name: '钻石耳钉 · 夏日上新', date: '7月27日 19:30', goal: 'GMV 8w · 涨粉 1000' },
+  { id: uid(), name: '彩宝系列 · 主理人直播', date: '8月1日', goal: '试水彩宝赛道' }
+]);
+function renderProjects(){
+  const list = document.getElementById('projectList'); list.innerHTML = '';
+  projects.forEach(p => {
+    const div = document.createElement('div'); div.className = 'project-item script-item';
+    div.innerHTML = `<span style="font-size:22px">📂</span><div><div class="proj-name">${escapeHtml(p.name)}</div><div class="proj-meta">${escapeHtml(p.date)}</div></div><span class="proj-goal">${escapeHtml(p.goal)}</span><button class="del-btn" onclick="delProject('${p.id}')">删除</button>`;
+    list.appendChild(div);
+  });
+  STORE.set('projects', projects);
+}
+function addProject(){ const n = document.getElementById('projName').value.trim(), d = document.getElementById('projDate').value.trim(), g = document.getElementById('projGoal').value.trim(); if (!n) return; projects.unshift({ id: uid(), name: n, date: d || '待定', goal: g || '待定' }); ['projName','projDate','projGoal'].forEach(id => document.getElementById(id).value = ''); renderProjects(); }
+function delProject(id){ projects = projects.filter(x => x.id !== id); renderProjects(); }
+
+// ============ 直播排期 ============
+let liveplans = STORE.get('liveplans', []);
+function renderLivePlans(){
+  const list = document.getElementById('liveplanList'); list.innerHTML = '';
+  liveplans.forEach(p => {
+    const div = document.createElement('div'); div.className = 'liveplan-item script-item';
+    const date = new Date(p.date);
+    div.innerHTML = `<div class="liveplan-date"><span class="day">${date.getDate()}</span><span class="month">${date.getMonth()+1}月</span></div><div><div class="liveplan-theme">${escapeHtml(p.theme)}</div><div class="liveplan-prods">${escapeHtml(p.products)} · ${p.time}</div></div><span class="proj-goal">${p.date}</span><button class="del-btn" onclick="delLivePlan('${p.id}')">删除</button>`;
+    list.appendChild(div);
+  });
+  STORE.set('liveplans', liveplans);
+}
+function addLivePlan(){ const d = document.getElementById('lpDate').value, t = document.getElementById('lpTime').value, th = document.getElementById('lpTheme').value.trim(), pr = document.getElementById('lpProducts').value.trim(); if (!d || !th) return; liveplans.unshift({ id: uid(), date: d, time: t || '全天', theme: th, products: pr || '待定' }); ['lpDate','lpTime','lpTheme','lpProducts'].forEach(id => document.getElementById(id).value = ''); renderLivePlans(); }
+function delLivePlan(id){ liveplans = liveplans.filter(x => x.id !== id); renderLivePlans(); }
+
+// ============ 类目资料 ============
+let categories = STORE.get('categories', [
+  { id: uid(), name: '翡翠', notes: [
+    { id: uid(), text: '种水分级：玻璃种 > 冰种 > 糯种 > 豆种，种水决定基础价值。', time: now() },
+    { id: uid(), text: '颜色讲究"浓阳正匀"，帝王绿最贵，翠绿次之。', time: now() }
+  ]},
+  { id: uid(), name: '和田玉', notes: [
+    { id: uid(), text: '分类：白玉（羊脂白最贵）、青白玉、青玉、碧玉、墨玉、黄玉。', time: now() },
+    { id: uid(), text: '产地：新疆籽料最贵，青海料/俄料/韩料性价比高。', time: now() }
+  ]},
+  { id: uid(), name: '南红', notes: [
+    { id: uid(), text: '产地：保山南红（细腻润）vs 凉山南红（颜色艳），各有所长。', time: now() },
+    { id: uid(), text: '颜色：柿子红最正，樱桃红偏亮，冰飘有特色。', time: now() }
+  ]},
+  { id: uid(), name: '蜜蜡', notes: [
+    { id: uid(), text: '分类：波罗的海蜜蜡为主，白蜜最贵，鸡油黄次之。', time: now() },
+    { id: uid(), text: '辨别真假：盐水测试、静电测试、紫光灯荧光反应。', time: now() }
+  ]}
+]);
+function renderCategories(){
+  const list = document.getElementById('categoryList'); list.innerHTML = '';
+  if (categories.length === 0){
+    list.innerHTML = '<p class="empty-tip">📚 还没有类目，点击上方"+ 新增类目"开始记录你学到的知识</p>';
+    STORE.set('categories', categories);
+    return;
+  }
+  categories.forEach(cat => {
+    const card = document.createElement('div'); card.className = 'cat-card';
+    const notesHtml = cat.notes.map(n => `
+      <li>
+        <span class="note-text">${escapeHtml(n.text)}</span>
+        <span class="note-time">${n.time}</span>
+        <button class="del-btn" onclick="delCatNote('${cat.id}','${n.id}')">删</button>
+      </li>`).join('');
+    card.innerHTML = `
+      <div class="cat-card-head">
+        <div>
+          <span class="cat-card-title">${escapeHtml(cat.name)}</span>
+          <span class="cat-card-meta"> · ${cat.notes.length} 条笔记</span>
+        </div>
+        <button class="del-btn" onclick="delCategory('${cat.id}')">删除类目</button>
+      </div>
+      <ul class="cat-notes">${notesHtml || '<li style="background:none;padding:4px 0;color:var(--text-2);font-size:12px">暂无笔记，下方添加</li>'}</ul>
+      <div class="cat-add-row">
+        <input id="catNoteInput_${cat.id}" placeholder="补充学到的知识、行情、选购要点...">
+        <button onclick="addCatNote('${cat.id}')">＋ 添加笔记</button>
+      </div>`;
+    list.appendChild(card);
+  });
+  STORE.set('categories', categories);
+}
+function addCategory(){
+  const input = document.getElementById('catName');
+  if (!input.value.trim()) return;
+  categories.unshift({ id: uid(), name: input.value.trim(), notes: [] });
+  input.value = ''; renderCategories();
+}
+function delCategory(id){
+  if (!confirm('确定删除整个类目及其所有笔记吗？')) return;
+  categories = categories.filter(x => x.id !== id); renderCategories();
+}
+function addCatNote(catId){
+  const input = document.getElementById('catNoteInput_' + catId);
+  if (!input.value.trim()) return;
+  const cat = categories.find(x => x.id === catId);
+  if (cat){ cat.notes.unshift({ id: uid(), text: input.value.trim(), time: now() }); }
+  input.value = ''; renderCategories();
+}
+function delCatNote(catId, noteId){
+  const cat = categories.find(x => x.id === catId);
+  if (cat){ cat.notes = cat.notes.filter(n => n.id !== noteId); renderCategories(); }
+}
+
+// ============ 自媒体计划 ============
+function setupPlanList(key, listId, inputId, addFn, delFn, defaults){
+  let arr = STORE.get(key, defaults);
+  window['render'+addFn] = function(){
+    const list = document.getElementById(listId); list.innerHTML = '';
+    if (arr.length === 0){
+      list.innerHTML = '<li style="background:none;padding:4px 0;color:var(--text-2);font-size:12px">暂无内容，下方添加</li>';
+    } else {
+      arr.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="note-text">${escapeHtml(item.text)}</span><span class="note-time">${item.time||''}</span><button class="del-btn" onclick="${delFn}(${arr.indexOf(item)})">删</button>`;
+        list.appendChild(li);
+      });
+    }
+    STORE.set(key, arr);
+  };
+  window[addFn] = function(){
+    const input = document.getElementById(inputId);
+    if (!input.value.trim()) return;
+    arr.unshift({ text: input.value.trim(), time: now() });
+    input.value = '';
+    window['render'+addFn]();
+  };
+  window[delFn] = function(i){ arr.splice(i, 1); window['render'+addFn](); };
+}
+setupPlanList('goals', 'goalList', 'goalInput', 'addGoal', 'delGoal', [
+  { text: '方向：女性成长 + 珠宝主播经验（表达力强是核心优势）', time: now() },
+  { text: '30天目标：确定人设、注册账号、发第一条视频', time: now() }
+]);
+setupPlanList('topics', 'topicList', 'topicInput', 'addTopic', 'delTopic', [
+  { text: '《一个珠宝主播的日常：凌晨4点选品》', time: now() },
+  { text: '《月入3万的女主播，如何管钱》', time: now() },
+  { text: '《不会说话的人，如何练表达力》', time: now() }
+]);
+setupPlanList('phases', 'phaseList', 'phaseInput', 'addPhase', 'delPhase', [
+  { text: '第1周：确定人设 + 注册账号 + 拍3条自我介绍', time: now() },
+  { text: '第2周：每周更新4条，找节奏和风格', time: now() },
+  { text: '第3周：做1次直播连麦，扩圈', time: now() },
+  { text: '第4周：复盘数据，迭代内容方向', time: now() }
+]);
+
+// ============ 灵感导航站 ============
+const HUB_LINKS = {
+  hotRank: [
+    { name:'抖音热榜', desc:'实时热点榜', icon:'🔥', url:'https://www.douyin.com/hot' },
+    { name:'微博热搜', desc:'实时热搜榜', icon:'📈', url:'https://s.weibo.com/top/summary' },
+    { name:'知乎热榜', desc:'热门话题讨论', icon:'💡', url:'https://www.zhihu.com/hot' },
+    { name:'B站热门', desc:'热门视频排行', icon:'📺', url:'https://www.bilibili.com/v/popular/all' },
+    { name:'百度热搜', desc:'搜索热点榜', icon:'🔍', url:'https://top.baidu.com/board?tab=realtime' },
+    { name:'今日头条', desc:'热点新闻', icon:'📰', url:'https://www.toutiao.com/hot/' },
+    { name:'快手热榜', desc:'快手热门', icon:'⚡', url:'https://www.kuaishou.com/' },
+    { name:'豆瓣热搜', desc:'文娱话题', icon:'🎬', url:'https://www.douban.com/explore' }
+  ],
+  video: [
+    { name:'抖音搜索', desc:'搜爆款视频', icon:'🎵', url:'https://www.douyin.com/search/个人成长?type=video' },
+    { name:'小红书视频', desc:'种草视频灵感', icon:'📕', url:'https://www.xiaohongshu.com/search_result?keyword=女性成长&type=51' },
+    { name:'B站搜索', desc:'深度内容二创', icon:'📺', url:'https://search.bilibili.com/all?keyword=个人成长' },
+    { name:'视频号', desc:'微信视频号', icon:'📹', url:'https://channels.weixin.qq.com/' },
+    { name:'快手搜索', desc:'下沉市场灵感', icon:'⚡', url:'https://www.kuaishou.com/search/video?searchKey=个人成长' },
+    { name:'西瓜视频', desc:'中长视频', icon:'🍉', url:'https://www.ixigua.com/search/个人成长/' }
+  ],
+  article: [
+    { name:'小红书搜索', desc:'图文种草选题', icon:'📕', url:'https://www.xiaohongshu.com/search_result?keyword=女性成长' },
+    { name:'知乎搜索', desc:'深度问答选题', icon:'💡', url:'https://www.zhihu.com/search?type=content&q=女性成长' },
+    { name:'微信公众号', desc:'文章搜索', icon:'💬', url:'https://weixin.sogou.com/weixin?type=2&query=女性成长' },
+    { name:'头条文章', desc:'热门文章', icon:'📰', url:'https://so.toutiao.com/search?keyword=个人成长&pd=information' },
+    { name:'豆瓣小组', desc:'话题讨论', icon:'🎬', url:'https://www.douban.com/group/search?cat=1013&q=女性成长' },
+    { name:'简书', desc:'写作灵感', icon:'✍️', url:'https://www.jianshu.com/search?q=个人成长' }
+  ],
+  jewelry: [
+    { name:'珠宝吧', desc:'珠宝爱好者社区', icon:'💎', url:'https://tieba.baidu.com/f?kw=珠宝' },
+    { name:'翡翠吧', desc:'翡翠讨论', icon:'🟢', url:'https://tieba.baidu.com/f?kw=翡翠' },
+    { name:'和田玉吧', desc:'和田玉交流', icon:'⚪', url:'https://tieba.baidu.com/f?kw=和田玉' },
+    { name:'小红书珠宝', desc:'珠宝种草', icon:'📕', url:'https://www.xiaohongshu.com/search_result?keyword=珠宝穿搭' },
+    { name:'抖音珠宝', desc:'珠宝视频', icon:'🎵', url:'https://www.douyin.com/search/珠宝?type=video' },
+    { name:'珠宝GIA', desc:'专业资料查询', icon:'📜', url:'https://www.gia.edu/' }
+  ],
+  tools: [
+    { name:'蝉妈妈', desc:'抖音数据分析', icon:'📊', url:'https://www.chanmama.com/' },
+    { name:'飞瓜数据', desc:'短视频数据', icon:'📈', url:'https://www.feigua.cn/' },
+    { name:'新榜', desc:'公众号/视频号数据', icon:'📋', url:'https://www.newrank.cn/' },
+    { name:'千瓜数据', desc:'小红书数据', icon:'🍓', url:'https://www.qian-gua.com/' },
+    { name:'卡思数据', desc:'创作者榜单', icon:'🎯', url:'https://www.caasdata.com/' },
+    { name:'巨量算数', desc:'抖音官方趋势', icon:'🔍', url:'https://trendinsight.oceanengine.com/' }
+  ]
+};
+function renderHub(gridId, links){
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  links.forEach(link => {
+    const a = document.createElement('a');
+    a.className = 'hub-card';
+    a.href = link.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.innerHTML = `<span class="hub-icon">${link.icon}</span><div class="hub-info"><div class="hub-name">${link.name}</div><div class="hub-desc">${link.desc}</div></div>`;
+    grid.appendChild(a);
+  });
+}
+function hubSearchAll(){
+  const kw = document.getElementById('hubSearchInput').value.trim();
+  if (!kw){ alert('请输入搜索关键词'); return; }
+  // 更新所有搜索类链接的关键词
+  const enc = encodeURIComponent(kw);
+  HUB_LINKS.video[0].url = `https://www.douyin.com/search/${enc}?type=video`;
+  HUB_LINKS.video[1].url = `https://www.xiaohongshu.com/search_result?keyword=${enc}&type=51`;
+  HUB_LINKS.video[2].url = `https://search.bilibili.com/all?keyword=${enc}`;
+  HUB_LINKS.video[4].url = `https://www.kuaishou.com/search/video?searchKey=${enc}`;
+  HUB_LINKS.video[5].url = `https://www.ixigua.com/search/${enc}/`;
+  HUB_LINKS.article[0].url = `https://www.xiaohongshu.com/search_result?keyword=${enc}`;
+  HUB_LINKS.article[1].url = `https://www.zhihu.com/search?type=content&q=${enc}`;
+  HUB_LINKS.article[2].url = `https://weixin.sogou.com/weixin?type=2&query=${enc}`;
+  HUB_LINKS.article[3].url = `https://so.toutiao.com/search?keyword=${enc}&pd=information`;
+  HUB_LINKS.article[4].url = `https://www.douban.com/group/search?cat=1013&q=${enc}`;
+  HUB_LINKS.article[5].url = `https://www.jianshu.com/search?q=${enc}`;
+  HUB_LINKS.jewelry[3].url = `https://www.xiaohongshu.com/search_result?keyword=${enc}`;
+  HUB_LINKS.jewelry[4].url = `https://www.douyin.com/search/${enc}?type=video`;
+  // 重新渲染
+  renderHub('videoHubGrid', HUB_LINKS.video);
+  renderHub('articleHubGrid', HUB_LINKS.article);
+  renderHub('jewelryHubGrid', HUB_LINKS.jewelry);
+  // 同时打开几个主要平台
+  window.open(`https://www.douyin.com/search/${enc}?type=video`, '_blank');
+  window.open(`https://www.xiaohongshu.com/search_result?keyword=${enc}`, '_blank');
+  window.open(`https://search.bilibili.com/all?keyword=${enc}`, '_blank');
+}
+
+// ============ 直播数据登记 ============
+let dataRecords = STORE.get('dataRecords', [
+  { id: uid(), date: '2026-07-24', platform: '视频号', session: '翡翠专场', duration: '3h', viewers: 2850, gmv: 18600, orders: 42, followers: 156, return: 3, note: '翡翠平安扣卖爆，后半场人少了' },
+  { id: uid(), date: '2026-07-23', platform: '抖音', session: '钻石耳钉上新', duration: '2.5h', viewers: 4200, gmv: 9800, orders: 28, followers: 89, return: 1, note: '新粉占比高，下次多留钩子' }
+]);
+function renderDataTable(){
+  const tbl = document.getElementById('dataTable');
+  if (dataRecords.length === 0){
+    tbl.innerHTML = '<tr><td class="data-table-empty">📊 还没有数据，下播后点上方登记</td></tr>';
+    STORE.set('dataRecords', dataRecords); return;
+  }
+  let html = '<tr><th>日期</th><th>平台</th><th>场次</th><th>时长</th><th>场观</th><th>GMV(元)</th><th>订单</th><th>涨粉</th><th>退货</th><th>客单价</th><th>备注</th><th></th></tr>';
+  dataRecords.forEach(r => {
+    const avgPrice = r.orders ? (r.gmv / r.orders).toFixed(0) : '-';
+    html += `<tr>
+      <td>${r.date}</td><td>${r.platform}</td><td>${escapeHtml(r.session)}</td><td>${r.duration||'-'}</td>
+      <td>${r.viewers||'-'}</td><td style="color:var(--danger);font-weight:600">${r.gmv||'-'}</td>
+      <td>${r.orders||'-'}</td><td style="color:var(--green)">+${r.followers||0}</td>
+      <td>${r.return||0}</td><td>${avgPrice}</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis">${escapeHtml(r.note||'')}</td>
+      <td><button class="del-btn" onclick="delDataRecord('${r.id}')">删</button></td>
+    </tr>`;
+  });
+  tbl.innerHTML = html;
+  STORE.set('dataRecords', dataRecords);
+  renderSummary();
+}
+function addDataRecord(){
+  const r = {
+    id: uid(),
+    date: document.getElementById('drDate').value || todayStr().slice(0,10),
+    platform: document.getElementById('drPlatform').value,
+    session: document.getElementById('drSession').value.trim(),
+    duration: document.getElementById('drDuration').value.trim(),
+    viewers: parseInt(document.getElementById('drViewers').value) || 0,
+    gmv: parseFloat(document.getElementById('drGmv').value) || 0,
+    orders: parseInt(document.getElementById('drOrders').value) || 0,
+    followers: parseInt(document.getElementById('drFollowers').value) || 0,
+    return: parseInt(document.getElementById('drReturn').value) || 0,
+    note: document.getElementById('drNote').value.trim()
+  };
+  dataRecords.unshift(r);
+  ['drDate','drSession','drDuration','drViewers','drGmv','drOrders','drFollowers','drReturn','drNote'].forEach(id => document.getElementById(id).value = '');
+  renderDataTable();
+}
+function delDataRecord(id){ dataRecords = dataRecords.filter(x => x.id !== id); renderDataTable(); }
+
+// ============ 产品登记表 ============
+let prodRecords = STORE.get('prodRecords', [
+  { id: uid(), date: '2026-07-24', name: '翡翠平安扣', sku: 'FC-PAC-01', category: '翡翠', cost: 2800, price: 6800, stock: 10, sold: 7, return: 0, source: '视频号小助理' },
+  { id: uid(), date: '2026-07-24', name: '18K金钻石耳钉', sku: 'DZ-ED-02', category: '钻石', cost: 600, price: 1280, stock: 20, sold: 15, return: 1, source: '视频号小助理' }
+]);
+function renderProdTable(){
+  const tbl = document.getElementById('prodTable');
+  if (prodRecords.length === 0){
+    tbl.innerHTML = '<tr><td class="data-table-empty">📦 还没有产品登记</td></tr>';
+    STORE.set('prodRecords', prodRecords); return;
+  }
+  let html = '<tr><th>日期</th><th>产品名</th><th>SKU</th><th>类目</th><th>成本</th><th>售价</th><th>库存</th><th>售出</th><th>退货</th><th>毛利</th><th>货源</th><th></th></tr>';
+  prodRecords.forEach(p => {
+    const profit = (p.sold - p.return) * (p.price - p.cost);
+    html += `<tr>
+      <td>${p.date}</td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.sku||'')}</td><td>${p.category||'-'}</td>
+      <td>¥${p.cost||0}</td><td style="color:var(--danger);font-weight:600">¥${p.price||0}</td>
+      <td>${p.stock||0}</td><td>${p.sold||0}</td><td>${p.return||0}</td>
+      <td style="color:var(--green);font-weight:600">¥${profit}</td>
+      <td>${escapeHtml(p.source||'')}</td>
+      <td><button class="del-btn" onclick="delProdRecord('${p.id}')">删</button></td>
+    </tr>`;
+  });
+  tbl.innerHTML = html;
+  STORE.set('prodRecords', prodRecords);
+  renderSummary();
+}
+function addProdRecord(){
+  const p = {
+    id: uid(),
+    date: document.getElementById('prDate').value || todayStr().slice(0,10),
+    name: document.getElementById('prName').value.trim(),
+    sku: document.getElementById('prSku').value.trim(),
+    category: document.getElementById('prCategory').value.trim(),
+    cost: parseFloat(document.getElementById('prCost').value) || 0,
+    price: parseFloat(document.getElementById('prPrice').value) || 0,
+    stock: parseInt(document.getElementById('prStock').value) || 0,
+    sold: parseInt(document.getElementById('prSold').value) || 0,
+    return: parseInt(document.getElementById('prReturn').value) || 0,
+    source: document.getElementById('prSource').value.trim()
+  };
+  if (!p.name) return;
+  prodRecords.unshift(p);
+  ['prDate','prName','prSku','prCategory','prCost','prPrice','prStock','prSold','prReturn','prSource'].forEach(id => document.getElementById(id).value = '');
+  renderProdTable();
+}
+function delProdRecord(id){ prodRecords = prodRecords.filter(x => x.id !== id); renderProdTable(); }
+
+// ============ 数据汇总 ============
+function renderSummary(){
+  const grid = document.getElementById('summaryGrid');
+  if (!grid) return;
+  const totalGmv = dataRecords.reduce((s, r) => s + (r.gmv||0), 0);
+  const totalOrders = dataRecords.reduce((s, r) => s + (r.orders||0), 0);
+  const totalViewers = dataRecords.reduce((s, r) => s + (r.viewers||0), 0);
+  const totalFollowers = dataRecords.reduce((s, r) => s + (r.followers||0), 0);
+  const totalReturn = dataRecords.reduce((s, r) => s + (r.return||0), 0);
+  const totalProfit = prodRecords.reduce((s, p) => s + (p.sold - p.return) * (p.price - p.cost), 0);
+  const returnRate = totalOrders ? (totalReturn / totalOrders * 100).toFixed(1) : 0;
+  const avgPrice = totalOrders ? (totalGmv / totalOrders).toFixed(0) : 0;
+
+  grid.innerHTML = `
+    <div class="summary-card"><div class="label">总 GMV</div><div class="value">¥${totalGmv.toLocaleString()}</div><div class="sub">${dataRecords.length} 场直播</div></div>
+    <div class="summary-card"><div class="label">总订单数</div><div class="value">${totalOrders}</div><div class="sub">退货 ${totalReturn} 单 (${returnRate}%)</div></div>
+    <div class="summary-card"><div class="label">总场观</div><div class="value">${totalViewers.toLocaleString()}</div><div class="sub">转化率 ${totalViewers ? (totalOrders/totalViewers*100).toFixed(1) : 0}%</div></div>
+    <div class="summary-card"><div class="label">新增粉丝</div><div class="value">+${totalFollowers}</div><div class="sub">客单价 ¥${avgPrice}</div></div>
+    <div class="summary-card"><div class="label">总毛利</div><div class="value">¥${totalProfit.toLocaleString()}</div><div class="sub">${prodRecords.length} 个产品</div></div>
+  `;
+  // 近期趋势
+  const trend = document.getElementById('recentTrend');
+  if (!trend) return;
+  const recent = dataRecords.slice(0, 8).reverse();
+  const maxGmv = Math.max(...recent.map(r => r.gmv||0), 1);
+  trend.innerHTML = recent.map(r => `
+    <div class="trend-row">
+      <span style="width:90px">${r.date}</span>
+      <span style="width:60px">${r.platform}</span>
+      <div class="trend-bar"><div class="trend-bar-fill" style="width:${(r.gmv/maxGmv*100)}%"></div></div>
+      <span style="width:80px;text-align:right;color:var(--danger);font-weight:600">¥${r.gmv||0}</span>
+    </div>`).join('') || '<p style="color:var(--text-2);text-align:center;padding:20px">暂无数据</p>';
+}
+
+// ============ 初始化 ============
+renderPlans(); renderMemos(); fetchDouyinHot(); renderHotVideos(); renderReviews(); renderScripts(); renderProducts(); renderKnowledges(); renderProjects(); renderLivePlans(); renderCategories(); renderaddGoal(); renderaddTopic(); renderaddPhase();
+renderHub('hotRankGrid', HUB_LINKS.hotRank);
+renderHub('videoHubGrid', HUB_LINKS.video);
+renderHub('articleHubGrid', HUB_LINKS.article);
+renderHub('jewelryHubGrid', HUB_LINKS.jewelry);
+renderHub('toolHubGrid', HUB_LINKS.tools);
+renderDataTable(); renderProdTable();
+
+// ============ 导航拖动排序（长按拖动） ============
+function initNavDrag(){
+  const navList = document.querySelector('.nav-list');
+  let dragEl = null, longPressTimer = null, isDragging = false;
+
+  navList.querySelectorAll('.nav-item').forEach(item => {
+    // 长按 600ms 开始拖动
+    item.addEventListener('touchstart', e => {
+      longPressTimer = setTimeout(() => {
+        isDragging = true;
+        dragEl = item;
+        item.classList.add('dragging');
+        // 震动反馈
+        if (navigator.vibrate) navigator.vibrate(50);
+      }, 600);
+    }, {passive: true});
+
+    item.addEventListener('touchend', () => {
+      clearTimeout(longPressTimer);
+      if (isDragging) {
+        isDragging = false;
+        item.classList.remove('dragging');
+        navList.querySelectorAll('.nav-item').forEach(i => i.classList.remove('drag-over'));
+        saveNavOrder();
+      }
+    });
+
+    item.addEventListener('touchmove', e => {
+      clearTimeout(longPressTimer);
+      if (!isDragging) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!target) return;
+      const overItem = target.closest('.nav-item');
+      if (overItem && overItem !== dragEl && overItem !== dragEl.nextSibling) {
+        const rect = overItem.getBoundingClientRect();
+        const after = (touch.clientY - rect.top) > rect.height / 2;
+        navList.insertBefore(dragEl, after ? overItem.nextSibling : overItem);
+      }
+    }, {passive: false});
+
+    // 桌面端也支持鼠标拖动
+    item.setAttribute('draggable', 'true');
+    item.addEventListener('dragstart', e => {
+      dragEl = item; item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      navList.querySelectorAll('.nav-item').forEach(i => i.classList.remove('drag-over'));
+      saveNavOrder();
+    });
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (item === dragEl) return;
+      item.classList.add('drag-over');
+    });
+    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      if (item === dragEl) return;
+      const rect = item.getBoundingClientRect();
+      const after = (e.clientY - rect.top) > rect.height / 2;
+      navList.insertBefore(dragEl, after ? item.nextSibling : item);
+      saveNavOrder();
+    });
+  });
+}
+function saveNavOrder(){
+  const order = [];
+  document.querySelectorAll('.nav-item').forEach(item => {
+    order.push({ target: item.dataset.target, icon: item.querySelector('.nav-icon').textContent, name: item.querySelector('span:last-of-type') ? item.querySelector('span:not(.nav-icon)').textContent : '' });
+  });
+  STORE.set('navOrder', order);
+}
+function restoreNavOrder(){
+  const order = STORE.get('navOrder', null);
+  if (!order) return;
+  const navList = document.querySelector('.nav-list');
+  const items = {};
+  navList.querySelectorAll('.nav-item').forEach(item => { items[item.dataset.target] = item; });
+  order.forEach(o => {
+    if (items[o.target]) navList.appendChild(items[o.target]);
+  });
+}
+restoreNavOrder();
+initNavDrag();
+
+// ============ 财务管理 ============
+let incomes = STORE.get('incomes', [
+  { id: uid(), month: '2026-07', source: '直播工资', amount: 15000, note: '7月基本工资' },
+  { id: uid(), month: '2026-07', source: '带货佣金', amount: 8600, note: '7月佣金' }
+]);
+function renderIncomeTable(){
+  const tbl = document.getElementById('incomeTable');
+  if (incomes.length === 0){ tbl.innerHTML = '<tr><td class="data-table-empty">暂无收入记录</td></tr>'; STORE.set('incomes', incomes); updateFinSummaryMonths(); return; }
+  let html = '<tr><th>月份</th><th>收入来源</th><th>金额</th><th>备注</th><th></th></tr>';
+  incomes.forEach(r => {
+    html += `<tr><td>${r.month}</td><td>${escapeHtml(r.source)}</td><td style="color:var(--green);font-weight:600">¥${r.amount.toLocaleString()}</td><td>${escapeHtml(r.note||'')}</td><td><button class="del-btn" onclick="delIncome('${r.id}')">删</button></td></tr>`;
+  });
+  tbl.innerHTML = html;
+  STORE.set('incomes', incomes);
+  updateFinSummaryMonths();
+  renderFinSummary();
+}
+function addIncome(){
+  const m = document.getElementById('incMonth').value, s = document.getElementById('incSource').value.trim(), a = parseFloat(document.getElementById('incAmount').value), n = document.getElementById('incNote').value.trim();
+  if (!s || !a) return;
+  incomes.unshift({ id: uid(), month: m || new Date().toISOString().slice(0,7), source: s, amount: a, note: n });
+  ['incMonth','incSource','incAmount','incNote'].forEach(id => document.getElementById(id).value = '');
+  renderIncomeTable();
+}
+function delIncome(id){ incomes = incomes.filter(x => x.id !== id); renderIncomeTable(); }
+
+let expenses = STORE.get('expenses', [
+  { id: uid(), month: '2026-07', category: '房租', amount: 3500, note: '7月房租' },
+  { id: uid(), month: '2026-07', category: '吃饭', amount: 2000, note: '日常饮食' },
+  { id: uid(), month: '2026-07', category: '交通', amount: 800, note: '打车+地铁' },
+  { id: uid(), month: '2026-07', category: '珠宝进货', amount: 12000, note: '翡翠+钻石货款' }
+]);
+function renderExpenseTable(){
+  const tbl = document.getElementById('expenseTable');
+  if (expenses.length === 0){ tbl.innerHTML = '<tr><td class="data-table-empty">暂无支出记录</td></tr>'; STORE.set('expenses', expenses); updateFinSummaryMonths(); return; }
+  let html = '<tr><th>月份</th><th>类目</th><th>金额</th><th>备注</th><th></th></tr>';
+  expenses.forEach(r => {
+    html += `<tr><td>${r.month}</td><td>${r.category}</td><td style="color:var(--danger);font-weight:600">¥${r.amount.toLocaleString()}</td><td>${escapeHtml(r.note||'')}</td><td><button class="del-btn" onclick="delExpense('${r.id}')">删</button></td></tr>`;
+  });
+  tbl.innerHTML = html;
+  STORE.set('expenses', expenses);
+  updateFinSummaryMonths();
+  renderFinSummary();
+}
+function addExpense(){
+  const m = document.getElementById('expMonth').value, c = document.getElementById('expCategory').value, a = parseFloat(document.getElementById('expAmount').value), n = document.getElementById('expNote').value.trim();
+  if (!a) return;
+  expenses.unshift({ id: uid(), month: m || new Date().toISOString().slice(0,7), category: c, amount: a, note: n });
+  ['expMonth','expAmount','expNote'].forEach(id => document.getElementById(id).value = '');
+  renderExpenseTable();
+}
+function delExpense(id){ expenses = expenses.filter(x => x.id !== id); renderExpenseTable(); }
+
+let debts = STORE.get('debts', [
+  { id: uid(), name: '花呗', total: 8000, month: '2026-07', repaid: 2000, note: '每月15号还款' },
+  { id: uid(), name: '信用卡', total: 15000, month: '2026-07', repaid: 3000, note: '招行，账单日20号' }
+]);
+function renderDebtTable(){
+  const tbl = document.getElementById('debtTable');
+  if (debts.length === 0){ tbl.innerHTML = '<tr><td class="data-table-empty">暂无负债记录</td></tr>'; STORE.set('debts', debts); return; }
+  let html = '<tr><th>负债项目</th><th>总欠款</th><th>月份</th><th>本月还款</th><th>剩余欠款</th><th>备注</th><th></th></tr>';
+  debts.forEach(r => {
+    const remain = r.total - r.repaid;
+    html += `<tr><td>${escapeHtml(r.name)}</td><td style="color:var(--danger)">¥${r.total.toLocaleString()}</td><td>${r.month}</td><td style="color:var(--green)">¥${r.repaid.toLocaleString()}</td><td style="font-weight:600">¥${remain.toLocaleString()}</td><td>${escapeHtml(r.note||'')}</td><td><button class="del-btn" onclick="delDebt('${r.id}')">删</button></td></tr>`;
+  });
+  tbl.innerHTML = html;
+  STORE.set('debts', debts);
+}
+function addDebt(){
+  const n = document.getElementById('debtName').value.trim(), t = parseFloat(document.getElementById('debtTotal').value), m = document.getElementById('debtMonth').value, r = parseFloat(document.getElementById('debtRepay').value), note = document.getElementById('debtNote').value.trim();
+  if (!n || !t) return;
+  debts.unshift({ id: uid(), name: n, total: t, month: m || new Date().toISOString().slice(0,7), repaid: r || 0, note: note });
+  ['debtName','debtTotal','debtMonth','debtRepay','debtNote'].forEach(id => document.getElementById(id).value = '');
+  renderDebtTable();
+}
+function delDebt(id){ debts = debts.filter(x => x.id !== id); renderDebtTable(); }
+
+function updateFinSummaryMonths(){
+  const sel = document.getElementById('finSummaryMonth');
+  if (!sel) return;
+  const months = new Set();
+  incomes.forEach(r => months.add(r.month));
+  expenses.forEach(r => months.add(r.month));
+  debts.forEach(r => months.add(r.month));
+  const sorted = [...months].sort().reverse();
+  const current = sel.value;
+  sel.innerHTML = sorted.map(m => `<option value="${m}">${m}</option>`).join('');
+  if (sorted.includes(current)) sel.value = current;
+}
+function renderFinSummary(){
+  const sel = document.getElementById('finSummaryMonth');
+  if (!sel) return;
+  const month = sel.value;
+  if (!month){ document.getElementById('finSummaryGrid').innerHTML = '<p class="empty-tip">暂无数据</p>'; document.getElementById('finExpenseBreakdown').innerHTML = '<p class="empty-tip">暂无数据</p>'; return; }
+  const monthIncomes = incomes.filter(r => r.month === month);
+  const monthExpenses = expenses.filter(r => r.month === month);
+  const monthDebts = debts.filter(r => r.month === month);
+  const totalIncome = monthIncomes.reduce((s, r) => s + r.amount, 0);
+  const totalExpense = monthExpenses.reduce((s, r) => s + r.amount, 0);
+  const totalDebt = monthDebts.reduce((s, r) => s + r.repaid, 0);
+  const remainDebt = monthDebts.reduce((s, r) => s + (r.total - r.repaid), 0);
+  const netProfit = totalIncome - totalExpense - totalDebt;
+
+  document.getElementById('finSummaryGrid').innerHTML = `
+    <div class="summary-card"><div class="label">月收入</div><div class="value" style="color:var(--green)">¥${totalIncome.toLocaleString()}</div><div class="sub">${monthIncomes.length} 笔收入</div></div>
+    <div class="summary-card"><div class="label">月支出</div><div class="value" style="color:var(--danger)">¥${totalExpense.toLocaleString()}</div><div class="sub">${monthExpenses.length} 笔支出</div></div>
+    <div class="summary-card"><div class="label">本月还款</div><div class="value" style="color:var(--gold)">¥${totalDebt.toLocaleString()}</div><div class="sub">${monthDebts.length} 项负债</div></div>
+    <div class="summary-card"><div class="label">剩余负债</div><div class="value" style="color:var(--danger)">¥${remainDebt.toLocaleString()}</div><div class="sub">待还总额</div></div>
+    <div class="summary-card"><div class="label">本月结余</div><div class="value" style="color:${netProfit >= 0 ? 'var(--green)' : 'var(--danger)'}">${netProfit >= 0 ? '+' : ''}¥${netProfit.toLocaleString()}</div><div class="sub">收入 - 支出 - 还款</div></div>
+  `;
+  // 支出明细
+  const byCat = {};
+  monthExpenses.forEach(r => { byCat[r.category] = (byCat[r.category]||0) + r.amount; });
+  const maxAmt = Math.max(...Object.values(byCat), 1);
+  const breakdown = document.getElementById('finExpenseBreakdown');
+  if (Object.keys(byCat).length === 0){
+    breakdown.innerHTML = '<p class="empty-tip">本月暂无支出明细</p>';
+  } else {
+    breakdown.innerHTML = Object.entries(byCat).sort((a,b) => b[1]-a[1]).map(([cat, amt]) => `
+      <div class="trend-row">
+        <span style="width:80px">${cat}</span>
+        <div class="trend-bar"><div class="trend-bar-fill" style="width:${(amt/maxAmt*100)}%"></div></div>
+        <span style="width:80px;text-align:right;color:var(--danger);font-weight:600">¥${amt.toLocaleString()}</span>
+      </div>`).join('');
+  }
+}
+document.getElementById('finSummaryMonth').addEventListener('change', renderFinSummary);
+renderIncomeTable(); renderExpenseTable(); renderDebtTable();
+</script>
+</body>
+</html>
