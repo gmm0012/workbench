@@ -454,7 +454,203 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 .growth-card li{ margin-bottom: 8px; line-height: 1.6; font-size: 13px; }
 .growth-card b{ color: var(--gold); }
 
-/* 手机端适配 */
+/* 日历行程 */
+.calendar-card{
+  background: #fff; border-radius: 12px; padding: 20px;
+  box-shadow: var(--shadow); margin-bottom: 16px;
+}
+.calendar-header{
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-bottom: 12px; position: relative;
+}
+.cal-nav{
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  font-size: 18px; font-weight: 700; display: flex;
+  align-items: center; justify-content: center;
+  border: none; cursor: pointer; transition: all .2s;
+}
+.cal-nav:hover{ background: var(--green); color: #fff; }
+.cal-title{ text-align: center; }
+.cal-year-month{ font-size: 22px; font-weight: 700; color: var(--green); display: block; }
+.cal-today-btn{
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--green); color: #fff; font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(74,107,58,.3);
+}
+.cal-today-btn:hover{ background: var(--green-2); }
+.cal-legend{
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px dashed var(--border);
+}
+.cal-legend-item{ display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
+.cal-legend-dot{ width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.cal-legend-dot.work{ background: #4a90d9; }
+.cal-legend-dot.rest{ background: #7cb342; }
+.cal-legend-dot.study{ background: #b8954a; }
+.cal-legend-dot.live{ background: #e74c3c; }
+.cal-legend-dot.other{ background: #9b59b6; }
+.cal-weekdays{
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px; margin-bottom: 6px;
+}
+.cal-weekdays span{
+  text-align: center; font-size: 13px; color: var(--text-2); font-weight: 600; padding: 8px 0;
+}
+.cal-days{
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day{
+  min-height: 90px; border-radius: 8px; padding: 6px 4px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  cursor: pointer; position: relative;
+  transition: all .2s; border: 2px solid transparent; background: #fafaf6;
+}
+.cal-day:hover{ background: var(--green-light); transform: translateY(-1px); }
+.cal-day.other-month{ background: #f9f9f9; opacity: 0.4; }
+.cal-day.today{
+  border-color: var(--green); background: var(--green-light);
+}
+.cal-day.selected{
+  border-color: var(--gold); background: #fff9e6;
+}
+.cal-day-num{ font-size: 15px; font-weight: 600; padding: 0 4px; }
+.cal-day.today .cal-day-num{ color: var(--green); }
+.cal-day-events{
+  display: flex; flex-direction: column; gap: 2px; width: 100%; margin-top: 2px;
+}
+.cal-event-tag{
+  font-size: 10px; padding: 2px 5px; border-radius: 4px;
+  font-weight: 600; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; line-height: 1.3;
+}
+.cal-event-tag.work{ background: #4a90d9; color: #fff; }
+.cal-event-tag.rest{ background: #7cb342; color: #fff; }
+.cal-event-tag.study{ background: #b8954a; color: #fff; }
+.cal-event-tag.live{ background: #e74c3c; color: #fff; }
+.cal-event-tag.other{ background: #9b59b6; color: #fff; }
+.cal-events-panel{
+  background: #fff; border-radius: 12px; padding: 20px;
+  box-shadow: var(--shadow);
+}
+.cal-events-panel h3{ color: var(--green); margin-bottom: 12px; font-size: 16px; }
+.cal-event-list{ margin-bottom: 12px; }
+.cal-event-item{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: #fafaf6;
+  border-radius: 8px; margin-bottom: 6px;
+}
+.cal-event-item .ev-type{
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.cal-event-item .ev-type.work{ background: #4a90d9; }
+.cal-event-item .ev-type.rest{ background: #7cb342; }
+.cal-event-item .ev-type.study{ background: #b8954a; }
+.cal-event-item .ev-type.live{ background: #e74c3c; }
+.cal-event-item .ev-type.other{ background: #9b59b6; }
+.cal-event-item .ev-text{ flex: 1; font-size: 13px; }
+.cal-event-item .ev-del{ color: var(--danger); font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+.cal-event-item .ev-del:hover{ background: #fbecec; }
+.cal-add-row{
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.cal-add-row input{ flex: 1; min-width: 160px; }
+.cal-add-row select{ min-width: 100px; }
+.cal-add-row button{
+  background: var(--green); color: #fff; padding: 10px 20px;
+  border-radius: 8px; font-weight: 600; font-size: 13px; white-space: nowrap;
+}
+
+/* 学习成长 */
+.learn-overview{ margin-bottom: 16px; }
+.learn-progress-card{
+  background: #fff; border-radius: 12px; padding: 16px 20px;
+  box-shadow: var(--shadow); border-left: 4px solid var(--gold);
+}
+.learn-progress-title{ font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
+.learn-progress-bar{ height: 10px; background: var(--green-light); border-radius: 5px; overflow: hidden; }
+.learn-progress-fill{ height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); transition: width .5s; }
+.learn-progress-text{ font-size: 12px; color: var(--text-2); margin-top: 6px; }
+.learn-section{ margin-bottom: 20px; }
+.learn-section h3{ color: var(--green); font-size: 15px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--green-light); }
+.learn-stages{ display: grid; gap: 10px; }
+.learn-stage-card{
+  background: #fff; border-radius: 10px; padding: 14px 16px;
+  box-shadow: var(--shadow); display: flex; align-items: flex-start; gap: 12px;
+  cursor: pointer; transition: all .2s; border-left: 4px solid var(--border);
+}
+.learn-stage-card:hover{ transform: translateX(2px); }
+.learn-stage-card.completed{ border-left-color: var(--green); background: var(--green-light); }
+.learn-stage-card.active{ border-left-color: var(--gold); }
+.learn-stage-num{
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.learn-stage-card.completed .learn-stage-num{ background: var(--green); color: #fff; }
+.learn-stage-card.active .learn-stage-num{ background: var(--gold); color: #fff; }
+.learn-stage-info{ flex: 1; }
+.learn-stage-name{ font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+.learn-stage-desc{ font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.learn-stage-check{
+  font-size: 18px; color: var(--green); flex-shrink: 0;
+}
+.learn-materials{ display: grid; gap: 10px; }
+.learn-material-card{
+  background: #fff; border-radius: 10px; padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.learn-material-card h4{ color: var(--green); font-size: 14px; margin-bottom: 8px; }
+.learn-material-card ul{ padding-left: 18px; }
+.learn-material-card li{ font-size: 13px; line-height: 1.7; color: var(--text); margin-bottom: 4px; }
+.learn-material-card li b{ color: var(--gold); }
+.learn-resources{ display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+
+/* 每日灵感升级 */
+.hot-update-row{
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.hot-update-row .ghost-btn{ background: #fff; }
+.hot-pool-tabs{
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.hot-pool-tab{
+  padding: 6px 12px; border-radius: 14px; font-size: 12px;
+  background: #fff; border: 1px solid var(--border); color: var(--text-2);
+  cursor: pointer; transition: all .2s;
+}
+.hot-pool-tab.active{ background: var(--green); color: #fff; border-color: var(--green); }
+.hot-pool-tab:hover:not(.active){ border-color: var(--green); color: var(--green); }
+.trending-card{
+  background: #fff; border-radius: 12px; padding: 16px;
+  box-shadow: var(--shadow); border-left: 4px solid #e74c3c;
+  margin-bottom: 12px;
+}
+.trending-card.hot{ border-left-color: #e74c3c; }
+.trending-card.rising{ border-left-color: #f39c12; }
+.trending-card.new{ border-left-color: var(--green); }
+.trending-rank{
+  display: inline-block; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  text-align: center; line-height: 24px; font-size: 12px; font-weight: 700;
+  margin-right: 8px;
+}
+.trending-rank.top{ background: #e74c3c; color: #fff; }
+.trending-title{ font-weight: 600; font-size: 14px; }
+.trending-meta{ font-size: 11px; color: var(--text-2); margin-top: 4px; }
+.trending-heat{ display: inline-block; background: #fdeaea; color: #e74c3c; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px; }
+.viral-formula-card{
+  background: #fff; border-radius: 12px; padding: 16px;
+  box-shadow: var(--shadow); border-top: 3px solid var(--gold);
+}
+.viral-formula-card h4{ color: var(--green); font-size: 14px; margin-bottom: 10px; }
+.viral-formula-card .formula{ background: var(--green-light); padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 10px; }
+.viral-formula-card .breakdown{ font-size: 12px; color: var(--text-2); line-height: 1.7; }
+.viral-formula-card .breakdown b{ color: var(--gold); }
 @media (max-width: 900px){
   .sidebar{ width: 240px; position: fixed; top: 0; left: 0; height: 100vh; box-shadow: 2px 0 16px rgba(0,0,0,.15); }
   .sidebar.collapsed{ transform: translateX(-100%); width: 240px; padding: 16px 12px; }
@@ -469,7 +665,15 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
   .inspiration-grid, .video-grid, .product-grid, .growth-grid{
     grid-template-columns: 1fr;
   }
-  .add-row input, .add-row select{ min-width: 100px; }
+  .cal-add-row input{ min-width: 100px; flex: 1; }
+  .cal-add-row select{ min-width: 80px; }
+  .cal-day{ min-height: 60px; padding: 4px 2px; }
+  .cal-day-num{ font-size: 13px; }
+  .cal-event-tag{ font-size: 9px; padding: 1px 3px; }
+  .cal-legend{ gap: 8px; }
+  .cal-legend-item{ font-size: 11px; }
+  .learn-resources{ grid-template-columns: 1fr; }
+  .learn-stage-card{ padding: 10px 12px; }
   .review-item{ grid-template-columns: 1fr; }
   .filter-row{ flex-direction: column; align-items: flex-start; }
   .last-fetch{ margin-left: 0; }
@@ -501,6 +705,8 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
   <aside class="sidebar">
     <nav class="nav-list">
       <button class="nav-item active" data-target="daily-plan"><span class="nav-icon">📋</span><span>每日计划</span></button>
+      <button class="nav-item" data-target="calendar"><span class="nav-icon">📅</span><span>日历行程</span></button>
+      <button class="nav-item" data-target="learning"><span class="nav-icon">📚</span><span>学习成长</span></button>
       <button class="nav-item" data-target="live-content"><span class="nav-icon">🎙️</span><span>直播内容</span></button>
       <button class="nav-item" data-target="memo"><span class="nav-icon">📝</span><span>备忘录</span></button>
       <button class="nav-item" data-target="daily-inspiration"><span class="nav-icon">💡</span><span>选题·每日灵感</span></button>
@@ -523,6 +729,312 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 
   <section class="content">
 
+    <!-- ============= 日历行程 ============= -->
+    <div class="panel" id="calendar">
+      <div class="panel-head"><h2>📅 日历行程</h2><p class="panel-sub">整月一览 · 点击日期添加/管理行程 · 行程直接显示在格子内</p></div>
+      <div class="calendar-card">
+        <div class="calendar-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+          <div class="cal-title">
+            <span class="cal-year-month" id="calYearMonth">2026年 7月</span>
+          </div>
+          <button class="cal-nav" onclick="changeMonth(1)">›</button>
+          <button class="cal-today-btn" onclick="goToday()">今天</button>
+        </div>
+        <div class="cal-legend">
+          <span class="cal-legend-item"><span class="cal-legend-dot work"></span>上班</span>
+          <span class="cal-legend-item"><span class="cal-legend-dot rest"></span>休息</span>
+          <span class="cal-legend-item"><span class="cal-legend-dot study"></span>学习</span>
+          <span class="cal-legend-item"><span class="cal-legend-dot live"></span>直播</span>
+          <span class="cal-legend-item"><span class="cal-legend-dot other"></span>其他</span>
+        </div>
+        <div class="cal-weekdays">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="cal-days" id="calDays"></div>
+      </div>
+      <div class="cal-events-panel" id="calEventsPanel">
+        <h3 id="calSelectedDate">📌 7月25日 行程</h3>
+        <div class="cal-event-list" id="calEventList"></div>
+        <div class="cal-add-row">
+          <input id="calEventInput" placeholder="添加行程，如：14:00 游泳课">
+          <select id="calEventType">
+            <option value="work">💼 上班</option>
+            <option value="rest">🌿 休息</option>
+            <option value="study">📚 学习</option>
+            <option value="live">🎙️ 直播</option>
+            <option value="other">📌 其他</option>
+          </select>
+          <button onclick="addCalEvent()">＋ 添加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= 学习成长 ============= -->
+    <div class="panel" id="learning">
+      <div class="panel-head"><h2>📚 学习成长</h2><p class="panel-sub">中国舞 · 游泳 · 从零开始的学习路径与资料</p></div>
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="dance">💃 中国舞</button>
+        <button class="sub-tab" data-sub="swim">🏊 游泳</button>
+      </div>
+
+      <!-- 中国舞 -->
+      <div class="sub-panel active" id="sub-dance">
+        <div class="learn-overview">
+          <div class="learn-progress-card">
+            <div class="learn-progress-title">🎯 中国舞学习进度</div>
+            <div class="learn-progress-bar"><div class="learn-progress-fill" id="danceProgressFill" style="width:0%"></div></div>
+            <div class="learn-progress-text" id="danceProgressText">阶段 0/5 · 尚未开始</div>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>📖 学习阶段（点击标记完成）</h3>
+          <div class="learn-stages" id="danceStages"></div>
+        </div>
+
+        <div class="learn-section">
+          <h3>📚 资料库 · 基础入门</h3>
+          <div class="learn-material-card">
+            <h4>🩰 中国舞三大分支</h4>
+            <ul>
+              <li><b>古典舞</b>：以"身韵"为核心，讲究"形、神、劲、律"，是最具代表性的中国舞</li>
+              <li><b>民族民间舞</b>：藏族、蒙古族、维吾尔族、傣族等各民族舞蹈，风格各异</li>
+              <li><b>芭蕾舞基训</b>：中国舞训练的基础，开绷直立，训练体态和线条</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>✋ 基本手位（必须掌握）</h4>
+            <ul>
+              <li><b>山膀</b>：双臂旁抬与肩平，手心向下，是最常用的基本手位</li>
+              <li><b>按掌</b>：手心向下按于身前，约腰胯高度</li>
+              <li><b>托掌</b>：手心向上托于头顶上方</li>
+              <li><b>摊掌</b>：手心向上平摊于体前</li>
+              <li><b>推掌</b>：手心向前推出</li>
+              <li><b>盖掌</b>：手心向下从头上方盖落</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>🦶 基本脚位</h4>
+            <ul>
+              <li><b>正步</b>：双脚并拢，脚尖向前</li>
+              <li><b>八字步</b>：脚跟并拢，脚尖外开成八字</li>
+              <li><b>丁字步</b>：一脚脚跟靠另一脚脚心，呈丁字形</li>
+              <li><b>踏步</b>：一脚在后，脚尖点地</li>
+              <li><b>弓箭步</b>：前腿屈膝弓步，后腿伸直</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>💪 软开度训练指南</h3>
+          <div class="learn-material-card">
+            <h4>每日基础训练（建议30分钟）</h4>
+            <ul>
+              <li><b>压前腿</b>：坐地双腿伸直，上身保持直立向前压，膝盖不能弯曲，脚尖回勾，保持30秒×3组</li>
+              <li><b>压旁腿</b>：坐地双腿打开，胯部打开，身体向旁侧下压，左右各30秒×3组</li>
+              <li><b>下腰</b>：先练跪姿下腰（跪地双手抓脚踝），再练站姿下腰，注意腰部热身，安全第一</li>
+              <li><b>踢腿</b>：前踢、旁踢、后踢各20次，注意爆发力与控制结合，腿要直、脚要绷</li>
+              <li><b>劈叉</b>：先练竖叉再练横叉，循序渐进，每次保持1分钟以上</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>🎭 身韵八法（中国舞的灵魂）</h3>
+          <div class="learn-material-card">
+            <ul>
+              <li><b>提</b>：气息上提，身体随之向上延伸</li>
+              <li><b>沉</b>：气息下沉，身体放松向下</li>
+              <li><b>冲</b>：身体向旁侧冲出</li>
+              <li><b>靠</b>：身体向后靠，略含胸</li>
+              <li><b>含</b>：胸部内收，身体微缩</li>
+              <li><b>腆</b>：胸部前挺，身体微展</li>
+              <li><b>移</b>：身体重心横向移动</li>
+              <li><b>旁提</b>：身体侧腰上提，是最美的线条</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>❓ 零基础常见问题</h3>
+          <div class="learn-material-card">
+            <ul>
+              <li><b>身体太硬怎么办？</b>→ 每天坚持拉伸10分钟，循序渐进，千万不要硬掰，2-3个月会有明显改善</li>
+              <li><b>没有舞蹈基础能学吗？</b>→ 完全可以！中国舞非常适合零基础，从身韵和手位开始，不需要劈叉也能跳</li>
+              <li><b>记不住动作怎么办？</b>→ 先理解动作的含义，分段练习（每次4个八拍），多听音乐找节奏感</li>
+              <li><b>需要准备什么装备？</b>→ 舞蹈服/瑜伽服、舞蹈鞋（软底）、瑜伽垫（练软开度用）、全身镜</li>
+              <li><b>多久能学会一支舞？</b>→ 零基础约2-3个月可学完一支简单成品舞（如《茉莉花》）</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>📝 学习笔记（随时记录）</h3>
+          <div class="add-row">
+            <input id="danceNoteInput" placeholder="记录学习心得、动作要点、老师提醒...">
+            <button onclick="addDanceNote()">＋ 添加笔记</button>
+          </div>
+          <ul class="cat-notes" id="danceNoteList"></ul>
+        </div>
+
+        <div class="learn-section">
+          <h3>🎬 推荐学习资源</h3>
+          <div class="learn-resources">
+            <a class="hub-card" href="https://www.bilibili.com/search?keyword=中国舞基础入门" target="_blank"><span class="hub-icon">📺</span><div class="hub-info"><div class="hub-name">B站 · 中国舞基础</div><div class="hub-desc">零基础入门教程合集</div></div></a>
+            <a class="hub-card" href="https://www.douyin.com/search/中国舞基本功" target="_blank"><span class="hub-icon">🎵</span><div class="hub-info"><div class="hub-name">抖音 · 中国舞基本功</div><div class="hub-desc">短视频跟练，碎片时间学</div></div></a>
+            <a class="hub-card" href="https://www.xiaohongshu.com/search_result?keyword=中国舞入门" target="_blank"><span class="hub-icon">📕</span><div class="hub-info"><div class="hub-name">小红书 · 中国舞笔记</div><div class="hub-desc">学员经验分享与避坑</div></div></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 游泳 -->
+      <div class="sub-panel" id="sub-swim">
+        <div class="learn-overview">
+          <div class="learn-progress-card">
+            <div class="learn-progress-title">🎯 游泳学习进度</div>
+            <div class="learn-progress-bar"><div class="learn-progress-fill" id="swimProgressFill" style="width:0%"></div></div>
+            <div class="learn-progress-text" id="swimProgressText">阶段 0/5 · 尚未开始</div>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>📖 学习阶段（点击标记完成）</h3>
+          <div class="learn-stages" id="swimStages"></div>
+        </div>
+
+        <div class="learn-section">
+          <h3>📚 资料库 · 基础入门</h3>
+          <div class="learn-material-card">
+            <h4>🏊 四大泳姿介绍</h4>
+            <ul>
+              <li><b>蛙泳</b>：最易学的泳姿，适合初学者，动作节奏清晰，省力持久</li>
+              <li><b>自由泳</b>：速度最快的泳姿，双腿交替打水，双臂交替划水</li>
+              <li><b>仰泳</b>：最轻松的泳姿，脸部朝上呼吸方便，适合长距离</li>
+              <li><b>蝶泳</b>：难度最高的泳姿，需要较强腰腹力量，建议学会蛙泳后再学</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>🎒 必备装备清单</h4>
+            <ul>
+              <li><b>泳衣/泳裤</b>：建议紧身款，减少水中阻力（初学者选竞速款即可）</li>
+              <li><b>泳镜</b>：必备！选防雾、贴合脸型的，近视可选度数泳镜</li>
+              <li><b>泳帽</b>：硅胶材质防水性好，布质更舒适但透水</li>
+              <li><b>浴巾/速干毛巾</b>：出水后保暖防感冒</li>
+              <li><b>拖鞋</b>：防滑，泳池边地面湿滑</li>
+              <li><b>洗漱用品</b>：泳后冲洗用，建议带去氯洗发水</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>⚠️ 安全须知（重要！）</h4>
+            <ul>
+              <li>下水前必须热身5-10分钟，活动关节和肌肉</li>
+              <li>不要空腹游泳（易低血糖），也不要饱食后立即下水（建议饭后1小时）</li>
+              <li>注意泳池深浅区标识，初学者只在浅水区（1.2米以下）练习</li>
+              <li>不要单独去无人泳池，确保有救生员在场</li>
+              <li>感到不适立即上岸，不要逞强</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>🌬️ 呼吸原则（最关键）</h4>
+            <ul>
+              <li><b>嘴吸气，鼻呼气</b>：水上用嘴快速吸气，水下用鼻子缓慢呼气</li>
+              <li>水下一定要持续呼气，不能憋气，否则出水时来不及吸气</li>
+              <li>呼气要均匀缓慢，像吹泡泡一样，约3-4秒呼完</li>
+              <li>初学者先在岸上练习：脸埋入水盆中，嘴吸鼻呼，反复10次</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>🐸 蛙泳技巧详解（初学者必看）</h3>
+          <div class="learn-material-card">
+            <h4>腿部动作口诀：收 → 翻 → 蹬 → 夹 → 滑行</h4>
+            <ul>
+              <li><b>收腿</b>：屈膝收腿，脚跟靠近臀部，膝盖不要过宽（与肩同宽）</li>
+              <li><b>翻脚</b>：脚尖外翻，脚掌朝外，这是蹬水的关键！很多人忽略这一步</li>
+              <li><b>蹬夹</b>：双腿向后外方蹬出，然后迅速夹水并拢（蹬和夹是一气呵成的）</li>
+              <li><b>滑行</b>：蹬夹完成后双腿并拢伸直，身体保持流线型滑行2秒</li>
+              <li>动作要领：<b>慢收快蹬</b>，收腿时放松，蹬腿时发力</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>手臂动作：外划 → 内划 → 前伸</h4>
+            <ul>
+              <li><b>外划</b>：双臂向前伸直，然后向两侧斜下方划开（约45度角）</li>
+              <li><b>内划</b>：手掌向下向内回收，曲臂抱水至胸前，此时抬头吸气</li>
+              <li><b>前伸</b>：双手向前并拢伸直，低头入水，开始呼气</li>
+              <li>手臂划水不要过大，初学者划到肩膀宽度即可</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>配合节奏：1次蹬腿 + 1次划手 + 1次呼吸</h4>
+            <ul>
+              <li><b>完整动作顺序</b>：蹬腿滑行 → 划手抬头吸气 → 低头前伸呼气 → 蹬腿</li>
+              <li>口诀："<b>蹬、漂、划、吸、低、伸</b>"</li>
+              <li>滑行阶段身体要完全伸直，这是休息和省力的关键</li>
+              <li>初学者建议每个动作周期滑行2秒，不要急着做下一个动作</li>
+            </ul>
+          </div>
+          <div class="learn-material-card">
+            <h4>❌ 常见错误纠正</h4>
+            <ul>
+              <li><b>同手同脚</b>（手腿同时动）→ 先蹬腿滑行，等腿并拢后再划手</li>
+              <li><b>蹬腿不翻脚</b>→ 脚尖必须外翻！不翻脚等于白蹬，走不了水</li>
+              <li><b>抬头过高</b>→ 只需抬到嘴出水面即可，过高会导致下半身下沉</li>
+              <li><b>游不远就累</b>→ 动作要放松！滑行阶段要休息，不要一直用力</li>
+              <li><b>身体下沉</b>→ 放松身体，重心前移，看池底而不是看前方</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>❓ 零基础常见问题</h3>
+          <div class="learn-material-card">
+            <ul>
+              <li><b>怕水怎么办？</b>→ 先在浅水区（齐腰深）熟悉，从憋气开始，手扶池边练习，逐步建立信心，一般3-5次课可克服</li>
+              <li><b>为什么总是下沉？</b>→ 放松身体是关键！紧张会让肌肉紧绷密度变大。利用肺部空气的浮力，深吸气后身体会自然浮起</li>
+              <li><b>游不远就累？</b>→ 动作要放松，不要用力过猛。蛙泳的精髓在"滑行"，蹬一次腿滑行2秒，比连续蹬省力10倍</li>
+              <li><b>耳朵进水怎么办？</b>→ 侧头单脚跳（进水耳朝下），或用掌心按压耳孔后快速松开，用棉签轻轻吸干</li>
+              <li><b>多久能学会？</b>→ 一般7-10次课（每次1小时）可学会蛙泳基本动作，能连续游25米约需15-20次课</li>
+              <li><b>需要请教练吗？</b>→ 强烈建议！自学费时且容易养成错误动作，后期纠正更难。至少请教练带前5次课</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <h3>📝 学习笔记（随时记录）</h3>
+          <div class="add-row">
+            <input id="swimNoteInput" placeholder="记录游泳心得、动作纠正、呼吸技巧...">
+            <button onclick="addSwimNote()">＋ 添加笔记</button>
+          </div>
+          <ul class="cat-notes" id="swimNoteList"></ul>
+        </div>
+
+        <div class="learn-section">
+          <h3>🎬 推荐学习资源</h3>
+          <div class="learn-resources">
+            <a class="hub-card" href="https://www.bilibili.com/search?keyword=游泳零基础教学" target="_blank"><span class="hub-icon">📺</span><div class="hub-info"><div class="hub-name">B站 · 游泳零基础</div><div class="hub-desc">系统教学，从怕水到畅游</div></div></a>
+            <a class="hub-card" href="https://www.douyin.com/search/游泳教学" target="_blank"><span class="hub-icon">🎵</span><div class="hub-info"><div class="hub-name">抖音 · 游泳技巧</div><div class="hub-desc">动作拆解，一看就会</div></div></a>
+            <a class="hub-card" href="https://www.xiaohongshu.com/search_result?keyword=游泳入门" target="_blank"><span class="hub-icon">📕</span><div class="hub-info"><div class="hub-name">小红书 · 游泳经验</div><div class="hub-desc">装备推荐+场馆选择</div></div></a>
+          </div>
+        </div>
+      </div>
+    </div>
+          </div>
+          <ul class="cat-notes" id="swimNoteList"></ul>
+        </div>
+        <div class="learn-section">
+          <h3>🎬 推荐学习资源</h3>
+          <div class="learn-resources">
+            <a class="hub-card" href="https://www.bilibili.com/search?keyword=游泳零基础教学" target="_blank"><span class="hub-icon">📺</span><div class="hub-info"><div class="hub-name">B站 · 游泳零基础</div><div class="hub-desc">系统教学，从怕水到畅游</div></div></a>
+            <a class="hub-card" href="https://www.douyin.com/search/游泳教学" target="_blank"><span class="hub-icon">🎵</span><div class="hub-info"><div class="hub-name">抖音 · 游泳技巧</div><div class="hub-desc">动作拆解，一看就会</div></div></a>
+            <a class="hub-card" href="https://www.xiaohongshu.com/search_result?keyword=游泳入门" target="_blank"><span class="hub-icon">📕</span><div class="hub-info"><div class="hub-name">小红书 · 游泳经验</div><div class="hub-desc">装备推荐+场馆选择</div></div></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="panel active" id="daily-plan">
       <div class="panel-head"><h2>📋 每日计划</h2><p class="panel-sub">完成一项打勾，进度一目了然</p></div>
       <div class="progress-card">
@@ -537,22 +1049,52 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
     </div>
 
     <div class="panel" id="daily-inspiration">
-      <div class="panel-head"><h2>💡 选题·每日灵感</h2><p class="panel-sub">围绕"个人成长 / 女性成长"，自动抓取抖音热点 · 一键跳转创作</p></div>
-      <div class="filter-row">
+      <div class="panel-head"><h2>💡 选题·每日灵感</h2><p class="panel-sub">实时热点抓取 · 爆款拆解 · 一键生成选题</p></div>
+
+      <!-- 热点更新区 -->
+      <div class="hot-update-row">
         <label>话题方向
           <select id="topicSelect">
+            <option value="all">🔥 全部热点</option>
             <option value="个人成长">个人成长</option>
             <option value="女性成长">女性成长</option>
             <option value="珠宝穿搭">珠宝穿搭</option>
             <option value="主播心法">主播心法</option>
             <option value="自律生活">自律生活</option>
             <option value="情绪管理">情绪管理</option>
+            <option value="中国舞">中国舞</option>
+            <option value="游泳">游泳</option>
           </select>
         </label>
-        <button class="ghost-btn" onclick="fetchDouyinHot()">🔄 重新抓取热点</button>
-        <span class="last-fetch" id="lastFetch">上次抓取：--</span>
+        <button class="ghost-btn" onclick="fetchAllHot()">🔄 更新热点</button>
+        <button class="ghost-btn" onclick="fetchViralVideos()">🔥 抓爆款</button>
+        <button class="ghost-btn" onclick="generateTopics()">✨ 生成选题</button>
+        <span class="last-fetch" id="lastFetch">上次更新：--</span>
       </div>
-      <div class="inspiration-grid" id="inspirationGrid"></div>
+
+      <!-- 实时热点榜 -->
+      <div id="trendingSection" style="margin-bottom:20px">
+        <h3 style="color:var(--green);font-size:15px;margin-bottom:10px">📈 实时热点榜</h3>
+        <div id="trendingList"></div>
+      </div>
+
+      <!-- 爆款拆解 -->
+      <div id="viralSection" style="margin-bottom:20px;display:none">
+        <h3 style="color:var(--green);font-size:15px;margin-bottom:10px">🔥 爆款视频拆解</h3>
+        <div class="inspiration-grid" id="viralGrid"></div>
+      </div>
+
+      <!-- 智能选题 -->
+      <div id="topicGenSection" style="margin-bottom:20px;display:none">
+        <h3 style="color:var(--green);font-size:15px;margin-bottom:10px">✨ 智能生成的选题</h3>
+        <div class="inspiration-grid" id="topicGenGrid"></div>
+      </div>
+
+      <!-- 原有灵感卡片 -->
+      <div id="inspirationSection">
+        <h3 style="color:var(--green);font-size:15px;margin-bottom:10px">💡 灵感卡片</h3>
+        <div class="inspiration-grid" id="inspirationGrid"></div>
+      </div>
     </div>
 
     <div class="panel" id="hot-videos">
@@ -864,8 +1406,8 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 <script>
 // ============ 数据存储 ============
 const STORE = {
-  get(k, def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def; }catch{ return def; } },
-  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+  get(k, def){ try{ const v = localStorage.getItem(k); return v === null ? def : JSON.parse(v); }catch{ return def; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} }
 };
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 function now(){ const d=new Date(); return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; }
@@ -1491,7 +2033,7 @@ function renderSummary(){
 }
 
 // ============ 初始化 ============
-renderPlans(); renderMemos(); fetchDouyinHot(); renderHotVideos(); renderReviews(); renderScripts(); renderProducts(); renderKnowledges(); renderProjects(); renderLivePlans(); renderCategories(); renderaddGoal(); renderaddTopic(); renderaddPhase();
+renderPlans(); renderMemos(); renderHotVideos(); renderReviews(); renderScripts(); renderProducts(); renderKnowledges(); renderProjects(); renderLivePlans(); renderCategories(); renderaddGoal(); renderaddTopic(); renderaddPhase();
 renderHub('hotRankGrid', HUB_LINKS.hotRank);
 renderHub('videoHubGrid', HUB_LINKS.video);
 renderHub('articleHubGrid', HUB_LINKS.article);
@@ -1733,6 +2275,363 @@ function renderFinSummary(){
 }
 document.getElementById('finSummaryMonth').addEventListener('change', renderFinSummary);
 renderIncomeTable(); renderExpenseTable(); renderDebtTable();
+
+// ============ 日历行程 ============
+let calCurrentDate = new Date();
+let calSelectedDate = new Date();
+let calEvents = STORE.get('calEvents', {});
+const CAL_EVENT_TYPES = {
+  work: { label: '上班', color: '#4a90d9' },
+  rest: { label: '休息', color: '#7cb342' },
+  study: { label: '学习', color: '#b8954a' },
+  live: { label: '直播', color: '#e74c3c' },
+  other: { label: '其他', color: '#9b59b6' }
+};
+
+// 简易农历映射（部分节日和节气）
+const LUNAR_INFO = {
+  '1-1': '春节', '1-15': '元宵', '2-2': '龙抬头', '3-3': '上巳', '5-5': '端午',
+  '7-7': '七夕', '7-15': '中元', '8-15': '中秋', '9-9': '重阳', '10-1': '寒衣',
+  '12-8': '腊八', '12-23': '小年', '12-30': '除夕'
+};
+const SOLAR_TERMS = {
+  '2-3': '立春', '2-18': '雨水', '3-5': '惊蛰', '3-20': '春分', '4-4': '清明',
+  '4-20': '谷雨', '5-5': '立夏', '5-21': '小满', '6-5': '芒种', '6-21': '夏至',
+  '7-7': '小暑', '7-22': '大暑', '8-7': '立秋', '8-23': '处暑', '9-7': '白露',
+  '9-23': '秋分', '10-8': '寒露', '10-23': '霜降', '11-7': '立冬', '11-22': '小雪',
+  '12-7': '大雪', '12-22': '冬至', '1-5': '小寒', '1-20': '大寒'
+};
+
+function getDayKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getLunarLabel(m, d) {
+  const key = `${m}-${d}`;
+  return LUNAR_INFO[key] || SOLAR_TERMS[key] || '';
+}
+function renderCalendar() {
+  const year = calCurrentDate.getFullYear();
+  const month = calCurrentDate.getMonth();
+  document.getElementById('calYearMonth').textContent = `${year}年 ${month+1}月`;
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month+1, 0);
+  const startOffset = firstDay.getDay();
+  const daysInMonth = lastDay.getDate();
+  const prevLastDay = new Date(year, month, 0).getDate();
+
+  const grid = document.getElementById('calDays');
+  grid.innerHTML = '';
+
+  // 上月日期
+  for (let i = startOffset - 1; i >= 0; i--) {
+    const day = prevLastDay - i;
+    const cell = createDayCell(day, true, new Date(year, month-1, day));
+    grid.appendChild(cell);
+  }
+  // 当月日期
+  const today = new Date();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const isToday = date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+    const isSelected = date.getDate() === calSelectedDate.getDate() && date.getMonth() === calSelectedDate.getMonth() && date.getFullYear() === calSelectedDate.getFullYear();
+    const cell = createDayCell(d, false, date, isToday, isSelected);
+    grid.appendChild(cell);
+  }
+  // 下月日期
+  const totalCells = startOffset + daysInMonth;
+  const nextDays = (7 - (totalCells % 7)) % 7;
+  for (let d = 1; d <= nextDays; d++) {
+    const cell = createDayCell(d, true, new Date(year, month+1, d));
+    grid.appendChild(cell);
+  }
+
+  renderCalEventsPanel();
+}
+function createDayCell(day, otherMonth, date, isToday, isSelected) {
+  const cell = document.createElement('div');
+  cell.className = 'cal-day' + (otherMonth ? ' other-month' : '') + (isToday ? ' today' : '') + (isSelected ? ' selected' : '');
+  const key = getDayKey(date);
+  const events = calEvents[key] || [];
+
+  let html = `<span class="cal-day-num">${day}</span>`;
+  html += `<div class="cal-day-events">`;
+  events.slice(0, 3).forEach(ev => {
+    const type = CAL_EVENT_TYPES[ev.type] || CAL_EVENT_TYPES.other;
+    html += `<span class="cal-event-tag ${ev.type}" title="${escapeHtml(ev.text)}">${escapeHtml(ev.text)}</span>`;
+  });
+  if (events.length > 3) html += `<span class="cal-event-tag other">+${events.length-3}件</span>`;
+  html += `</div>`;
+
+  cell.innerHTML = html;
+  cell.onclick = () => { calSelectedDate = new Date(date); renderCalendar(); };
+  return cell;
+}
+function changeMonth(delta) {
+  calCurrentDate.setMonth(calCurrentDate.getMonth() + delta);
+  renderCalendar();
+}
+function goToday() {
+  calCurrentDate = new Date();
+  calSelectedDate = new Date();
+  renderCalendar();
+}
+function renderCalEventsPanel() {
+  const key = getDayKey(calSelectedDate);
+  const events = calEvents[key] || [];
+  document.getElementById('calSelectedDate').textContent = `📌 ${calSelectedDate.getMonth()+1}月${calSelectedDate.getDate()}日 行程`;
+
+  const list = document.getElementById('calEventList');
+  if (events.length === 0) {
+    list.innerHTML = '<p class="empty-tip">暂无行程，点击下方添加</p>';
+  } else {
+    list.innerHTML = events.map((ev, i) => {
+      const type = CAL_EVENT_TYPES[ev.type] || CAL_EVENT_TYPES.other;
+      return `<div class="cal-event-item"><span class="ev-type ${ev.type}"></span><span class="ev-text">${escapeHtml(ev.text)}</span><span style="font-size:11px;color:var(--text-2)">${type.label}</span><button class="ev-del" onclick="delCalEvent('${key}',${i})">删除</button></div>`;
+    }).join('');
+  }
+}
+function addCalEvent() {
+  const text = document.getElementById('calEventInput').value.trim();
+  const type = document.getElementById('calEventType').value;
+  if (!text) return;
+  const key = getDayKey(calSelectedDate);
+  if (!calEvents[key]) calEvents[key] = [];
+  calEvents[key].push({ text, type });
+  document.getElementById('calEventInput').value = '';
+  STORE.set('calEvents', calEvents);
+  renderCalendar();
+}
+function delCalEvent(key, idx) {
+  if (calEvents[key]) {
+    calEvents[key].splice(idx, 1);
+    if (calEvents[key].length === 0) delete calEvents[key];
+  }
+  STORE.set('calEvents', calEvents);
+  renderCalendar();
+}
+
+// ============ 学习成长 ============
+const DANCE_STAGES = [
+  { name: '阶段一：了解中国舞', desc: '认识中国舞的分类（古典舞/民族民间舞/现代舞），了解身韵、手位、脚位基础概念。建议观看入门科普视频。' },
+  { name: '阶段二：基本功训练', desc: '压腿、下腰、踢腿、劈叉等软开度训练；学习基本手位（山膀、按掌、托掌等）和脚位。每天坚持30分钟。' },
+  { name: '阶段三：身韵入门', desc: '学习"提、沉、冲、靠、含、腆、移"等基本身韵元素；练习眼神和表情的配合。' },
+  { name: '阶段四：简单组合', desc: '学习基础步伐组合（圆场、花梆步、慢步等）；尝试学习一段简单的古典舞片段。' },
+  { name: '阶段五：成品舞学习', desc: '选择一支适合自己水平的成品舞（如《茉莉花》《卷珠帘》等）进行完整学习；录制视频对比改进。' }
+];
+const DANCE_MATERIALS = [
+  { title: '🩰 基础入门', items: ['中国舞三大分支：古典舞、民族民间舞、芭蕾舞基训', '身韵八法：提、沉、冲、靠、含、腆、移、旁提', '基本手位：山膀、按掌、托掌、摊掌、推掌、盖掌', '基本脚位：正步、八字步、丁字步、踏步、弓箭步'] },
+  { title: '💪 软开度训练', items: ['压前腿：上身保持直立，膝盖伸直，脚尖回勾', '压旁腿：胯部打开，身体向旁侧下压', '下腰：先练跪姿下腰，再练站姿下腰，注意安全', '踢腿：前踢、旁踢、后踢，注意爆发力与控制的结合'] },
+  { title: '❓ 常见问题', items: ['身体太硬怎么办？→ 每天坚持拉伸，循序渐进，不要硬掰', '记不住动作？→ 先理解动作含义，分段练习，多听音乐找节奏', '没有舞蹈基础能学吗？→ 完全可以！中国舞适合零基础，从身韵开始', '需要准备什么？→ 舞蹈服/瑜伽服、舞蹈鞋、瑜伽垫、全身镜'] }
+];
+const SWIM_STAGES = [
+  { name: '阶段一：克服恐水', desc: '熟悉水性：水中行走、憋气、漂浮、站立。目标是能在水中放松不紧张。建议先在浅水区练习。' },
+  { name: '阶段二：呼吸与漂浮', desc: '学习水中呼吸（嘴吸鼻呼）、水母漂、蹬边滑行。掌握身体在水中的平衡感。' },
+  { name: '阶段三：蛙泳入门', desc: '学习蛙泳腿部动作（收翻蹬夹）、手臂动作（划水抱水）、配合呼吸。这是最适合初学者的泳姿。' },
+  { name: '阶段四：完整配合', desc: '将蛙泳的腿、手、呼吸配合起来，练习完整动作。目标是能连续游25米以上。' },
+  { name: '阶段五：提升与拓展', desc: '提升蛙泳速度和耐力；尝试学习自由泳或仰泳；制定长期游泳健身计划。' }
+];
+const SWIM_MATERIALS = [
+  { title: '🏊 基础入门', items: ['游泳四大泳姿：蛙泳（最易学）、自由泳（最快）、仰泳（最轻松）、蝶泳（最难）', '必备装备：泳衣/泳裤、泳镜、泳帽、浴巾、拖鞋、洗漱用品', '安全须知：下水前热身、不要空腹/饱食游泳、注意泳池深浅标识', '呼吸原则：嘴吸气，鼻子/嘴呼气，水下一定要呼气'] },
+  { title: '🐸 蛙泳技巧', items: ['腿部口诀：收腿→翻脚→蹬夹→滑行，动作要慢收快蹬', '手臂动作：外划→内划→前伸，划水时抬头吸气', '配合节奏：一次蹬腿+一次划手+一次呼吸，滑行2秒', '常见错误：同手同脚（手腿同时动）、蹬腿不翻脚、抬头过高'] },
+  { title: '❓ 常见问题', items: ['怕水怎么办？→ 先在浅水区熟悉，从憋气开始，逐步建立信心', '为什么总是下沉？→ 放松身体，重心前移，利用肺部空气浮力', '游不远就累？→ 动作要放松，不要用力过猛，多滑行少划水', '耳朵进水怎么办？→ 侧头单脚跳，或用棉签轻轻吸出'] }
+];
+
+let danceProgress = STORE.get('danceProgress', 0);
+let swimProgress = STORE.get('swimProgress', 0);
+let danceNotes = STORE.get('danceNotes', []);
+let swimNotes = STORE.get('swimNotes', []);
+
+function renderLearnStages(type, stages, progress, fillId, textId, containerId) {
+  document.getElementById(fillId).style.width = (progress / stages.length * 100) + '%';
+  document.getElementById(textId).textContent = `阶段 ${progress}/${stages.length} · ${progress === stages.length ? '已完成' : progress === 0 ? '尚未开始' : '进行中'}`;
+
+  const container = document.getElementById(containerId);
+  container.innerHTML = stages.map((s, i) => {
+    const completed = i < progress;
+    const active = i === progress;
+    return `<div class="learn-stage-card ${completed ? 'completed' : ''} ${active ? 'active' : ''}" onclick="toggleStage('${type}',${i})">
+      <div class="learn-stage-num">${i+1}</div>
+      <div class="learn-stage-info">
+        <div class="learn-stage-name">${s.name}</div>
+        <div class="learn-stage-desc">${s.desc}</div>
+      </div>
+      <div class="learn-stage-check">${completed ? '✓' : active ? '▶' : ''}</div>
+    </div>`;
+  }).join('');
+}
+function renderLearnMaterials(containerId, materials) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = materials.map(m => `
+    <div class="learn-material-card">
+      <h4>${m.title}</h4>
+      <ul>${m.items.map(item => `<li>${item}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+}
+function toggleStage(type, idx) {
+  let progress = type === 'dance' ? danceProgress : swimProgress;
+  if (idx === progress) {
+    progress = idx + 1; // 完成当前阶段
+  } else if (idx < progress) {
+    progress = idx; // 回退
+  }
+  if (type === 'dance') { danceProgress = progress; STORE.set('danceProgress', danceProgress); }
+  else { swimProgress = progress; STORE.set('swimProgress', swimProgress); }
+  renderLearning();
+}
+function renderLearnNotes(notes, listId, storeKey) {
+  const list = document.getElementById(listId);
+  if (notes.length === 0) {
+    list.innerHTML = '<li style="background:none;padding:4px 0;color:var(--text-2);font-size:12px">暂无笔记，上方添加</li>';
+    return;
+  }
+  list.innerHTML = notes.map((n, i) => `
+    <li><span class="note-text">${escapeHtml(n.text)}</span><span class="note-time">${n.time}</span><button class="del-btn" onclick="delLearnNote('${storeKey}',${i})">删</button></li>
+  `).join('');
+}
+function addDanceNote() { addLearnNote('danceNotes', 'danceNoteInput'); }
+function addSwimNote() { addLearnNote('swimNotes', 'swimNoteInput'); }
+function addLearnNote(key, inputId) {
+  const input = document.getElementById(inputId);
+  if (!input.value.trim()) return;
+  const arr = key === 'danceNotes' ? danceNotes : swimNotes;
+  arr.unshift({ text: input.value.trim(), time: now() });
+  input.value = '';
+  STORE.set(key, arr);
+  renderLearning();
+}
+function delLearnNote(key, idx) {
+  const arr = key === 'danceNotes' ? danceNotes : swimNotes;
+  arr.splice(idx, 1);
+  STORE.set(key, arr);
+  renderLearning();
+}
+// 资料库内容已直接写在HTML中，无需JS渲染
+function renderLearning() {
+  renderLearnStages('dance', DANCE_STAGES, danceProgress, 'danceProgressFill', 'danceProgressText', 'danceStages');
+  renderLearnStages('swim', SWIM_STAGES, swimProgress, 'swimProgressFill', 'swimProgressText', 'swimStages');
+  renderLearnNotes(danceNotes, 'danceNoteList', 'danceNotes');
+  renderLearnNotes(swimNotes, 'swimNoteList', 'swimNotes');
+}
+
+// ============ 每日灵感升级 ============
+const TRENDING_POOL = [
+  { title: '30岁后才明白的人生真相', heat: '1280w', type: 'hot', tag: '个人成长', source: '抖音热榜' },
+  { title: '女生最该投资的3样东西', heat: '890w', type: 'hot', tag: '女性成长', source: '小红书热门' },
+  { title: '一个普通女孩的5年逆袭', heat: '750w', type: 'hot', tag: '个人成长', source: '抖音热榜' },
+  { title: '如何培养不内耗体质', heat: '620w', type: 'rising', tag: '情绪管理', source: '微博热搜' },
+  { title: '月入3万主播私下卷什么', heat: '540w', type: 'rising', tag: '主播心法', source: '抖音热榜' },
+  { title: '高敏感女孩自救指南', heat: '480w', type: 'rising', tag: '情绪管理', source: '知乎热榜' },
+  { title: '中国舞零基础入门攻略', heat: '320w', type: 'new', tag: '中国舞', source: '小红书' },
+  { title: '游泳小白7天学会蛙泳', heat: '280w', type: 'new', tag: '游泳', source: 'B站热门' },
+  { title: '表达力差请做这5件事', heat: '2100w', type: 'hot', tag: '个人成长', source: '抖音热榜' },
+  { title: '珠宝主播的觉醒之路', heat: '410w', type: 'rising', tag: '主播心法', source: '视频号' },
+  { title: '自律生活微习惯养成', heat: '360w', type: 'new', tag: '自律生活', source: '知乎' },
+  { title: '翡翠选购避坑指南', heat: '290w', type: 'new', tag: '珠宝穿搭', source: '抖音' }
+];
+
+const VIRAL_TEMPLATES = [
+  { title: '一个女生最好的状态：经济独立、情绪自由、形象清爽', author: '@清醒姐姐', plays: '1280w', likes: '86w', emoji: '💎', formula: '身份标签 + 3个并列价值点', breakdown: '爆点1："女生最好的状态"触发共鸣\n爆点2：三个维度覆盖物质/精神/外在\n爆点3：数字"3"降低认知负担，易传播' },
+  { title: '30岁从0开始做珠宝主播，我后悔了吗？', author: '@小胡成长记', plays: '520w', likes: '42w', emoji: '🌱', formula: '年龄 + 从0开始 + 职业 + 反问悬念', breakdown: '爆点1："30岁"+"从0"制造反差感\n爆点2：职业具体化（珠宝主播）\n爆点3：反问句引发好奇，促点击' },
+  { title: '表达力差的人，请疯狂做这5件事', author: '@口才训练营', plays: '2100w', likes: '156w', emoji: '🎙️', formula: '痛点人群 + 行动指令 + 数字清单', breakdown: '爆点1：精准定位"表达力差"人群\n爆点2："疯狂做"制造紧迫感\n爆点3："5件事"提供明确预期，收藏率高' },
+  { title: '女生如何培养"不好惹"的气质', author: '@女性力量', plays: '1480w', likes: '98w', emoji: '👑', formula: '目标人群 + 引号关键词 + 结果导向', breakdown: '爆点1："不好惹"打破传统女性刻板印象\n爆点2：引号制造话题性\n爆点3："气质"而非"态度"，更高级' },
+  { title: '普通人逆袭最快的3个赛道', author: '@商业观察', plays: '940w', likes: '68w', emoji: '🚀', formula: '普通人 + 逆袭 + 数字 + 赛道/方法', breakdown: '爆点1："普通人"降低门槛，扩大受众\n爆点2："最快"制造效率感\n爆点3："赛道"替代"方法"，更专业' }
+];
+
+const TOPIC_TEMPLATES = [
+  { title: '《30岁学中国舞，我收获了什么》', tag: '中国舞', angle: '年龄+学习+收获总结' },
+  { title: '《从怕水到畅游：我的游泳30天蜕变》', tag: '游泳', angle: '转变过程+时间线+结果' },
+  { title: '《珠宝主播的一天：凌晨4点在干什么》', tag: '主播心法', angle: '职业揭秘+反差时间' },
+  { title: '《为什么越努力越焦虑？4个信号自查》', tag: '情绪管理', angle: '痛点提问+数字+行动' },
+  { title: '《女生最该投资的3样东西，不是包包》', tag: '女性成长', angle: '反常识+数字+否定' },
+  { title: '《月入3万后我才懂的消费观》', tag: '个人成长', angle: '收入数字+时间节点+认知升级' }
+];
+
+function fetchAllHot() {
+  const topic = document.getElementById('topicSelect').value;
+  let list = TRENDING_POOL;
+  if (topic !== 'all') {
+    list = TRENDING_POOL.filter(t => t.tag === topic);
+    if (list.length === 0) list = TRENDING_POOL;
+  }
+  // 打乱顺序模拟更新
+  const shuffled = [...list].sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById('trendingList');
+  container.innerHTML = shuffled.map((t, i) => `
+    <div class="trending-card ${t.type}">
+      <span class="trending-rank ${i < 3 ? 'top' : ''}">${i+1}</span>
+      <span class="trending-title">${t.title}</span>
+      <span class="trending-heat">🔥 ${t.heat}</span>
+      <div class="trending-meta">${t.source} · #${t.tag} · <button class="ghost-btn" style="margin-left:4px" onclick="goDouyinSearch('${t.title}')">🎬 去创作</button></div>
+    </div>
+  `).join('');
+
+  document.getElementById('lastFetch').textContent = '上次更新：' + now();
+  document.getElementById('trendingSection').style.display = 'block';
+  document.getElementById('viralSection').style.display = 'none';
+  document.getElementById('topicGenSection').style.display = 'none';
+  document.getElementById('inspirationSection').style.display = 'none';
+}
+
+function fetchViralVideos() {
+  const shuffled = [...VIRAL_TEMPLATES].sort(() => Math.random() - 0.5);
+  const grid = document.getElementById('viralGrid');
+  grid.innerHTML = shuffled.map(v => `
+    <div class="viral-formula-card">
+      <h4>${v.emoji} ${v.title}</h4>
+      <div style="font-size:11px;color:var(--text-2);margin-bottom:8px">${v.author} · ▶ ${v.plays} · ❤ ${v.likes}</div>
+      <div class="formula">📐 标题公式：${v.formula}</div>
+      <div class="breakdown">${v.breakdown.replace(/\n/g, '<br>')}</div>
+      <div style="margin-top:10px">
+        <button class="btn-go" style="padding:6px 12px;font-size:12px" onclick="goDouyinSearch('${v.title}')">🎬 跳转原视频</button>
+        <button class="btn-save" style="padding:6px 12px;font-size:12px;margin-left:6px" onclick="saveInspiration('${v.title}')">📌 收藏公式</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('trendingSection').style.display = 'none';
+  document.getElementById('viralSection').style.display = 'block';
+  document.getElementById('topicGenSection').style.display = 'none';
+  document.getElementById('inspirationSection').style.display = 'none';
+}
+
+function generateTopics() {
+  const topic = document.getElementById('topicSelect').value;
+  let templates = TOPIC_TEMPLATES;
+  if (topic !== 'all') {
+    templates = TOPIC_TEMPLATES.filter(t => t.tag === topic);
+    if (templates.length === 0) templates = TOPIC_TEMPLATES;
+  }
+  const shuffled = [...templates].sort(() => Math.random() - 0.5).slice(0, 4);
+
+  const grid = document.getElementById('topicGenGrid');
+  grid.innerHTML = shuffled.map(t => `
+    <div class="insp-card">
+      <span class="insp-tag">#${t.tag}</span>
+      <div class="insp-title">${t.title}</div>
+      <div class="insp-desc">💡 选题角度：${t.angle}</div>
+      <div class="insp-actions">
+        <button class="btn-go" onclick="goDouyinSearch('${t.title}')">🎬 去创作</button>
+        <button class="btn-save" onclick="saveInspiration('${t.title}')">📌 收藏</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('trendingSection').style.display = 'none';
+  document.getElementById('viralSection').style.display = 'none';
+  document.getElementById('topicGenSection').style.display = 'block';
+  document.getElementById('inspirationSection').style.display = 'none';
+}
+
+// 覆盖原有的 fetchDouyinHot，兼容旧调用
+function fetchDouyinHot() { fetchAllHot(); }
+
+// ============ 初始化扩展 ============
+renderCalendar();
+renderLearning();
+fetchAllHot();
 </script>
 </body>
 </html>
