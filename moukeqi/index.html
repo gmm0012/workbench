@@ -488,6 +488,20 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <input type="month" id="perfMonth" onchange="renderPerformance()">
         </div>
         <button class="btn btn-primary btn-block" onclick="openPerfForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 录入业绩</button>
+        <div style="background:#f9fafb;border-radius:12px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600"><i class="fa-solid fa-calendar-days"></i> 导出日期范围（不选则按上方月份）</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+            <input type="date" id="exportPerfStart" style="font-size:12px;padding:8px" placeholder="开始">
+            <span style="color:var(--text3)">~</span>
+            <input type="date" id="exportPerfEnd" style="font-size:12px;padding:8px" placeholder="结���">
+          </div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('performance','today')">今天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('performance','week')">最近7天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('performance','month')">最近30天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('performance','thismonth')">本月</button>
+          </div>
+        </div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('performance','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
           <button class="btn btn-sm btn-ghost" onclick="exportTable('performance','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
@@ -534,6 +548,20 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <input type="month" id="attMonth" onchange="renderAttendance()">
         </div>
         <button class="btn btn-primary btn-block" onclick="openAttForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 考勤打卡</button>
+        <div style="background:#f9fafb;border-radius:12px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600"><i class="fa-solid fa-calendar-days"></i> 导出日期范围（不选则按上方月份）</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+            <input type="date" id="exportAttStart" style="font-size:12px;padding:8px">
+            <span style="color:var(--text3)">~</span>
+            <input type="date" id="exportAttEnd" style="font-size:12px;padding:8px">
+          </div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('attendance','today')">今天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('attendance','week')">最近7天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('attendance','month')">最近30天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('attendance','thismonth')">本月</button>
+          </div>
+        </div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('attendance','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
           <button class="btn btn-sm btn-ghost" onclick="exportTable('attendance','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
@@ -558,6 +586,20 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <label>提成比例（元/音浪）</label>
           <input type="number" id="commissionRate" value="0.01" step="0.001" onchange="renderSalary()">
         </div>
+        <div style="background:#f9fafb;border-radius:12px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600"><i class="fa-solid fa-calendar-days"></i> 导出日期范围（不选则按上方月份）</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+            <input type="date" id="exportSalaryStart" style="font-size:12px;padding:8px">
+            <span style="color:var(--text3)">~</span>
+            <input type="date" id="exportSalaryEnd" style="font-size:12px;padding:8px">
+          </div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('salary','today')">今天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('salary','week')">最近7天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('salary','month')">最近30天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('salary','thismonth')">本月</button>
+          </div>
+        </div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('salary','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
           <button class="btn btn-sm btn-ghost" onclick="exportTable('salary','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
@@ -577,6 +619,20 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <input type="month" id="reimbMonth" onchange="renderReimburse()">
         </div>
         <button class="btn btn-primary btn-block" onclick="openReimbForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 新增报销单</button>
+        <div style="background:#f9fafb;border-radius:12px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600"><i class="fa-solid fa-calendar-days"></i> 导出日期范围（不选则按上方月份）</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+            <input type="date" id="exportReimbStart" style="font-size:12px;padding:8px">
+            <span style="color:var(--text3)">~</span>
+            <input type="date" id="exportReimbEnd" style="font-size:12px;padding:8px">
+          </div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('reimburse','today')">今天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('reimburse','week')">最近7天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('reimburse','month')">最近30天</button>
+            <button class="btn btn-sm btn-ghost" style="font-size:10px;padding:4px 8px" onclick="setExportRange('reimburse','thismonth')">本月</button>
+          </div>
+        </div>
         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('reimburse','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
           <button class="btn btn-sm btn-ghost" onclick="exportTable('reimburse','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
@@ -658,6 +714,12 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
         <div style="font-size:12px;color:var(--text2);margin-bottom:10px">点击场景快速筛选，长按可管理分类</div>
         <div id="scriptCatMgr"></div>
         <button class="btn btn-ghost btn-block btn-sm" style="margin-top:10px" onclick="openScriptCatForm()"><i class="fa-solid fa-plus"></i> 新增场景</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="left"><i class="fa-solid fa-cloud-arrow-down" style="color:var(--blue)"></i> 预置话术库</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.7">系统内置了<b>50+条</b>常用话术（开场/感谢/拉票/要礼物/维护等），首次使用已自动导入。<br>如果之后更新了版本，点下面按钮可同步新增的预置话术，<b>不会覆盖</b>你自己加的。</div>
+        <button class="btn btn-block btn-sm" style="background:#eff6ff;color:var(--blue)" onclick="reimportPresetScripts()"><i class="fa-solid fa-rotate"></i> 检查更新预置话术</button>
       </div>
     </div>
   </main>
@@ -773,16 +835,94 @@ const PLATFORMS = {
   bili:{name:'B站', ico:'<i class="fa-brands fa-bilibili"></i>', url:'https://search.bilibili.com/all?keyword='}
 };
 const MAT_CATS = ['舞蹈','穿搭','妆造','话术','热点','音乐','其他'];
-const SCRIPT_CATS_DEFAULT = ['开场问候','撩拨暧昧','要礼物','情感维护','拒绝边界','收尾道别','日常闲聊'];
+const SCRIPT_CATS_DEFAULT = ['开场问候','撩拨暧昧','要礼物','感谢回馈','拉票拉关注','情感维护','拒绝边界','活跃气氛','收尾道别','日常闲聊'];
 const SCRIPT_KEYWORDS_MAP = {
-  '开场问候':['你好','在吗','哈喽','早','晚上好','在不在','开播','开播了吗','怎么没开播','没看到你','今天没播'],
-  '撩拨暧昧':['喜欢','想你','好看','漂亮','美女','约','见面','吃个饭','喜欢你','做我女朋友','追你','相亲','约会','电话','视频'],
-  '要礼物':['礼物','刷','支持一下','守护','开个守护','嘉年华','火箭','抖音币','抖币','打赏','赞助','投资你'],
-  '情感维护':['分手','失恋','心情不好','难过','累','压力','加班','孤单','寂寞','想找人聊','陪聊','烦','不开心','郁闷'],
-  '拒绝边界':['出来','开房','私人','微信','加微信','私密照','照片','腿','身材','看看','发个','裸','黄色','约炮','一夜情'],
-  '收尾道别':['晚安','睡了','休息','明天','下次','先忙','走了','拜拜','下了'],
-  '日常闲聊':['吃饭','工作','周末','天气','在干嘛','忙什么','最近','哈哈','有趣','好玩','电影','游戏']
+  '开场问候':['你好','在吗','哈喽','早','晚上好','在不在','开播','开播了吗','怎么没开播','没看到你','今天没播','欢迎','来了'],
+  '撩拨暧昧':['喜欢','想你','好看','漂亮','美女','约','见面','吃个饭','喜欢你','做我女朋友','追你','相亲','约会','电话','视频','撒娇'],
+  '要礼物':['礼物','刷','支持一下','守护','开个守护','嘉年华','火箭','抖音币','抖币','打赏','赞助','投资你','飞机','跑车'],
+  '感谢回馈':['谢谢','感谢','谢了','多谢','辛苦','用心','棒','厉害','牛','支持','陪伴'],
+  '拉票拉关注':['关注','点关注','不迷路','点赞','收藏','分享','转发','求关注','涨粉','人气','榜单','打榜'],
+  '情感维护':['分手','失恋','心情不好','难过','累','压力','加班','孤单','寂寞','想找人聊','陪聊','烦','不开心','郁闷','生病','不舒服'],
+  '拒绝边界':['出来','开房','私人','微信','加微信','私密照','照片','腿','身材','看看','发个','裸','黄色','约炮','一夜情','见面'],
+  '活跃气氛':['冷场','没人','尴尬','无聊','怎么没人说话','安静','带节奏','互动','上分','冲榜'],
+  '收尾道别':['晚安','睡了','休息','明天','下次','先忙','走了','拜拜','下了','下播'],
+  '日常闲聊':['吃饭','工作','周末','天气','在干嘛','忙什么','最近','哈哈','有趣','好玩','电影','游戏','唱歌','跳舞']
 };
+
+/* 预置话术库 - 首次使用自动导入 */
+const PRESET_SCRIPTS = [
+  // ===== 开场问候 =====
+  {category:'开场问候',trigger:'欢迎,来了,刚进,新人',content:'欢迎大哥来到直播间～我是今天刚开播的小可爱，先点个关注不迷路，待会儿有精彩内容哦💕',tags:['温柔','新人','关注'],followUp:''},
+  {category:'开场问候',trigger:'你好,在吗,哈喽,早,晚上好',content:'哈喽大哥晚上好呀～你今天怎么这么早就来啦，是不是想我了呀🥰',tags:['甜美','撒娇'],followUp:'哥哥是第一次来我的直播间吗？那可要多多关注我哦～'},
+  {category:'开场问候',trigger:'怎么没开播,没看到你,今天没播,没直播',content:'抱歉让哥哥久等啦！今天稍微准备了一下才开播，以后我固定时间播，你点个关注开播会提醒你哦～',tags:['道歉','引导关注'],followUp:''},
+  {category:'开场问候',trigger:'欢迎,来了,进场',content:'欢迎大哥！进来先别走，我正在唱歌呢，想听什么歌打在公屏上，我给你唱～',tags:['才艺','留人'],followUp:'哥哥喜欢什么类型的歌呀？甜歌还是劲爆的？'},
+  {category:'开场问候',trigger:'新人,第一次,刚来',content:'哇是第一次来的哥哥呀，欢迎欢迎！我是XX，甜妹一个，你可以先在直播间听听看，喜欢的话点个关注嘛～',tags:['自我介绍','求关注'],followUp:''},
+
+  // ===== 撩拨暧昧 =====
+  {category:'撩拨暧昧',trigger:'喜欢,想你,喜欢你,做我女朋友,追你',content:'哥哥你嘴好甜呀，是不是对每个主播都这样说呀～不过听到你这么说我还是好开心，多来直播间陪我聊聊嘛💕',tags:['高情商','撒娇'],followUp:'你要是真的喜欢我，就多来直播间陪我，我记住你了哦～'},
+  {category:'撩拨暧昧',trigger:'约,见面,吃个饭,出来,约会',content:'哥哥你也太着急了吧～咱们才刚认识呢，你先在直播间多陪我几天，等我们熟了你再说这些嘛🤭',tags:['婉拒','撒娇'],followUp:'你每天来直播间打卡，我保证记住你，到时候再说别的也不迟呀～'},
+  {category:'撩拨暧昧',trigger:'好看,漂亮,美女,身材',content:'谢谢哥哥夸奖～不过我觉得长得好看不如聊得来，你多跟我聊聊天就知道了，我性格更好哦✨',tags:['谦虚','引导互动'],followUp:''},
+  {category:'撩拨暧昧',trigger:'视频,电话,语音',content:'哥哥咱们先在直播间聊嘛，等熟悉了我自然会给你看更多的，你先多支持支持我的直播呀～',tags:['婉拒','留悬念'],followUp:''},
+  {category:'撩拨暧昧',trigger:'想你,思念,梦到',content:'哎呀哥哥你太会说了，我都没反应过来了～你想我的话就多来直播间，我每天都播的哦🥰',tags:['撒娇','引导关注'],followUp:''},
+
+  // ===== 要礼物 =====
+  {category:'要礼物',trigger:'礼物,刷,支持一下,打赏',content:'谢谢哥哥有心了！一个小礼物就能让我开心半天，量力而行就好，你的陪伴对我来说也是最大的支持💕',tags:['温柔','不强迫'],followUp:''},
+  {category:'要礼物',trigger:'守护,开个守护',content:'哥哥你要是开守护的话我真的会感动哭的！守护不仅是对我的支持，更是我们之间的约定，我会对每一个守护大哥特别好的✨',tags:['感恩','专属感'],followUp:'守护大哥我会记得名字的，以后你来直播间我第一时间欢迎你～'},
+  {category:'要礼物',trigger:'嘉年华,火箭,跑车,飞机',content:'哇嘉年华是大礼物呀！哥哥你真舍得～不过你量力而行就好，我更希望细水长流的陪伴，哪怕小礼物我也开心的🥰',tags:['感恩','通情达理'],followUp:''},
+  {category:'要礼物',trigger:'榜单,打榜,冲榜,上分',content:'哥哥帮我打打榜呗？现在差一点点就能上一个名次了，你的一票之力就能帮我冲上去，求求了🥺',tags:['拉票','卖萌'],followUp:'冲上去我给你唱歌感谢你！你想听什么？'},
+  {category:'要礼物',trigger:'抖币,抖音币,币',content:'哥哥抖币留着支持我就好啦～不用一次刷完，每天来一点点，我就能感受到你一直在陪我💕',tags:['细水长流'],followUp:''},
+  {category:'要礼物',trigger:'投资你,赞助,培养',content:'哥哥你说投资我，我好感动！你放心，你的每一分支持我都会用在提升直播内容上，绝对不会让你白花的✨',tags:['感恩','上进'],followUp:'你看着吧，我会越来越好的，到时候你就是我的元老级大哥了！'},
+
+  // ===== 感谢回馈 =====
+  {category:'感谢回馈',trigger:'谢谢,感谢,多谢',content:'应该是我谢谢你才对！你愿意来陪我、支持我，就是我最大的幸运，以后我会更努力的💕',tags:['真诚','感恩'],followUp:''},
+  {category:'感谢回馈',trigger:'辛苦,用心,努力',content:'谢谢哥哥看得到我的用心！做直播确实不容易，但有你们这些大哥支持，再累也值得✨',tags:['真诚','共情'],followUp:'你每天来就是我最大的动力～'},
+  {category:'感谢回馈',trigger:'棒,厉害,牛,唱得好,跳得好',content:'哥哥你过奖啦～我还有很多不足，不过有你这句话我更有信心了，以后会给你看更好的内容💪',tags:['谦虚','上进'],followUp:'你下次来点歌，我专门给你表演！'},
+  {category:'感谢回馈',trigger:'陪伴,一直,长期',content:'哥哥你一直陪我到现在，我都知道的～老粉的感情不一样，你在我心里是特别的存在🥰',tags:['感恩','专属感'],followUp:'以后不管直播间多少人，你来我一定先跟你打招呼！'},
+  {category:'感谢回馈',trigger:'支持,守护,帮忙',content:'你的支持我都记在心里呢！没有你们我什么都不是，以后有啥需要我做的尽管说，我能做到一定做💕',tags:['感恩','回馈'],followUp:''},
+
+  // ===== 拉票拉关注 =====
+  {category:'拉票拉关注',trigger:'关注,点关注,不迷路',content:'大哥点个关注呗～点了关注开播会提醒你，就不会错过我的直播啦！关注不迷路，小可爱带你上高速🚀',tags:['求关注','俏皮'],followUp:''},
+  {category:'拉票拉关注',trigger:'点赞,点赞率',content:'哥哥顺手给我点个赞呗？点赞是免费的，但对我来说帮助很大，就当是给我的小鼓励啦💕',tags:['求赞','免费'],followUp:''},
+  {category:'拉票拉关注',trigger:'分享,转发',content:'哥哥方便的话帮我分享一下直播间呗？你的分享能让更多人认识我，这份情我记着呢✨',tags:['求分享'],followUp:''},
+  {category:'拉票拉关注',trigger:'收藏,加入',content:'喜欢的话点个收藏呗～收藏了下次找我也方便，你也不会错过我的精彩瞬间🥰',tags:['求收藏'],followUp:''},
+  {category:'拉票拉关注',trigger:'榜单,打榜,冲榜,人气,上分',content:'哥哥们帮我冲冲人气榜呗！就差你们这一下，人多力量大，咱们一起冲上去，我给大家唱歌跳舞感谢💪',tags:['拉票','集体感'],followUp:'冲上去我开个专属福利，只给帮我打榜的大哥们！'},
+  {category:'拉票拉关注',trigger:'涨粉,粉丝,粉丝团',content:'加入我的粉丝团吧哥哥！粉丝团有专属徽章和特权，咱们是一家人，我会对粉丝团的大哥特别好的💕',tags:['粉丝团','归属感'],followUp:'粉丝团大哥我都有备注的，你来我一定第一个欢迎！'},
+
+  // ===== 情感维护 =====
+  {category:'情感维护',trigger:'分手,失恋,心情不好,难过,不开心',content:'哥哥怎么了？谁欺负你了？跟我聊聊呗，虽然我帮不上大忙，但倾听还是可以的，别一个人闷着💕',tags:['倾听','关心'],followUp:'你不说我也不知道怎么帮你，慢慢说，我一直在的～'},
+  {category:'情感维护',trigger:'累,压力,加班,烦',content:'哥哥今天辛苦了～工作再忙也要照顾好自己，来直播间放松一下，我陪你聊聊天，烦心事就先放一放🥰',tags:['关心','陪伴'],followUp:''},
+  {category:'情感维护',trigger:'孤单,寂寞,想找人聊,陪聊',content:'哥哥你孤单了就来找我呀，我直播间永远欢迎你，虽然我不能24小时在，但我开播你来了我一定陪你聊✨',tags:['陪伴','温暖'],followUp:'你加个关注吧，我开播就提醒你，这样你就不会一个人了～'},
+  {category:'情感维护',trigger:'生病,不舒服,感冒',content:'哥哥你生病了？要按时吃药多休息啊！别硬撑着，身体最重要，等你好了再来直播间，我不急的💕',tags:['关心','体贴'],followUp:''},
+  {category:'情感维护',trigger:'郁闷,郁闷,emo',content:'别emo了哥哥！人生总有低谷，你现在难以后会好的，我支持你～来听听我唱歌，心情会好一点的🥰',tags:['鼓励','陪伴'],followUp:'你想听什么歌？我专门给你唱一首开心的！'},
+
+  // ===== 拒绝边界 =====
+  {category:'拒绝边界',trigger:'微信,加微信,私人,联系方式',content:'哥哥平台有规定的，不能私下加微信～你在直播间找我一样方便呀，我每天都在的，咱们就在这里聊💕',tags:['婉拒','守规矩'],followUp:''},
+  {category:'拒绝边界',trigger:'出来,见面,约,吃个饭',content:'哥哥咱们在网上做朋友不是挺好的嘛～线下见面不合适，我希望能保持这个边界，你理解我哦🥰',tags:['明确拒绝','保持边界'],followUp:'你理解我的对吧？咱们在直播间做快乐的朋友就好～'},
+  {category:'拒绝边界',trigger:'照片,私密照,腿,身材,看看',content:'哥哥这个要求我不能答应哦～我希望能被尊重，你喜欢我就多看我的直播，我直播里会展示最好的自己✨',tags:['明确拒绝','自尊'],followUp:''},
+  {category:'拒绝边界',trigger:'视频,私聊,一对一',content:'一对一视频不行的哥哥～我所有内容都在直播间，你来看就行，希望大家都在一个公平的环境里🥰',tags:['婉拒','公平'],followUp:''},
+  {category:'拒绝边界',trigger:'黄色,裸,约炮,一夜情',content:'哥哥这个话题到此为止哦，我是正经主播，希望直播间是健康的环境，你也尊重我一下好吗？💕',tags:['严肃','守底线'],followUp:'咱们聊点开心的吧，你今天过得怎么样？'},
+
+  // ===== 活跃气氛 =====
+  {category:'活跃气氛',trigger:'冷场,没人,安静,尴尬,无聊',content:'哎呀现在人少吗？没关系，人少我也要好好播！在的哥哥们咱们聊起来，你们说啥我都接💪',tags:['暖场','互动'],followUp:'来来来，公屏上打字，我一个个回你们！'},
+  {category:'活跃气氛',trigger:'怎么没人说话,互动,带节奏',content:'哥哥们别潜水呀，冒个泡让我知道你在！打字的都是真爱粉，我给你们比心💕',tags:['引导互动','卖萌'],followUp:''},
+  {category:'活跃气氛',trigger:'上分,冲榜,榜单,人气',content:'哥哥们咱们一起冲波人气！人多力量大，我给你们唱歌跳舞，咱们把气氛搞起来🔥',tags:['拉气氛','集体'],followUp:'现在在的哥哥们举下手，我看看有多少人在线！'},
+  {category:'活跃气氛',trigger:'游戏,互动,玩',content:'咱们玩个互动小游戏吧！我说一个词，你们接下一个，接上的哥哥我给他点个赞💕',tags:['游戏','互动'],followUp:''},
+
+  // ===== 收尾道别 =====
+  {category:'收尾道别',trigger:'晚安,睡了,休息',content:'哥哥晚安～做个好梦，明天记得来看我哦，我等你💕',tags:['温柔','道别'],followUp:''},
+  {category:'收尾道别',trigger:'走了,拜拜,下了,下播',content:'哥哥这就走啦？那你路上注意安全，明天见哦，我会想你的🥰',tags:['关心','留人'],followUp:'你走之前点个关注呗，这样下次开播你就能第一时间知道～'},
+  {category:'收尾道别',trigger:'明天,下次,以后',content:'好呀哥哥明天见！我固定X点开播，你定个闹钟哦，不见不散✨',tags:['约定','引导关注'],followUp:''},
+  {category:'收尾道别',trigger:'先忙,忙,有事',content:'哥哥去忙吧，正事要紧～忙完记得来找我，我在直播间等你💕',tags:['理解','留人'],followUp:''},
+
+  // ===== 日常闲聊 =====
+  {category:'日常闲聊',trigger:'吃饭,吃了没,吃饭没',content:'哥哥吃饭了吗？别饿着肚子，身体要紧～你边吃边看我直播，两不耽误🥰',tags:['关心','日常'],followUp:''},
+  {category:'日常闲聊',trigger:'工作,上班,忙',content:'哥哥工作辛苦啦～再忙也要抽空休息，来我直播间放松一下，工作哪有看直播开心💕',tags:['关心','解压'],followUp:''},
+  {category:'日常闲聊',trigger:'周末,放假,休息',content:'哥哥周末有什么安排呀？没事的话多来陪陪我嘛，我周末也会加播的✨',tags:['日常','引导'],followUp:''},
+  {category:'日常闲聊',trigger:'天气,下雨,冷',content:'哥哥今天天气怎么样？记得增减衣服别感冒了～你健康我才安心🥰',tags:['关心','体贴'],followUp:''},
+  {category:'日常闲聊',trigger:'在干嘛,忙什么',content:'我在直播呀，在跟你聊天呢哥哥～你呢，是不是在偷看我直播被我发现啦🤭',tags:['俏皮','互动'],followUp:''},
+  {category:'日常闲聊',trigger:'唱歌,跳舞,才艺',content:'哥哥想看我表演什么？唱歌跳舞都可以，你点我就来，专门给你表演💕',tags:['才艺','专属'],followUp:'你想听什么歌？打在公屏上，下一首给你唱！'},
+  {category:'日常闲聊',trigger:'哈哈,有趣,好玩,搞笑',content:'哥哥你笑起来好好听呀，多笑笑～你开心我就开心，以后我天天逗你笑🥰',tags:['正能量','撒娇'],followUp:''}
+];
 
 let DB = loadData();
 let currentTaskDate = todayStr();
@@ -806,7 +946,35 @@ function loadData(){
   }catch(e){return defaultDB()}
 }
 function saveData(){localStorage.setItem(STORE_KEY, JSON.stringify(DB))}
-function ensureArr(){['tasks','anchors','materials','reviews','dailyData','schedule','attendance','reimburse','scripts','recentScripts','teams'].forEach(k=>{if(!Array.isArray(DB[k]))DB[k]=[]});if(!Array.isArray(DB.scriptCats)||!DB.scriptCats.length)DB.scriptCats=SCRIPT_CATS_DEFAULT.slice()}
+function ensureArr(){
+  ['tasks','anchors','materials','reviews','dailyData','schedule','attendance','reimburse','scripts','recentScripts','teams'].forEach(k=>{if(!Array.isArray(DB[k]))DB[k]=[]});
+  if(!Array.isArray(DB.scriptCats)||!DB.scriptCats.length)DB.scriptCats=SCRIPT_CATS_DEFAULT.slice();
+  // 首次使用自动导入预置话术（只在话术库为空且未导入过时执行）
+  if(!DB.scripts.length && !DB.presetScriptImported){
+    PRESET_SCRIPTS.forEach(s=>{DB.scripts.push(Object.assign({id:uid()},s))});
+    DB.presetScriptImported=true;
+    saveData();
+  }
+}
+/* 手动重新导入/更新预置话术（合并新增的，不覆盖用户自己加的） */
+function reimportPresetScripts(){
+  let added=0;
+  PRESET_SCRIPTS.forEach(ps=>{
+    // 用content去重，避免重复导入相同话术
+    const exists=DB.scripts.some(s=>s.content===ps.content);
+    if(!exists){DB.scripts.push(Object.assign({id:uid()},ps));added++}
+  });
+  // 补全场景分类
+  const cats=getScriptCats();
+  PRESET_SCRIPTS.forEach(ps=>{
+    if(!cats.includes(ps.category) && !DB.scriptCats.includes(ps.category)){
+      DB.scriptCats.push(ps.category);
+    }
+  });
+  saveData();
+  renderScriptLib();renderScriptCatMgr();
+  toast(added?`已导入 ${added} 条新预置话术`:'预置话术已是最新');
+}
 
 /* ===================== Utils ===================== */
 function toast(msg){
@@ -1377,6 +1545,12 @@ function renderRecentScripts(){
 
 /* 话术库管理 */
 function renderScriptLib(){
+  // 自动导入预置话术（兼容清空数据后未重新init的情况）
+  if(!DB.scripts.length && !DB.presetScriptImported){
+    PRESET_SCRIPTS.forEach(s=>{DB.scripts.push(Object.assign({id:uid()},s))});
+    DB.presetScriptImported=true;
+    saveData();
+  }
   const cats=getScriptCats();
   const catEl=document.getElementById('scriptCats');
   catEl.innerHTML='<span class="tag filter '+(currentScriptCat===''?'active':'')+'" onclick="setScriptCat(\'\')">全部</span>'+
@@ -2104,16 +2278,22 @@ function exportWeekly(format){
 /* ===================== Table Export ===================== */
 function getTableData(type){
   // 返回 {title, headers:[], rows:[[]], summary:{}}
+  // 通用日期范围筛选：有选范围就按范围，否则按月份
+  const range=getExportRange(type);
+  const inRange=(dateStr)=>range?((dateStr||'')>=range.start&&(dateStr||'')<=range.end):true;
+
   if(type==='performance'){
     const month=document.getElementById('perfMonth').value||monthStr();
-    const list=DB.dailyData.filter(d=>(d.date||'').startsWith(month)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    let list=DB.dailyData.filter(d=>range?inRange(d.date):(d.date||'').startsWith(month));
+    list=list.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
     const rows=list.map(d=>{
       const a=DB.anchors.find(x=>x.id===d.anchorId);
       const team=a&&a.team?DB.teams.find(t=>t.id===a.team):null;
       return [d.date, a?a.name:'未知', team?team.name:'-', a?(a.artName||''):'-', Number(d.yinlang)||0, Number(d.fuchi)||0, Number(d.duration)||0, Number(d.sessions)||0];
     });
+    const titleRange=range?`${range.start} 至 ${range.end}`:month;
     return {
-      title:`业绩明细表（${month}）`,
+      title:`业绩明细表（${titleRange}）`,
       headers:['日期','主播','所属团','艺名','音浪','扶持(抖币)','时长(h)','场次'],
       rows:rows,
       summary:{
@@ -2147,7 +2327,7 @@ function getTableData(type){
   }
   if(type==='attendance'){
     const month=document.getElementById('attMonth').value||monthStr();
-    const list=DB.attendance.filter(a=>(a.date||'').startsWith(month));
+    let list=DB.attendance.filter(a=>range?inRange(a.date):(a.date||'').startsWith(month));
     const summary={};
     DB.anchors.forEach(a=>{summary[a.id]={出勤:0,迟到:0,请假:0,旷工:0}});
     list.forEach(a=>{if(summary[a.anchorId])summary[a.anchorId][a.status]=(summary[a.anchorId][a.status]||0)+1});
@@ -2156,12 +2336,13 @@ function getTableData(type){
       const team=a.team?DB.teams.find(t=>t.id===a.team):null;
       return [a.name, team?team.name:'-', a.artName||'-', s['出勤'], s['迟到'], s['请假'], s['旷工']];
     });
-    return {title:`考勤汇总表（${month}）`,headers:['主播','所属团','艺名','出勤','迟到','请假','旷工'],rows};
+    const titleRange=range?`${range.start} 至 ${range.end}`:month;
+    return {title:`考勤汇总表（${titleRange}）`,headers:['主播','所属团','艺名','出勤','迟到','请假','旷工'],rows};
   }
   if(type==='salary'){
     const month=document.getElementById('salaryMonth').value||monthStr();
     const rate=Number(document.getElementById('commissionRate').value)||0;
-    const list=DB.dailyData.filter(d=>(d.date||'').startsWith(month));
+    let list=DB.dailyData.filter(d=>range?inRange(d.date):(d.date||'').startsWith(month));
     const byAnchor={};
     list.forEach(d=>{
       if(!byAnchor[d.anchorId])byAnchor[d.anchorId]={yinlang:0,dur:0,sessions:0};
@@ -2177,8 +2358,9 @@ function getTableData(type){
       const team=a.team?DB.teams.find(t=>t.id===a.team):null;
       return [a.name, team?team.name:'-', a.artName||'-', base, p.yinlang, comm.toFixed(0), total];
     });
+    const titleRange=range?`${range.start} 至 ${range.end}`:month;
     return {
-      title:`工资核算表（${month}）`,
+      title:`工资核算表（${titleRange}）`,
       headers:['主播','所属团','艺名','底薪','音浪','提成','合计'],
       rows:rows,
       summary:{
@@ -2190,14 +2372,16 @@ function getTableData(type){
   }
   if(type==='reimburse'){
     const month=document.getElementById('reimbMonth').value||monthStr();
-    const list=DB.reimburse.filter(r=>(r.date||'').startsWith(month)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    let list=DB.reimburse.filter(r=>range?inRange(r.date):(r.date||'').startsWith(month));
+    list=list.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
     const rows=list.map(r=>{
       const a=DB.anchors.find(x=>x.id===r.anchorId);
       const team=a&&a.team?DB.teams.find(t=>t.id===a.team):null;
       return [r.date, a?a.name:'通用', team?team.name:'-', r.type||'', Number(r.coin)||0, Number(r.amount)||0, r.status, r.note||''];
     });
+    const titleRange=range?`${range.start} 至 ${range.end}`:month;
     return {
-      title:`报销明细表（${month}）`,
+      title:`报销明细表（${titleRange}）`,
       headers:['日期','主播','所属团','类型','抖币','金额','状态','备注'],
       rows:rows,
       summary:{
@@ -2207,6 +2391,48 @@ function getTableData(type){
     };
   }
   return null;
+}
+/* 获取导出日期范围，返回 {start,end} 或 null */
+function getExportRange(type){
+  const prefix={performance:'exportPerf',attendance:'exportAtt',salary:'exportSalary',reimburse:'exportReimb'}[type];
+  if(!prefix)return null;
+  const startEl=document.getElementById(prefix+'Start');
+  const endEl=document.getElementById(prefix+'End');
+  if(!startEl||!endEl)return null;
+  const start=startEl.value, end=endEl.value;
+  if(start&&end){
+    if(start>end){toast('开始日期不能晚于结束日期');return null}
+    return {start,end};
+  }
+  // 只选了一个也按范围处理（另一个用所选日期）
+  if(start||end){
+    return {start:start||end, end:end||start};
+  }
+  return null; // 都没选则按月份
+}
+/* 快捷设置导出日期范围 */
+function setExportRange(type,preset){
+  const prefix={performance:'exportPerf',attendance:'exportAtt',salary:'exportSalary',reimburse:'exportReimb'}[type];
+  if(!prefix)return;
+  const startEl=document.getElementById(prefix+'Start');
+  const endEl=document.getElementById(prefix+'End');
+  if(!startEl||!endEl)return;
+  const today=new Date();
+  let start,end;
+  if(preset==='today'){
+    start=end=todayStr();
+  }else if(preset==='week'){
+    const d=new Date(today);d.setDate(d.getDate()-6);
+    start=dateStr(d);end=todayStr();
+  }else if(preset==='month'){
+    const d=new Date(today);d.setDate(d.getDate()-29);
+    start=dateStr(d);end=todayStr();
+  }else if(preset==='thismonth'){
+    start=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-01';
+    end=todayStr();
+  }
+  startEl.value=start;endEl.value=end;
+  toast('已选: '+start+' ~ '+end);
 }
 function exportTable(type,format){
   const data=getTableData(type);
@@ -2298,6 +2524,7 @@ function clearData(){
   if(!confirm('再次确认：真的要清空全部数据吗？'))return;
   DB=defaultDB();
   saveData();
+  ensureArr(); // 清空后重新初始化预置数据等
   renderAll();
   toast('已清空');
 }
