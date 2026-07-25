@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#7c5cff">
 <meta name="format-detection" content="telephone=no">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <title>牟科企工作台</title>
 <style>
 :root{
@@ -75,10 +76,10 @@ body.modal-open{overflow:hidden}
 }
 .tabbar .tab{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:6px 0 8px;color:var(--text3);font-size:10px;font-weight:500;
+  gap:3px;padding:6px 0 8px;color:var(--text3);font-size:9px;font-weight:500;
   position:relative;
 }
-.tabbar .tab .ico{font-size:18px;line-height:1;margin-bottom:2px}
+.tabbar .tab .ico{font-size:17px;line-height:1;margin-bottom:2px}
 .tabbar .tab.active{color:var(--primary)}
 .tabbar .tab.active::after{
   content:"";position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--primary);
@@ -318,6 +319,37 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
   .form-grid{grid-template-columns:repeat(3,1fr)}
   .stat-grid{grid-template-columns:repeat(4,1fr)}
 }
+
+/* ===== Script Assistant ===== */
+.script-card{
+  background:#fff;border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow-sm);border-left:3px solid var(--primary);
+}
+.script-card .sc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.script-card .sc-cat{display:inline-block;padding:2px 8px;border-radius:8px;background:var(--primary3);color:var(--primary);font-size:10px;font-weight:700}
+.script-card .sc-content{font-size:14px;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-word;margin-bottom:8px}
+.script-card .sc-tags{font-size:11px;color:var(--text3);margin-bottom:8px}
+.script-card .sc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.script-card .sc-actions .btn{font-size:12px;padding:7px 12px}
+.match-score{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700}
+.match-score.high{background:#dcfce7;color:var(--green)}
+.match-score.mid{background:#fef9c3;color:var(--yellow)}
+.script-empty-match{text-align:center;padding:20px;color:var(--text2);font-size:13px}
+.recent-item{display:flex;align-items:center;gap:10px;padding:10px;background:#f9fafb;border-radius:10px;margin-bottom:6px}
+.recent-item .ri-text{flex:1;font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-chip{
+  display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:16px;
+  background:#fff;color:var(--text2);font-size:12px;font-weight:600;box-shadow:var(--shadow-sm);margin:3px;
+}
+.cat-chip.active{background:var(--grad);color:#fff}
+.cat-chip .cat-del{color:var(--text3);font-size:14px;margin-left:2px}
+.copy-toast{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(34,197,94,.95);color:#fff;padding:16px 28px;border-radius:16px;
+  font-size:15px;font-weight:700;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+}
+.copy-toast.show{opacity:1}
 </style>
 </head>
 <body>
@@ -367,17 +399,22 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
       <div class="grid-card g4" onclick="switchView('anchor')">
         <div class="ico-box"><i class="fa-solid fa-user"></i></div>
         <div class="title">主播信息</div>
-        <div class="sub">人员管理</div>
+        <div class="sub">人员/分团</div>
       </div>
       <div class="grid-card g5" onclick="openDanceRef()">
         <div class="ico-box"><i class="fa-solid fa-music"></i></div>
         <div class="title">舞蹈参考</div>
         <div class="sub">风格检索</div>
       </div>
-      <div class="grid-card g6" onclick="switchView('table')">
+      <div class="grid-card g6" onclick="switchView('script')">
+        <div class="ico-box"><i class="fa-solid fa-comments"></i></div>
+        <div class="title">话术助手</div>
+        <div class="sub">AI智能回复</div>
+      </div>
+      <div class="grid-card g1" onclick="switchView('table')">
         <div class="ico-box"><i class="fa-solid fa-chart-line"></i></div>
         <div class="title">工作表格</div>
-        <div class="sub">数据/排班</div>
+        <div class="sub">数据/导出</div>
       </div>
     </div>
 
@@ -408,7 +445,16 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
     </div>
 
     <div id="anchor-info">
-      <button class="btn btn-primary btn-block" onclick="openAnchorForm()" style="margin-bottom:16px">＋ 新增主播</button>
+      <div class="card" style="padding:14px;margin-bottom:12px">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <button class="btn btn-primary" style="flex:1" onclick="openAnchorForm()"><i class="fa-solid fa-plus"></i> 新增主播</button>
+          <button class="btn btn-ghost" onclick="openTeamForm()"><i class="fa-solid fa-people-group"></i> 管理团</button>
+        </div>
+        <div class="task-input-row" style="margin-bottom:10px">
+          <input id="anchorSearch" placeholder="搜索主播姓名/艺名..." oninput="renderAnchors()">
+        </div>
+        <div id="teamFilter" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none"></div>
+      </div>
       <div id="anchorList"></div>
     </div>
 
@@ -442,6 +488,11 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <input type="month" id="perfMonth" onchange="renderPerformance()">
         </div>
         <button class="btn btn-primary btn-block" onclick="openPerfForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 录入业绩</button>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('performance','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('performance','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('performance','word')"><i class="fa-solid fa-file-word"></i> Word</button>
+        </div>
         <div class="stat-grid" id="perfStats"></div>
         <div class="card-title" style="margin-top:14px"><span class="left"><i class="fa-solid fa-trophy" style="color:var(--yellow)"></i> 主播排行榜</span></div>
         <div id="perfRank"></div>
@@ -459,6 +510,11 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <button class="wbtn" onclick="shiftWeek(1)">下周 ›</button>
         </div>
         <button class="btn btn-primary btn-block" onclick="openScheduleForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 添加排班</button>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('schedule','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('schedule','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('schedule','word')"><i class="fa-solid fa-file-word"></i> Word</button>
+        </div>
         <div class="table-wrap" id="scheduleTable"></div>
         <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;font-size:11px">
           <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:rgba(34,197,94,.3);border-radius:3px"></span>已排班</span>
@@ -478,6 +534,11 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <input type="month" id="attMonth" onchange="renderAttendance()">
         </div>
         <button class="btn btn-primary btn-block" onclick="openAttForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 考勤打卡</button>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('attendance','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('attendance','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('attendance','word')"><i class="fa-solid fa-file-word"></i> Word</button>
+        </div>
         <div class="card-title"><span class="left"><i class="fa-solid fa-chart-pie" style="color:var(--primary)"></i> 月度汇总</span></div>
         <div class="table-wrap" id="attTable"></div>
         <div class="card-title" style="margin-top:14px"><span class="left"><i class="fa-solid fa-list-ul" style="color:var(--text2)"></i> 考勤记录</span></div>
@@ -497,6 +558,11 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <label>提成比例（元/音浪）</label>
           <input type="number" id="commissionRate" value="0.01" step="0.001" onchange="renderSalary()">
         </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('salary','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('salary','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('salary','word')"><i class="fa-solid fa-file-word"></i> Word</button>
+        </div>
         <div class="stat-grid" id="salaryStats"></div>
         <div class="table-wrap" id="salaryTable"></div>
       </div>
@@ -511,6 +577,11 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <input type="month" id="reimbMonth" onchange="renderReimburse()">
         </div>
         <button class="btn btn-primary btn-block" onclick="openReimbForm()" style="margin-bottom:12px"><i class="fa-solid fa-plus"></i> 新增报销单</button>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#dcfce7;color:var(--green);font-weight:700" onclick="exportTable('reimburse','xlsx')"><i class="fa-solid fa-file-excel"></i> 导出Excel</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('reimburse','csv')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button class="btn btn-sm btn-ghost" onclick="exportTable('reimburse','word')"><i class="fa-solid fa-file-word"></i> Word</button>
+        </div>
         <div class="stat-grid" id="reimbStats"></div>
         <div class="card-title" style="margin-top:14px"><span class="left"><i class="fa-solid fa-list" style="color:var(--text2)"></i> 报销明细</span></div>
         <div class="table-wrap" id="reimbTable"></div>
@@ -527,12 +598,66 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
           <div class="form-row"><label>开始日期</label><input type="date" id="weekStart" onchange="renderWeekly()"></div>
           <div class="form-row"><label>结束日期</label><input type="date" id="weekEnd" onchange="renderWeekly()"></div>
         </div>
-        <div style="display:flex;gap:10px;margin-bottom:14px">
+        <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
           <button class="btn btn-primary" style="flex:1" onclick="renderWeekly()">生成周报</button>
-          <button class="btn btn-ghost" onclick="copyWeekly()">复制</button>
-          <button class="btn btn-ghost" onclick="exportWeekly()">导出</button>
+          <button class="btn btn-ghost" onclick="copyWeekly()"><i class="fa-solid fa-copy"></i> 复制</button>
+          <button class="btn btn-ghost" onclick="exportWeekly('txt')"><i class="fa-solid fa-file-lines"></i> TXT</button>
+          <button class="btn btn-ghost" onclick="exportWeekly('word')"><i class="fa-solid fa-file-word"></i> Word</button>
         </div>
         <div class="report-box" id="weeklyReport">选择日期区间后点击"生成周报"</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ 话术助手 ============ -->
+  <main class="view" id="view-script">
+    <div class="seg">
+      <div class="seg-btn active" data-stab="match" onclick="switchScriptTab('match')">智能匹配</div>
+      <div class="seg-btn" data-stab="library" onclick="switchScriptTab('library')">话术库</div>
+    </div>
+
+    <!-- 智能匹配 -->
+    <div id="script-match">
+      <div class="card" style="background:var(--grad);color:#fff">
+        <div class="card-title" style="color:#fff"><span class="left"><i class="fa-solid fa-wand-magic-sparkles"></i> AI话术匹配</span></div>
+        <div style="font-size:12px;opacity:.9;margin-bottom:10px">把大哥发来的消息粘贴进来，自动匹配最佳回复话术</div>
+        <textarea id="matchInput" rows="3" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:12px;padding:12px" placeholder="例如：你今天怎么没开播？/ 给我看看你的腿 / 晚上一起吃个饭？" onkeydown="if(event.key==='Enter'&&event.ctrlKey)doMatch()"></textarea>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn" style="flex:1;background:#fff;color:var(--primary);font-weight:700" onclick="doMatch()"><i class="fa-solid fa-bolt"></i> 智能匹配</button>
+          <button class="btn" style="background:rgba(255,255,255,.2);color:#fff" onclick="document.getElementById('matchInput').value='';renderMatchResult([])"><i class="fa-solid fa-eraser"></i></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="left"><i class="fa-solid fa-lightbulb" style="color:var(--yellow)"></i> 匹配结果</span><span id="matchCount" style="font-size:12px;color:var(--text2);font-weight:500"></span></div>
+        <div id="matchResult"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="left"><i class="fa-solid fa-clock-rotate-left" style="color:var(--blue)"></i> 最近使用</span></div>
+        <div id="recentScripts"></div>
+      </div>
+    </div>
+
+    <!-- 话术库 -->
+    <div id="script-library" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <span class="left"><i class="fa-solid fa-book-bookmark" style="color:var(--primary)"></i> 话术库</span>
+          <button class="btn btn-primary btn-sm" onclick="openScriptForm()"><i class="fa-solid fa-plus"></i> 新增</button>
+        </div>
+        <div class="task-input-row">
+          <input id="scriptSearch" placeholder="搜索话术内容/标签/场景..." oninput="renderScriptLib()">
+        </div>
+        <div id="scriptCats" style="margin-bottom:10px"></div>
+        <div id="scriptList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="left"><i class="fa-solid fa-layer-group" style="color:var(--accent)"></i> 场景分类</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">点击场景快速筛选，长按可管理分类</div>
+        <div id="scriptCatMgr"></div>
+        <button class="btn btn-ghost btn-block btn-sm" style="margin-top:10px" onclick="openScriptCatForm()"><i class="fa-solid fa-plus"></i> 新增场景</button>
       </div>
     </div>
   </main>
@@ -605,6 +730,7 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
   <nav class="tabbar">
     <div class="tab active" data-view="home" onclick="switchView('home')"><span class="ico"><i class="fa-solid fa-clipboard-list"></i></span>计划</div>
     <div class="tab" data-view="anchor" onclick="switchView('anchor')"><span class="ico"><i class="fa-solid fa-user"></i></span>主播</div>
+    <div class="tab" data-view="script" onclick="switchView('script')"><span class="ico"><i class="fa-solid fa-comments"></i></span>话术</div>
     <div class="tab" data-view="table" onclick="switchView('table')"><span class="ico"><i class="fa-solid fa-chart-line"></i></span>表格</div>
     <div class="tab" data-view="material" onclick="switchView('material')"><span class="ico"><i class="fa-solid fa-fire"></i></span>热点</div>
     <div class="tab" data-view="more" onclick="switchView('more')"><span class="ico"><i class="fa-solid fa-gear"></i></span>更多</div>
@@ -618,6 +744,7 @@ th{color:var(--text2);font-weight:600;font-size:11px;background:#f9fafb}
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+<div class="copy-toast" id="copyToast"><i class="fa-solid fa-check-circle"></i> 已复制</div>
 
 <script>
 /* ===================== Data Layer ===================== */
@@ -646,6 +773,16 @@ const PLATFORMS = {
   bili:{name:'B站', ico:'<i class="fa-brands fa-bilibili"></i>', url:'https://search.bilibili.com/all?keyword='}
 };
 const MAT_CATS = ['舞蹈','穿搭','妆造','话术','热点','音乐','其他'];
+const SCRIPT_CATS_DEFAULT = ['开场问候','撩拨暧昧','要礼物','情感维护','拒绝边界','收尾道别','日常闲聊'];
+const SCRIPT_KEYWORDS_MAP = {
+  '开场问候':['你好','在吗','哈喽','早','晚上好','在不在','开播','开播了吗','怎么没开播','没看到你','今天没播'],
+  '撩拨暧昧':['喜欢','想你','好看','漂亮','美女','约','见面','吃个饭','喜欢你','做我女朋友','追你','相亲','约会','电话','视频'],
+  '要礼物':['礼物','刷','支持一下','守护','开个守护','嘉年华','火箭','抖音币','抖币','打赏','赞助','投资你'],
+  '情感维护':['分手','失恋','心情不好','难过','累','压力','加班','孤单','寂寞','想找人聊','陪聊','烦','不开心','郁闷'],
+  '拒绝边界':['出来','开房','私人','微信','加微信','私密照','照片','腿','身材','看看','发个','裸','黄色','约炮','一夜情'],
+  '收尾道别':['晚安','睡了','休息','明天','下次','先忙','走了','拜拜','下了'],
+  '日常闲聊':['吃饭','工作','周末','天气','在干嘛','忙什么','最近','哈哈','有趣','好玩','电影','游戏']
+};
 
 let DB = loadData();
 let currentTaskDate = todayStr();
@@ -657,7 +794,7 @@ function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMo
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 
 function defaultDB(){
-  return {version:1,tasks:[],anchors:[],materials:[],reviews:[],dailyData:[],schedule:[],attendance:[],reimburse:[]};
+  return {version:1,tasks:[],anchors:[],materials:[],reviews:[],dailyData:[],schedule:[],attendance:[],reimburse:[],scripts:[],scriptCats:SCRIPT_CATS_DEFAULT,teams:[],recentScripts:[]};
 }
 function loadData(){
   try{
@@ -669,7 +806,7 @@ function loadData(){
   }catch(e){return defaultDB()}
 }
 function saveData(){localStorage.setItem(STORE_KEY, JSON.stringify(DB))}
-function ensureArr(){['tasks','anchors','materials','reviews','dailyData','schedule','attendance','reimburse'].forEach(k=>{if(!Array.isArray(DB[k]))DB[k]=[]})}
+function ensureArr(){['tasks','anchors','materials','reviews','dailyData','schedule','attendance','reimburse','scripts','recentScripts','teams'].forEach(k=>{if(!Array.isArray(DB[k]))DB[k]=[]});if(!Array.isArray(DB.scriptCats)||!DB.scriptCats.length)DB.scriptCats=SCRIPT_CATS_DEFAULT.slice()}
 
 /* ===================== Utils ===================== */
 function toast(msg){
@@ -708,6 +845,7 @@ function switchView(name){
   document.querySelector('.view.active').scrollTop=0;
   if(name==='home') renderHome();
   if(name==='anchor') renderAnchors();
+  if(name==='script') switchScriptTab(currentSTab||'match');
   if(name==='table') switchSubTab(currentTTab||'performance');
   if(name==='material') renderMaterials();
 }
@@ -802,30 +940,52 @@ function renderTasks(){
 }
 
 /* ===================== Anchors ===================== */
+let currentTeamFilter='';
 function renderAnchors(){
+  // 渲染团筛选标签
+  const filterEl=document.getElementById('teamFilter');
+  if(filterEl){
+    filterEl.innerHTML='<span class="tag filter '+(currentTeamFilter===''?'active':'')+'" onclick="setTeamFilter(\'\')">全部</span>'+
+      (DB.teams||[]).map(t=>`<span class="tag filter ${currentTeamFilter===t.id?'active':''}" onclick="setTeamFilter('${t.id}')">${escapeHtml(t.name)} <span style="opacity:.6;font-size:10px">${DB.anchors.filter(a=>a.team===t.id).length}</span></span>`).join('');
+    filterEl.style.scrollbarWidth='none';
+  }
+  const search=(document.getElementById('anchorSearch')?.value||'').trim().toLowerCase();
+  let list=DB.anchors.slice();
+  if(currentTeamFilter)list=list.filter(a=>a.team===currentTeamFilter);
+  if(search)list=list.filter(a=>(a.name||'').toLowerCase().includes(search)||(a.artName||'').toLowerCase().includes(search));
   const el=document.getElementById('anchorList');
-  if(!DB.anchors.length){
-    el.innerHTML=`<div class="empty"><div class="ei"><i class="fa-solid fa-user"></i></div><div class="et">暂无主播，点击上方新增</div></div>`;
+  if(!list.length){
+    el.innerHTML=`<div class="empty"><div class="ei"><i class="fa-solid fa-user"></i></div><div class="et">${DB.anchors.length?'该筛选下无主播':'暂无主播，点击上方新增'}</div></div>`;
     return;
   }
-  el.innerHTML=DB.anchors.map(a=>`
-    <div class="list-item">
+  el.innerHTML=list.map(a=>{
+    const team=a.team?DB.teams.find(t=>t.id===a.team):null;
+    return `<div class="list-item">
       <div class="info">
-        <div class="name">${escapeHtml(a.name)} ${a.artName?'('+escapeHtml(a.artName)+')':''}</div>
+        <div class="name">${escapeHtml(a.name)} ${a.artName?'('+escapeHtml(a.artName)+')':''} ${team?`<span class="sc-cat" style="background:#fff0f5;color:var(--accent)">${escapeHtml(team.name)}</span>`:''}</div>
         <div class="sub">${escapeHtml(a.style||'未设置')} · 底薪 ¥${a.baseSalary||0} · ${escapeHtml(a.joinDate||'未登记入职')}</div>
       </div>
       <div class="actions">
         <button class="icon-action" onclick="openAnchorForm('${a.id}')"><i class="fa-solid fa-pen"></i></button>
         <button class="icon-action danger" onclick="delAnchor('${a.id}')"><i class="fa-solid fa-trash"></i></button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
+function setTeamFilter(id){currentTeamFilter=id;renderAnchors()}
 function openAnchorForm(id){
   const a = id?DB.anchors.find(x=>x.id===id):{};
+  const teams=DB.teams||[];
   const html=`
     <div class="modal-header"><h3>${id?'编辑主播':'新增主播'}</h3><div class="close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div></div>
     <div class="form-row"><label>姓名 *</label><input id="a_name" value="${escapeHtml(a.name||'')}" placeholder="真实姓名"></div>
     <div class="form-row"><label>艺名</label><input id="a_artName" value="${escapeHtml(a.artName||'')}" placeholder="直播间艺名"></div>
+    <div class="form-row"><label>所属团</label>
+      <div style="display:flex;gap:8px">
+        <select id="a_team" style="flex:1"><option value="">未分组</option>${teams.map(t=>`<option value="${t.id}" ${a.team===t.id?'selected':''}>${escapeHtml(t.name)}</option>`).join('')}</select>
+        <button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="quickAddTeam()"><i class="fa-solid fa-plus"></i></button>
+      </div>
+    </div>
     <div class="form-row"><label>身份证号</label><input id="a_idCard" value="${escapeHtml(a.idCard||'')}" placeholder="身份证号码"></div>
     <div class="form-grid">
       <div class="form-row"><label>入职日期</label><input type="date" id="a_joinDate" value="${a.joinDate||''}"></div>
@@ -842,6 +1002,7 @@ function saveAnchor(id){
   const data={
     name:document.getElementById('a_name').value.trim(),
     artName:document.getElementById('a_artName').value.trim(),
+    team:document.getElementById('a_team').value,
     idCard:document.getElementById('a_idCard').value.trim(),
     joinDate:document.getElementById('a_joinDate').value,
     baseSalary:Number(document.getElementById('a_baseSalary').value)||0,
@@ -852,10 +1013,90 @@ function saveAnchor(id){
   else{data.id=uid();DB.anchors.push(data)}
   saveData();closeModal();renderAnchors();renderHome();toast('已保存');
 }
+function quickAddTeam(){
+  const name=prompt('请输入团名称：');
+  if(!name||!name.trim())return;
+  if((DB.teams||[]).some(t=>t.name===name.trim())){toast('该团已存在');return}
+  if(!DB.teams)DB.teams=[];
+  const t={id:uid(),name:name.trim()};
+  DB.teams.push(t);
+  saveData();
+  // 刷新表单中的下拉框
+  const sel=document.getElementById('a_team');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">未分组</option>'+DB.teams.map(t=>`<option value="${t.id}" ${t.id===cur?'selected':''}>${escapeHtml(t.name)}</option>`).join('');
+  // 默认选中新加的
+  sel.value=t.id;
+  renderAnchors();
+  toast('已添加团：'+t.name);
+}
 function delAnchor(id){
   if(!confirm('确认删除该主播？相关业绩/考勤记录将保留但失去关联。'))return;
   DB.anchors=DB.anchors.filter(x=>x.id!==id);
   saveData();renderAnchors();renderHome();
+}
+
+/* 团管理 */
+function openTeamForm(){
+  const teams=DB.teams||[];
+  const html=`
+    <div class="modal-header"><h3><i class="fa-solid fa-people-group" style="color:var(--accent)"></i> 团队管理</h3><div class="close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div></div>
+    <div class="form-row" style="display:flex;gap:8px">
+      <input id="t_name" placeholder="输入新团名称，如：一团/星光团" style="flex:1" onkeydown="if(event.key==='Enter')saveTeam()">
+      <button class="btn btn-primary btn-sm" onclick="saveTeam()"><i class="fa-solid fa-plus"></i> 添加</button>
+    </div>
+    <div id="teamList" style="margin-top:14px"></div>
+  `;
+  openModal(html);
+  renderTeamList();
+}
+function renderTeamList(){
+  const teams=DB.teams||[];
+  const el=document.getElementById('teamList');
+  if(!el)return;
+  if(!teams.length){
+    el.innerHTML=`<div class="empty" style="padding:20px"><div class="et">暂无团队，上方输入名称添加</div></div>`;
+    return;
+  }
+  el.innerHTML=teams.map(t=>{
+    const count=DB.anchors.filter(a=>a.team===t.id).length;
+    const anchors=DB.anchors.filter(a=>a.team===t.id).map(a=>escapeHtml(a.name)).join('、')||'无成员';
+    return `<div class="list-item" style="flex-direction:column;align-items:stretch;background:#f9faff;border-left:3px solid var(--accent)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div>
+          <span style="font-weight:700;font-size:15px">${escapeHtml(t.name)}</span>
+          <span style="font-size:12px;color:var(--text2);margin-left:8px">${count} 人</span>
+        </div>
+        <button class="icon-action danger" onclick="delTeam('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+      </div>
+      <div style="font-size:12px;color:var(--text2)">${anchors}</div>
+    </div>`;
+  }).join('');
+}
+function saveTeam(){
+  const name=document.getElementById('t_name').value.trim();
+  if(!name){toast('请输入团名称');return}
+  if((DB.teams||[]).some(t=>t.name===name)){toast('该团已存在');return}
+  if(!DB.teams)DB.teams=[];
+  DB.teams.push({id:uid(),name});
+  saveData();
+  document.getElementById('t_name').value='';
+  renderTeamList();renderAnchors();renderHome();
+  toast('已添加');
+}
+function delTeam(id){
+  const t=DB.teams.find(x=>x.id===id);
+  const count=DB.anchors.filter(a=>a.team===id).length;
+  if(count>0){
+    if(!confirm(`「${t.name}」下还有 ${count} 个主播，删除后这些主播将变为"未分组"。确认删除？`))return;
+    DB.anchors.forEach(a=>{if(a.team===id)a.team=''});
+  }else{
+    if(!confirm(`确认删除团「${t.name}」？`))return;
+  }
+  DB.teams=DB.teams.filter(x=>x.id!==id);
+  if(currentTeamFilter===id)currentTeamFilter='';
+  saveData();renderTeamList();renderAnchors();renderHome();
+  toast('已删除');
 }
 
 /* ===================== Reviews ===================== */
@@ -998,6 +1239,244 @@ function quickSearch(platform){
   const kw=document.getElementById('globalSearchKw').value.trim();
   if(!kw){toast('请输入关键词');return}
   searchOnPlatform(kw, platform);
+}
+
+/* ===================== Script Assistant ===================== */
+let currentSTab='match';
+let currentScriptCat='';
+function switchScriptTab(tab){
+  currentSTab=tab;
+  document.querySelectorAll('#view-script .seg-btn').forEach(b=>b.classList.toggle('active', b.dataset.stab===tab));
+  document.getElementById('script-match').style.display = tab==='match'?'block':'none';
+  document.getElementById('script-library').style.display = tab==='library'?'block':'none';
+  if(tab==='match') renderRecentScripts();
+  if(tab==='library') renderScriptLib();
+}
+function getScriptCats(){return (DB.scriptCats&&DB.scriptCats.length)?DB.scriptCats:SCRIPT_CATS_DEFAULT.slice()}
+
+/* 智能匹配核心算法 */
+function doMatch(){
+  const input=document.getElementById('matchInput').value.trim();
+  if(!input){toast('请输入大哥发来的消息');return}
+  const results=matchScripts(input);
+  renderMatchResult(results);
+}
+function matchScripts(input){
+  const lower=input.toLowerCase();
+  const scored=[];
+  DB.scripts.forEach(s=>{
+    let score=0;
+    const reasons=[];
+    // 1. 关键词匹配（场景关键词）
+    const catKw=SCRIPT_KEYWORDS_MAP[s.category]||[];
+    catKw.forEach(kw=>{
+      if(lower.includes(kw.toLowerCase())){score+=30;reasons.push('场景:'+s.category)}
+    });
+    // 2. 话术自身标签匹配
+    (s.tags||[]).forEach(tag=>{
+      if(lower.includes(tag.toLowerCase())){score+=20;reasons.push('标签:'+tag)}
+    });
+    // 3. 话术触发词匹配（用户自定义的触发场景）
+    if(s.trigger){
+      s.trigger.split(/[,，\s]+/).filter(Boolean).forEach(t=>{
+        if(lower.includes(t.toLowerCase())){score+=25;reasons.push('触发:'+t)}
+      });
+    }
+    // 4. 话术内容关键词匹配
+    if(s.content){
+      const contentLower=s.content.toLowerCase();
+      // 提取内容中的关键实词（2字以上）
+      const words=s.content.match(/[\u4e00-\u9fa5]{2,4}/g)||[];
+      words.forEach(w=>{
+        if(w.length>=2 && lower.includes(w.toLowerCase()) && !['的话','的话','可以','这样','那个','这个','什么','怎么','的话','我们','你们','他们','因为','所以','如果','但是'].includes(w)){
+          score+=5;
+        }
+      });
+    }
+    // 5. 场景类别字面匹配
+    if(s.category && lower.includes(s.category.toLowerCase().slice(0,2))){score+=10}
+    if(score>0)scored.push({script:s,score,reasons:[...new Set(reasons)]});
+  });
+  // 没匹配到时返回全部作为参考
+  if(scored.length===0){
+    return DB.scripts.slice(0,8).map(s=>({script:s,score:0,reasons:['无直接匹配，供参考']}));
+  }
+  return scored.sort((a,b)=>b.score-a.score).slice(0,8);
+}
+function renderMatchResult(results){
+  const el=document.getElementById('matchResult');
+  const cntEl=document.getElementById('matchCount');
+  if(!results.length){
+    cntEl.textContent='';
+    el.innerHTML=`<div class="script-empty-match"><i class="fa-solid fa-comment-slash" style="font-size:32px;opacity:.4;display:block;margin-bottom:8px"></i>话术库还是空的，先去"话术库"添加一些话术吧</div>`;
+    return;
+  }
+  const hasMatch=results[0].score>0;
+  cntEl.textContent=hasMatch?`匹配到 ${results.length} 条`:`参考 ${results.length} 条`;
+  el.innerHTML=results.map((r,i)=>{
+    const s=r.script;
+    const scoreClass=r.score>=30?'high':r.score>0?'mid':'';
+    const scoreLabel=r.score>=30?'高度匹配':r.score>0?'相关':'参考';
+    return `<div class="script-card" style="${i===0&&hasMatch?'border-left-color:var(--green);background:#f0fdf4':''}">
+      <div class="sc-head">
+        <span class="sc-cat">${escapeHtml(s.category||'未分类')}</span>
+        ${scoreClass?`<span class="match-score ${scoreClass}">${scoreLabel}</span>`:''}
+      </div>
+      <div class="sc-content">${escapeHtml(s.content)}</div>
+      ${r.reasons.length?`<div style="font-size:11px;color:var(--text3);margin-bottom:6px"><i class="fa-solid fa-circle-info"></i> ${r.reasons.join(' · ')}</div>`:''}
+      ${(s.tags||[]).length?`<div class="sc-tags"><i class="fa-solid fa-hashtag"></i> ${s.tags.map(t=>escapeHtml(t)).join(' · ')}</div>`:''}
+      <div class="sc-actions">
+        <button class="btn btn-primary btn-sm" onclick="copyScript('${s.id}')"><i class="fa-solid fa-copy"></i> 复制回复</button>
+        ${s.followUp?`<button class="btn btn-ghost btn-sm" onclick="copyText('${escapeHtml(s.followUp).replace(/'/g,"\\'")}')"><i class="fa-solid fa-arrow-right"></i> 追问话术</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="openScriptForm('${s.id}')"><i class="fa-solid fa-pen"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function copyScript(id){
+  const s=DB.scripts.find(x=>x.id===id);
+  if(!s)return;
+  copyText(s.content);
+  // 记录最近使用
+  DB.recentScripts=DB.recentScripts.filter(x=>x!==id);
+  DB.recentScripts.unshift(id);
+  DB.recentScripts=DB.recentScripts.slice(0,10);
+  saveData();
+  renderRecentScripts();
+  showCopyToast();
+}
+function copyText(text){
+  navigator.clipboard.writeText(text).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);
+    ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+}
+function showCopyToast(){
+  const t=document.getElementById('copyToast');
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),1500);
+}
+function renderRecentScripts(){
+  const el=document.getElementById('recentScripts');
+  if(!DB.recentScripts.length){
+    el.innerHTML=`<div class="empty" style="padding:20px"><div class="et" style="font-size:12px">暂无使用记录</div></div>`;
+    return;
+  }
+  el.innerHTML=DB.recentScripts.map(id=>{
+    const s=DB.scripts.find(x=>x.id===id);
+    if(!s)return '';
+    return `<div class="recent-item">
+      <span class="sc-cat">${escapeHtml(s.category||'未分类')}</span>
+      <div class="ri-text">${escapeHtml(s.content.slice(0,40))}${s.content.length>40?'...':''}</div>
+      <button class="icon-action" onclick="copyScript('${s.id}')" style="background:var(--primary3);color:var(--primary)"><i class="fa-solid fa-copy"></i></button>
+    </div>`;
+  }).join('');
+}
+
+/* 话术库管理 */
+function renderScriptLib(){
+  const cats=getScriptCats();
+  const catEl=document.getElementById('scriptCats');
+  catEl.innerHTML='<span class="tag filter '+(currentScriptCat===''?'active':'')+'" onclick="setScriptCat(\'\')">全部</span>'+
+    cats.map(c=>`<span class="tag filter ${currentScriptCat===c?'active':''}" onclick="setScriptCat('${escapeHtml(c)}')">${escapeHtml(c)}</span>`).join('');
+  const search=document.getElementById('scriptSearch').value.trim().toLowerCase();
+  let list=DB.scripts.slice();
+  if(currentScriptCat)list=list.filter(s=>s.category===currentScriptCat);
+  if(search)list=list.filter(s=>(s.content||'').toLowerCase().includes(search)||(s.tags||[]).join(',').toLowerCase().includes(search)||(s.trigger||'').toLowerCase().includes(search)||(s.category||'').toLowerCase().includes(search));
+  const el=document.getElementById('scriptList');
+  if(!list.length){
+    el.innerHTML=`<div class="empty"><div class="ei"><i class="fa-solid fa-comments"></i></div><div class="et">暂无话术，点击上方新增</div></div>`;
+    return;
+  }
+  el.innerHTML=list.map(s=>`
+    <div class="script-card">
+      <div class="sc-head">
+        <span class="sc-cat">${escapeHtml(s.category||'未分类')}</span>
+        <div style="display:flex;gap:6px">
+          <button class="icon-action" onclick="copyScript('${s.id}')" style="background:var(--primary3);color:var(--primary)"><i class="fa-solid fa-copy"></i></button>
+          <button class="icon-action" onclick="openScriptForm('${s.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="icon-action danger" onclick="delScript('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <div class="sc-content">${escapeHtml(s.content)}</div>
+      ${s.trigger?`<div style="font-size:11px;color:var(--blue);margin-bottom:4px"><i class="fa-solid fa-bolt"></i> 触发词：${escapeHtml(s.trigger)}</div>`:''}
+      ${s.followUp?`<div style="font-size:12px;color:var(--text2);margin-bottom:4px;padding:8px;background:#f9fafb;border-radius:8px"><b>追问话术：</b>${escapeHtml(s.followUp)}</div>`:''}
+      ${(s.tags||[]).length?`<div class="sc-tags"><i class="fa-solid fa-hashtag"></i> ${s.tags.map(t=>escapeHtml(t)).join(' · ')}</div>`:''}
+    </div>`).join('');
+}
+function setScriptCat(c){currentScriptCat=c;renderScriptLib()}
+function openScriptForm(id){
+  const s=id?DB.scripts.find(x=>x.id===id):{};
+  const cats=getScriptCats();
+  const html=`
+    <div class="modal-header"><h3>${id?'编辑话术':'新增话术'}</h3><div class="close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div></div>
+    <div class="form-row"><label>场景分类 *</label>
+      <select id="sc_category">${cats.map(c=>`<option value="${c}" ${s.category===c?'selected':''}>${c}</option>`).join('')}</select>
+    </div>
+    <div class="form-row"><label>触发词（逗号分隔，用于智能匹配）</label><input id="sc_trigger" value="${escapeHtml(s.trigger||'')}" placeholder="如：没开播,怎么没来,没看到你"></div>
+    <div class="form-row"><label>回复话术 *</label><textarea id="sc_content" rows="4" placeholder="完整的回复内容，主播可直接复制发送">${escapeHtml(s.content||'')}</textarea></div>
+    <div class="form-row"><label>追问话术（可选，对方继续追问时用）</label><textarea id="sc_followUp" rows="2" placeholder="对方再追问时的回复">${escapeHtml(s.followUp||'')}</textarea></div>
+    <div class="form-row"><label>标签（逗号分隔）</label><input id="sc_tags" value="${escapeHtml((s.tags||[]).join(','))}" placeholder="如：温柔,高情商,要礼物"></div>
+    <button class="btn btn-primary btn-block" onclick="saveScript('${id||''}')">保存</button>
+  `;
+  openModal(html);
+}
+function saveScript(id){
+  const data={
+    category:document.getElementById('sc_category').value,
+    trigger:document.getElementById('sc_trigger').value.trim(),
+    content:document.getElementById('sc_content').value.trim(),
+    followUp:document.getElementById('sc_followUp').value.trim(),
+    tags:document.getElementById('sc_tags').value.split(',').map(s=>s.trim()).filter(Boolean)
+  };
+  if(!data.content){toast('请填写回复话术');return}
+  if(!data.category){toast('请选择场景分类');return}
+  if(id){Object.assign(DB.scripts.find(x=>x.id===id),data)}
+  else{data.id=uid();DB.scripts.push(data)}
+  saveData();closeModal();renderScriptLib();toast('已保存');
+}
+function delScript(id){
+  if(!confirm('确认删除该话术？'))return;
+  DB.scripts=DB.scripts.filter(x=>x.id!==id);
+  DB.recentScripts=DB.recentScripts.filter(x=>x!==id);
+  saveData();renderScriptLib();renderRecentScripts();
+}
+function renderScriptCatMgr(){
+  const cats=getScriptCats();
+  const el=document.getElementById('scriptCatMgr');
+  el.innerHTML=cats.map(c=>{
+    const count=DB.scripts.filter(s=>s.category===c).length;
+    return `<span class="cat-chip">${escapeHtml(c)} <span style="opacity:.6">${count}</span> <span class="cat-del" onclick="delScriptCat('${escapeHtml(c)}')"><i class="fa-solid fa-xmark"></i></span></span>`;
+  }).join('');
+}
+function openScriptCatForm(){
+  const html=`
+    <div class="modal-header"><h3>新增场景分类</h3><div class="close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div></div>
+    <div class="form-row"><label>分类名称 *</label><input id="scc_name" placeholder="如：节日祝福/活动拉票"></div>
+    <button class="btn btn-primary btn-block" onclick="saveScriptCat()">保存</button>
+  `;
+  openModal(html);
+}
+function saveScriptCat(){
+  const name=document.getElementById('scc_name').value.trim();
+  if(!name){toast('请输入分类名称');return}
+  if(getScriptCats().includes(name)){toast('该分类已存在');return}
+  if(!DB.scriptCats)DB.scriptCats=SCRIPT_CATS_DEFAULT.slice();
+  DB.scriptCats.push(name);
+  saveData();closeModal();renderScriptCatMgr();renderScriptLib();toast('已添加');
+}
+function delScriptCat(name){
+  const count=DB.scripts.filter(s=>s.category===name).length;
+  if(count>0){
+    if(!confirm(`「${name}」下还有 ${count} 条话术，确认删除分类？（话术将变为"未分类"）`))return;
+    DB.scripts.forEach(s=>{if(s.category===name)s.category=''});
+  }else{
+    if(!confirm(`确认删除分类「${name}」？`))return;
+  }
+  DB.scriptCats=DB.scriptCats.filter(c=>c!==name);
+  saveData();renderScriptCatMgr();renderScriptLib();
 }
 
 /* ===================== Materials ===================== */
@@ -1591,17 +2070,194 @@ function copyWeekly(){
     toast('已复制');
   });
 }
-function exportWeekly(){
+function exportWeekly(format){
   if(!weeklyReportText){toast('请先生成周报');return}
   const start=document.getElementById('weekStart').value;
   const end=document.getElementById('weekEnd').value;
-  const blob=new Blob([weeklyReportText],{type:'text/plain;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`周报_${start}_${end}.txt`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  toast('已导出');
+  const fname=`周报_${start}_${end}`;
+  if(format==='word'){
+    // 把markdown式的文本转成HTML
+    let html=weeklyReportText
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+      .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+      .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+      .replace(/^- /gm,'<li>').replace(/\n(?!<)/g,'</li>\n');
+    const fullHtml=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:'微软雅黑',sans-serif;line-height:1.8}h1{color:#7c5cff;text-align:center}h2{color:#333;border-bottom:2px solid #7c5cff;padding-bottom:4px}li{margin:4px 0}</style></head><body>${html}</body></html>`;
+    const blob=new Blob(['\ufeff',fullHtml],{type:'application/msword'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${fname}.doc`;
+    a.click();URL.revokeObjectURL(a.href);
+    toast('已导出Word');
+  }else{
+    const blob=new Blob([weeklyReportText],{type:'text/plain;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${fname}.txt`;
+    a.click();URL.revokeObjectURL(a.href);
+    toast('已导出');
+  }
+}
+
+/* ===================== Table Export ===================== */
+function getTableData(type){
+  // 返回 {title, headers:[], rows:[[]], summary:{}}
+  if(type==='performance'){
+    const month=document.getElementById('perfMonth').value||monthStr();
+    const list=DB.dailyData.filter(d=>(d.date||'').startsWith(month)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    const rows=list.map(d=>{
+      const a=DB.anchors.find(x=>x.id===d.anchorId);
+      const team=a&&a.team?DB.teams.find(t=>t.id===a.team):null;
+      return [d.date, a?a.name:'未知', team?team.name:'-', a?(a.artName||''):'-', Number(d.yinlang)||0, Number(d.fuchi)||0, Number(d.duration)||0, Number(d.sessions)||0];
+    });
+    return {
+      title:`业绩明细表（${month}）`,
+      headers:['日期','主播','所属团','艺名','音浪','扶持(抖币)','时长(h)','场次'],
+      rows:rows,
+      summary:{
+        '总音浪':list.reduce((s,d)=>s+(Number(d.yinlang)||0),0),
+        '总扶持':list.reduce((s,d)=>s+(Number(d.fuchi)||0),0),
+        '总时长':list.reduce((s,d)=>s+(Number(d.duration)||0),0).toFixed(1)+'h',
+        '总场次':list.reduce((s,d)=>s+(Number(d.sessions)||0),0),
+        '参与主播':new Set(list.map(d=>d.anchorId)).size
+      }
+    };
+  }
+  if(type==='schedule'){
+    const dates=getWeekDates();
+    const wdays=['周一','周二','周三','周四','周五','周六','周日'];
+    const sessions=['早场','午场','晚场','夜场'];
+    const weekStrs=dates.map(dateStr);
+    const headers=['场次',...dates.map((d,i)=>`${wdays[i]} ${d.getMonth()+1}/${d.getDate()}`)];
+    const rows=sessions.map(s=>{
+      const row=[s];
+      weekStrs.forEach(ds=>{
+        const items=DB.schedule.filter(x=>x.date===ds&&x.session===s);
+        const cellText=items.map(it=>{
+          const a=DB.anchors.find(x=>x.id===it.anchorId);
+          return a?`${a.name}(${it.status})`:'';
+        }).filter(Boolean).join(' / ');
+        row.push(cellText||'-');
+      });
+      return row;
+    });
+    return {title:`排班表（${dates[0].getMonth()+1}/${dates[0].getDate()} - ${dates[6].getMonth()+1}/${dates[6].getDate()}）`,headers,rows};
+  }
+  if(type==='attendance'){
+    const month=document.getElementById('attMonth').value||monthStr();
+    const list=DB.attendance.filter(a=>(a.date||'').startsWith(month));
+    const summary={};
+    DB.anchors.forEach(a=>{summary[a.id]={出勤:0,迟到:0,请假:0,旷工:0}});
+    list.forEach(a=>{if(summary[a.anchorId])summary[a.anchorId][a.status]=(summary[a.anchorId][a.status]||0)+1});
+    const rows=DB.anchors.map(a=>{
+      const s=summary[a.id];
+      const team=a.team?DB.teams.find(t=>t.id===a.team):null;
+      return [a.name, team?team.name:'-', a.artName||'-', s['出勤'], s['迟到'], s['请假'], s['旷工']];
+    });
+    return {title:`考勤汇总表（${month}）`,headers:['主播','所属团','艺名','出勤','迟到','请假','旷工'],rows};
+  }
+  if(type==='salary'){
+    const month=document.getElementById('salaryMonth').value||monthStr();
+    const rate=Number(document.getElementById('commissionRate').value)||0;
+    const list=DB.dailyData.filter(d=>(d.date||'').startsWith(month));
+    const byAnchor={};
+    list.forEach(d=>{
+      if(!byAnchor[d.anchorId])byAnchor[d.anchorId]={yinlang:0,dur:0,sessions:0};
+      byAnchor[d.anchorId].yinlang+=Number(d.yinlang)||0;
+      byAnchor[d.anchorId].dur+=Number(d.duration)||0;
+      byAnchor[d.anchorId].sessions+=Number(d.sessions)||0;
+    });
+    const rows=DB.anchors.map(a=>{
+      const p=byAnchor[a.id]||{yinlang:0};
+      const base=Number(a.baseSalary)||0;
+      const comm=p.yinlang*rate;
+      const total=base+comm;
+      const team=a.team?DB.teams.find(t=>t.id===a.team):null;
+      return [a.name, team?team.name:'-', a.artName||'-', base, p.yinlang, comm.toFixed(0), total];
+    });
+    return {
+      title:`工资核算表（${month}）`,
+      headers:['主播','所属团','艺名','底薪','音浪','提成','合计'],
+      rows:rows,
+      summary:{
+        '提成比例':rate+' 元/音浪',
+        '应发总额':'¥'+rows.reduce((s,r)=>s+r[6],0).toLocaleString(),
+        '总音浪':rows.reduce((s,r)=>s+r[4],0).toLocaleString()
+      }
+    };
+  }
+  if(type==='reimburse'){
+    const month=document.getElementById('reimbMonth').value||monthStr();
+    const list=DB.reimburse.filter(r=>(r.date||'').startsWith(month)).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    const rows=list.map(r=>{
+      const a=DB.anchors.find(x=>x.id===r.anchorId);
+      const team=a&&a.team?DB.teams.find(t=>t.id===a.team):null;
+      return [r.date, a?a.name:'通用', team?team.name:'-', r.type||'', Number(r.coin)||0, Number(r.amount)||0, r.status, r.note||''];
+    });
+    return {
+      title:`报销明细表（${month}）`,
+      headers:['日期','主播','所属团','类型','抖币','金额','状态','备注'],
+      rows:rows,
+      summary:{
+        '报销总额':'¥'+list.reduce((s,r)=>s+(Number(r.amount)||0),0).toLocaleString(),
+        '抖币合计':list.reduce((s,r)=>s+(Number(r.coin)||0),0).toLocaleString()
+      }
+    };
+  }
+  return null;
+}
+function exportTable(type,format){
+  const data=getTableData(type);
+  if(!data){toast('导出失败');return}
+  if(!data.rows.length){toast('暂无数据可导出');return}
+  const fname=`${data.title}`;
+  if(format==='xlsx'){
+    const wb=XLSX.utils.book_new();
+    // 汇总信息sheet
+    if(data.summary){
+      const summaryRows=Object.entries(data.summary).map(([k,v])=>[k,v]);
+      const ws1=XLSX.utils.aoa_to_sheet([['汇总项','数值'],...summaryRows]);
+      XLSX.utils.book_append_sheet(wb,ws1,'汇总');
+    }
+    // 明细sheet
+    const ws2=XLSX.utils.aoa_to_sheet([data.headers,...data.rows]);
+    ws2['!cols']=data.headers.map(()=>({wch:12}));
+    XLSX.utils.book_append_sheet(wb,ws2,'明细');
+    XLSX.writeFile(wb,`${fname}.xlsx`);
+    toast('已导出Excel');
+  }else if(format==='csv'){
+    const csv=[data.headers,...data.rows].map(r=>r.map(c=>{
+      const s=String(c);
+      return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+    }).join(',')).join('\n');
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${fname}.csv`;
+    a.click();URL.revokeObjectURL(a.href);
+    toast('已导出CSV');
+  }else if(format==='word'){
+    let html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:'微软雅黑',sans-serif}h2{text-align:center;color:#7c5cff}table{border-collapse:collapse;width:100%;margin:10px 0}th,td{border:1px solid #999;padding:6px 8px;text-align:center;font-size:12px}th{background:#f0f0f0}.summary{margin:10px 0;padding:10px;background:#f9fafb;border-radius:8px}.summary div{margin:4px 0}</style></head><body>`;
+    html+=`<h2>${escapeHtml(data.title)}</h2>`;
+    if(data.summary){
+      html+=`<div class="summary">`;
+      Object.entries(data.summary).forEach(([k,v])=>{html+=`<div><b>${escapeHtml(k)}：</b>${escapeHtml(String(v))}</div>`});
+      html+=`</div>`;
+    }
+    html+=`<table><thead><tr>${data.headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>`;
+    html+=data.rows.map(r=>`<tr>${r.map(c=>`<td>${escapeHtml(String(c))}</td>`).join('')}</tr>`).join('');
+    html+=`</tbody></table>`;
+    html+=`<p style="text-align:right;color:#999;font-size:11px;margin-top:20px">导出于 ${new Date().toLocaleString('zh-CN')}</p>`;
+    html+=`</body></html>`;
+    const blob=new Blob(['\ufeff',html],{type:'application/msword'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${fname}.doc`;
+    a.click();URL.revokeObjectURL(a.href);
+    toast('已导出Word');
+  }
 }
 
 /* ===================== Data Export/Import ===================== */
@@ -1648,6 +2304,7 @@ function clearData(){
 function renderAll(){
   renderHome();renderAnchors();renderReviews();renderMaterials();
   renderPerformance();renderSchedule();renderAttendance();renderSalary();renderReimburse();
+  renderScriptLib();renderRecentScripts();renderScriptCatMgr();
 }
 
 /* ===================== Init ===================== */
