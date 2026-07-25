@@ -328,6 +328,9 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 .search-result h4{ color: var(--green); margin-bottom: 8px; }
 .search-result ul{ padding-left: 20px; }
 .search-result li{ margin-bottom: 6px; line-height: 1.6; font-size: 13px; }
+.search-platforms{ margin-top: 14px; padding: 14px; background: #fff; border-radius: 10px; box-shadow: var(--shadow); }
+.platform-link{ display:inline-flex; align-items:center; gap:4px; text-decoration:none; padding:8px 14px; font-size:13px; }
+.platform-link:hover{ background: var(--green); color:#fff; }
 .project-list, .liveplan-list{ display: grid; gap: 10px; }
 .project-item, .liveplan-item{
   display: grid; grid-template-columns: auto 1fr auto auto;
@@ -373,6 +376,133 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 }
 .cat-add-row button:hover{ background: var(--green); color: #fff; }
 
+/* ============ 文件夹式文档管理 ============ */
+.doc-explorer{ display: flex; flex-direction: column; gap: 0; }
+/* 面包屑导航 */
+.doc-breadcrumb{
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 10px 0; font-size: 13px; color: var(--text-2);
+}
+.doc-breadcrumb .crumb{
+  cursor: pointer; color: var(--green); font-weight: 600;
+  padding: 4px 8px; border-radius: 6px; transition: background .15s;
+}
+.doc-breadcrumb .crumb:hover{ background: var(--green-light); }
+.doc-breadcrumb .crumb.current{ color: var(--text); cursor: default; }
+.doc-breadcrumb .crumb.current:hover{ background: none; }
+.doc-breadcrumb .sep{ color: var(--border); }
+
+/* 文件夹列表视图 */
+.folder-grid{
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.folder-card{
+  background: #fff; border-radius: 12px; padding: 18px 14px;
+  box-shadow: var(--shadow); cursor: pointer; transition: all .2s;
+  border: 2px solid transparent; text-align: center; position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.folder-card:hover{
+  border-color: var(--green); transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74,107,58,.12);
+}
+.folder-card .folder-icon{ font-size: 36px; line-height: 1; }
+.folder-card .folder-name{
+  font-size: 14px; font-weight: 600; color: var(--text);
+  word-break: break-word; line-height: 1.4;
+}
+.folder-card .folder-meta{ font-size: 11px; color: var(--text-2); }
+.folder-card .folder-del{
+  position: absolute; top: 6px; right: 6px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(199,92,92,.1); color: var(--danger);
+  font-size: 14px; display: none; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.folder-card:hover .folder-del{ display: flex; }
+.folder-card .folder-del:hover{ background: var(--danger); color: #fff; }
+
+/* 文档列表视图 */
+.doc-list{ display: flex; flex-direction: column; gap: 8px; }
+.doc-item{
+  background: #fff; border-radius: 10px; padding: 14px 16px;
+  box-shadow: var(--shadow); cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; gap: 12px; border-left: 3px solid var(--green-2);
+}
+.doc-item:hover{ background: var(--green-light); border-left-color: var(--green); }
+.doc-item .doc-icon{ font-size: 22px; flex-shrink: 0; }
+.doc-item .doc-info{ flex: 1; min-width: 0; }
+.doc-item .doc-title{
+  font-size: 14px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.doc-item .doc-preview{
+  font-size: 12px; color: var(--text-2); margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.doc-item .doc-date{ font-size: 11px; color: var(--text-2); flex-shrink: 0; }
+.doc-item .doc-del{
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 6px;
+  color: var(--danger); font-size: 13px; display: none;
+  align-items: center; justify-content: center;
+}
+.doc-item:hover .doc-del{ display: flex; }
+.doc-item .doc-del:hover{ background: rgba(199,92,92,.12); }
+
+/* 文档编辑视图 */
+.doc-editor{ background: #fff; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.doc-editor-head{
+  padding: 16px 20px; border-bottom: 2px solid var(--green-light);
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.doc-editor-title{
+  font-size: 18px; font-weight: 700; color: var(--green);
+  flex: 1; min-width: 120px;
+}
+.doc-editor-title-input{
+  font-size: 18px; font-weight: 700; color: var(--green);
+  border: 1px dashed var(--border); border-radius: 6px;
+  padding: 6px 10px; flex: 1; min-width: 120px;
+}
+.doc-editor-title-input:focus{ border-color: var(--green); border-style: solid; }
+.doc-editor-meta{ font-size: 12px; color: var(--text-2); }
+.doc-editor-body{ padding: 20px; }
+.doc-editor-textarea{
+  width: 100%; min-height: 400px;
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px; font-size: 14px; line-height: 1.8;
+  font-family: inherit; resize: vertical; background: #fafaf6;
+}
+.doc-editor-textarea:focus{ border-color: var(--green); background: #fff; }
+.doc-editor-foot{
+  padding: 12px 20px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: #fafaf6;
+}
+.doc-save-status{ font-size: 12px; color: var(--text-2); }
+.doc-editor-actions{ display: flex; gap: 8px; }
+
+/* 空状态 */
+.doc-empty{
+  text-align: center; padding: 50px 20px; color: var(--text-2);
+  background: #fff; border-radius: 12px; border: 2px dashed var(--border);
+}
+.doc-empty-icon{ font-size: 48px; margin-bottom: 12px; }
+.doc-empty-text{ font-size: 14px; margin-bottom: 16px; }
+
+/* 添加文件夹/文档行 */
+.doc-add-row{ display: flex; gap: 8px; margin-bottom: 16px; }
+.doc-add-row input{ flex: 1; }
+.doc-add-row button{
+  background: var(--green); color: #fff;
+  padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  white-space: nowrap; transition: background .15s;
+}
+.doc-add-row button:hover{ background: var(--green-2); }
+.doc-add-row button.ghost{ background: var(--green-light); color: var(--green); }
+.doc-add-row button.ghost:hover{ background: var(--green); color: #fff; }
+
 /* 直播数据表格 */
 .data-table{
   width: 100%; border-collapse: collapse; background: #fff;
@@ -407,6 +537,58 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 .trend-row:last-child{ border-bottom: none; }
 .trend-bar{ height: 6px; background: var(--green-light); border-radius: 3px; flex: 1; margin: 0 12px; overflow: hidden; }
 .trend-bar-fill{ height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); }
+
+/* 储蓄计划 */
+.savings-goal{
+  background: #fff; border-radius: 12px; padding: 18px 20px;
+  box-shadow: var(--shadow); margin-bottom: 16px; border-left: 4px solid var(--green);
+}
+.savings-goal-head{
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+}
+.savings-goal-name{ font-size: 16px; font-weight: 700; color: var(--green); }
+.savings-goal-deadline{ font-size: 12px; color: var(--text-2); }
+.savings-goal-del{
+  background: rgba(199,92,92,.1); color: var(--danger);
+  padding: 4px 10px; border-radius: 6px; font-size: 12px;
+}
+.savings-goal-del:hover{ background: var(--danger); color: #fff; }
+.savings-progress-info{
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 6px; font-size: 13px;
+}
+.savings-amount{ font-size: 20px; font-weight: 700; color: var(--green); }
+.savings-amount .total{ font-size: 13px; color: var(--text-2); font-weight: 400; }
+.savings-pct{ font-size: 14px; font-weight: 700; color: var(--gold); }
+.savings-bar{
+  height: 14px; background: var(--green-light); border-radius: 7px;
+  overflow: hidden; margin-bottom: 12px;
+}
+.savings-bar-fill{
+  height: 100%; background: linear-gradient(90deg, var(--green), var(--gold));
+  transition: width .5s ease; border-radius: 7px;
+}
+.savings-deposits{ margin-bottom: 10px; }
+.savings-deposit-row{
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; border-bottom: 1px dashed var(--border); font-size: 13px;
+}
+.savings-deposit-row:last-child{ border-bottom: none; }
+.savings-deposit-row .dep-info{ color: var(--text-2); font-size: 12px; }
+.savings-deposit-row .dep-amount{ color: var(--green); font-weight: 600; }
+.savings-add-row{ display: flex; gap: 6px; margin-top: 8px; }
+.savings-add-row input{ flex: 1; padding: 8px 10px; font-size: 12px; }
+.savings-add-row button{
+  background: var(--green-light); color: var(--green);
+  padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  white-space: nowrap;
+}
+.savings-add-row button:hover{ background: var(--green); color: #fff; }
+.savings-empty-goal{
+  text-align: center; padding: 12px; color: var(--text-2); font-size: 12px;
+  background: #fafaf6; border-radius: 8px;
+}
 
 /* 灵感导航站 */
 .hub-search-box{ display:flex; gap:8px; margin-bottom:20px; }
@@ -1064,6 +1246,23 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
             <option value="情绪管理">情绪管理</option>
             <option value="中国舞">中国舞</option>
             <option value="游泳">游泳</option>
+            <option value="职场进阶">职场进阶</option>
+            <option value="副业搞钱">副业搞钱</option>
+            <option value="理财存钱">理财存钱</option>
+            <option value="极简生活">极简生活</option>
+            <option value="健康管理">健康管理</option>
+            <option value="穿搭美学">穿搭美学</option>
+            <option value="读书思考">读书思考</option>
+            <option value="护肤美容">护肤美容</option>
+            <option value="旅行探索">旅行探索</option>
+            <option value="美食生活">美食生活</option>
+            <option value="家居整理">家居整理</option>
+            <option value="人际关系">人际关系</option>
+            <option value="两性情感">两性情感</option>
+            <option value="育儿心得">育儿心得</option>
+            <option value="心理成长">心理成长</option>
+            <option value="创业故事">创业故事</option>
+            <option value="生活记录">生活记录</option>
           </select>
         </label>
         <button class="ghost-btn" onclick="fetchAllHot()">🔄 更新热点</button>
@@ -1103,14 +1302,12 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
     </div>
 
     <div class="panel" id="content-review">
-      <div class="panel-head"><h2>📊 内容复盘</h2><p class="panel-sub">记录每条内容的数据表现 · 提炼爆款公式</p></div>
-      <div class="add-row">
-        <input id="reviewTitle" placeholder="内容标题">
-        <input id="reviewPlatform" placeholder="平台（抖音/小红书/视频号）">
-        <input id="reviewData" placeholder="数据（播放/点赞/涨粉）">
-        <button onclick="addReview()">＋ 新增复盘</button>
+      <div class="panel-head"><h2>📊 内容复盘</h2><p class="panel-sub">按文件夹归类复盘 · 长篇内容折叠整理，一目了然</p></div>
+      <div class="doc-explorer" id="reviewExplorer">
+        <div class="doc-breadcrumb" id="reviewBreadcrumb"></div>
+        <div class="doc-add-row" id="reviewAddRow"></div>
+        <div id="reviewContent"></div>
       </div>
-      <div class="review-list" id="reviewList"></div>
     </div>
 
     <div class="panel" id="live-content">
@@ -1146,7 +1343,7 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
       </div>
       <div class="sub-panel" id="sub-search">
         <div class="search-box">
-          <input id="searchInput" placeholder="搜索珠宝知识、市场行情、用户痛点...">
+          <input id="searchInput" placeholder="搜索任意珠宝知识、市场行情、选购要点..." onkeydown="if(event.key==='Enter')doSearch()">
           <button onclick="doSearch()">🔍 搜索</button>
         </div>
         <div class="search-tags">
@@ -1157,10 +1354,25 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
           <button onclick="quickSearch('黄金纯度')">黄金纯度</button>
           <button onclick="quickSearch('彩宝选购')">彩宝选购</button>
           <button onclick="quickSearch('珠宝保养')">珠宝保养</button>
+          <button onclick="quickSearch('和田玉鉴别')">和田玉鉴别</button>
+          <button onclick="quickSearch('南红产地')">南红产地</button>
+          <button onclick="quickSearch('蜜蜡真假')">蜜蜡真假</button>
         </div>
-        <div class="search-result" id="searchResult"><p class="empty-tip">💡 输入关键词，搜索资料。可记录到备忘录或产品库。</p></div>
+        <div class="search-result" id="searchResult"><p class="empty-tip">💡 输入任意关键词搜索，本地知识库 + 多平台一键跳转，想搜什么都能找到。</p></div>
+        <div class="search-platforms" id="searchPlatforms" style="display:none">
+          <p style="font-size:12px;color:var(--text-2);margin-bottom:8px">🔗 没找到满意的？去各大平台搜索「<span id="searchKwLabel"></span>」：</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <a class="ghost-btn platform-link" id="plDouyin" target="_blank">🎵 抖音</a>
+            <a class="ghost-btn platform-link" id="plXhs" target="_blank">📕 小红书</a>
+            <a class="ghost-btn platform-link" id="plBilibili" target="_blank">📺 B站</a>
+            <a class="ghost-btn platform-link" id="plZhihu" target="_blank">💡 知乎</a>
+            <a class="ghost-btn platform-link" id="plBaidu" target="_blank">🔍 百度</a>
+            <a class="ghost-btn platform-link" id="plKuaishou" target="_blank">⚡ 快手</a>
+            <a class="ghost-btn platform-link" id="plToutiao" target="_blank">📰 头条</a>
+          </div>
+        </div>
         <div class="add-row" style="margin-top:16px">
-          <input id="knowledgeInput" placeholder="把搜索到的有用知识保存到知识库">
+          <input id="knowledgeInput" placeholder="给搜索到的知识起个标题，保存到知识库">
           <button onclick="addKnowledge()">＋ 保存到知识库</button>
         </div>
         <div class="knowledge-list" id="knowledgeList"></div>
@@ -1184,22 +1396,22 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
         <div class="liveplan-list" id="liveplanList"></div>
       </div>
       <div class="sub-panel" id="sub-categories">
-        <div class="add-row">
-          <input id="catName" placeholder="类目名（和田玉/南红/蜜蜡/翡翠/钻石/珍珠/彩宝...）">
-          <button onclick="addCategory()">＋ 新增类目</button>
+        <p style="font-size:12px;color:var(--text-2);margin-bottom:12px">💡 每个类目是一个文件夹，点进去创建文档写长篇资料。翡翠、和田玉各一个文件夹，一目了然。</p>
+        <div class="doc-explorer" id="catExplorer">
+          <div class="doc-breadcrumb" id="catBreadcrumb"></div>
+          <div class="doc-add-row" id="catAddRow"></div>
+          <div id="catContent"></div>
         </div>
-        <p style="font-size:12px;color:var(--text-2);margin-bottom:12px">💡 每个类目下可随时补充学到的知识、市场行情、选购要点、话术笔记。随时增删。</p>
-        <div class="category-list" id="categoryList"></div>
       </div>
     </div>
 
     <div class="panel" id="memo">
-      <div class="panel-head"><h2>📝 备忘录</h2><p class="panel-sub">随手记 · 想法不再溜走</p></div>
-      <div class="add-row">
-        <input id="memoInput" placeholder="记录一个想法 / 灵感 / 提醒...">
-        <button onclick="addMemo()">＋ 新增</button>
+      <div class="panel-head"><h2>📝 备忘录</h2><p class="panel-sub">文件夹归类 · 长篇笔记折叠整理，一目了然</p></div>
+      <div class="doc-explorer" id="memoExplorer">
+        <div class="doc-breadcrumb" id="memoBreadcrumb"></div>
+        <div class="doc-add-row" id="memoAddRow"></div>
+        <div id="memoContent"></div>
       </div>
-      <ul class="memo-list" id="memoList"></ul>
     </div>
 
     <div class="panel" id="inspo-hub">
@@ -1297,35 +1509,10 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
 
     <div class="panel" id="growth-track">
       <div class="panel-head"><h2>🌱 自媒体计划</h2><p class="panel-sub">记录你的定位、目标和选题 · 随时增删调整</p></div>
-
-      <!-- 定位与目标 -->
-      <div class="growth-card" style="margin-bottom:14px">
-        <h3>🎯 我的定位 & 目标</h3>
-        <div class="add-row">
-          <input id="goalInput" placeholder="写一条目标/定位，例：做女性成长方向，30天涨粉1000">
-          <button onclick="addGoal()">＋ 添加</button>
-        </div>
-        <ul class="cat-notes" id="goalList"></ul>
-      </div>
-
-      <!-- 选题库 -->
-      <div class="growth-card" style="margin-bottom:14px">
-        <h3>📌 选题库</h3>
-        <div class="add-row">
-          <input id="topicInput" placeholder="想到的选题，例：《一个珠宝主播的日常》">
-          <button onclick="addTopic()">＋ 添加选题</button>
-        </div>
-        <ul class="cat-notes" id="topicList"></ul>
-      </div>
-
-      <!-- 阶段计划 -->
-      <div class="growth-card">
-        <h3>🚀 阶段计划</h3>
-        <div class="add-row">
-          <input id="phaseInput" placeholder="例：第1周 - 确定人设、注册账号、拍3条自我介绍">
-          <button onclick="addPhase()">＋ 添加阶段</button>
-        </div>
-        <ul class="cat-notes" id="phaseList"></ul>
+      <div class="doc-explorer" id="growthExplorer">
+        <div class="doc-breadcrumb" id="growthBreadcrumb"></div>
+        <div class="doc-add-row" id="growthAddRow"></div>
+        <div id="growthContent"></div>
       </div>
     </div>
 
@@ -1336,6 +1523,7 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
         <button class="sub-tab active" data-sub="fin-income">💵 收入</button>
         <button class="sub-tab" data-sub="fin-expense">💸 支出</button>
         <button class="sub-tab" data-sub="fin-debt">📉 负债</button>
+        <button class="sub-tab" data-sub="fin-savings">🏦 储蓄计划</button>
         <button class="sub-tab" data-sub="fin-summary">📊 月度汇总</button>
       </div>
 
@@ -1385,6 +1573,18 @@ input:focus, select:focus{ border-color: var(--green); background: #fff; }
         <div style="overflow-x:auto">
           <table class="data-table" id="debtTable"></table>
         </div>
+      </div>
+
+      <!-- 储蓄计划 -->
+      <div class="sub-panel" id="sub-fin-savings">
+        <div class="add-row">
+          <input id="savName" placeholder="储蓄目标名称（养老金/买车/买房/旅行...）">
+          <input id="savTarget" type="number" placeholder="目标金额（元）">
+          <input id="savDeadline" type="month">
+          <button onclick="addSavingsGoal()">＋ 新增目标</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-2);margin-bottom:16px">💡 设定储蓄目标，追踪进度。每个目标下可添加多次存入记录，随时增删。</p>
+        <div id="savingsList"></div>
       </div>
 
       <!-- 月度汇总 -->
@@ -1483,21 +1683,191 @@ function toggleTask(id){ const t = tasks.find(x => x.id === id); if (t) t.done =
 function delTask(id){ tasks = tasks.filter(x => x.id !== id); renderTasks(); }
 
 // ============ 备忘录 ============
-let memos = STORE.get('memos', [
-  { id: uid(), text: '想想30岁女性最焦虑的3个话题，作为内容方向', time: now() },
-  { id: uid(), text: '把"我适合做什么"想清楚：表达力 + 珠宝经验 + 女性视角', time: now() }
-]);
-function renderMemos(){
-  const list = document.getElementById('memoList'); list.innerHTML = '';
-  memos.forEach(m => {
-    const li = document.createElement('li');
-    li.innerHTML = `<span style="font-size:18px">📌</span><div style="flex:1"><div>${escapeHtml(m.text)}</div><div class="item-meta">${m.time}</div></div><button class="del-btn" onclick="delMemo('${m.id}')">删除</button>`;
-    list.appendChild(li);
-  });
-  STORE.set('memos', memos);
+// ============ 文件夹式文档管理引擎 ============
+// 通用组件：文件夹 → 文档 → 编辑器 三级结构
+// config: { storeKey, defaultData, containerPrefix, folderIcon, docIcon, addFolderText, addDocText, emptyText }
+function createDocExplorer(config){
+  const state = {
+    view: 'folders',      // 'folders' | 'docs' | 'editor'
+    folderId: null,       // 当前所在文件夹ID
+    docId: null           // 当前编辑的文档ID
+  };
+  let data = STORE.get(config.storeKey, config.defaultData);
+
+  function save(){ STORE.set(config.storeKey, data); }
+
+  function findFolder(fid){ return data.folders.find(f => f.id === fid); }
+  function findDoc(fid, did){ const f = findFolder(fid); return f ? f.docs.find(d => d.id === did) : null; }
+
+  function render(){
+    const bc = document.getElementById(config.containerPrefix + 'Breadcrumb');
+    const ar = document.getElementById(config.containerPrefix + 'AddRow');
+    const ct = document.getElementById(config.containerPrefix + 'Content');
+    if (!ct) return;
+
+    if (state.view === 'folders'){
+      renderFolders(bc, ar, ct);
+    } else if (state.view === 'docs'){
+      renderDocs(bc, ar, ct);
+    } else if (state.view === 'editor'){
+      renderEditor(bc, ar, ct);
+    }
+  }
+
+  function renderFolders(bc, ar, ct){
+    bc.innerHTML = `<span class="crumb current">📁 全部文件夹</span>`;
+    ar.innerHTML = `<input id="${config.containerPrefix}NewFolder" placeholder="${config.addFolderText}" onkeydown="if(event.key==='Enter'){${config.containerPrefix}Explorer.addFolder();}"><button onclick="${config.containerPrefix}Explorer.addFolder()">📁 新建文件夹</button>`;
+    if (data.folders.length === 0){
+      ct.innerHTML = `<div class="doc-empty"><div class="doc-empty-icon">📂</div><div class="doc-empty-text">${config.emptyText}</div><button class="doc-add-row button" style="background:var(--green);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600" onclick="document.getElementById('${config.containerPrefix}NewFolder').focus()">＋ 创建第一个文件夹</button></div>`;
+      return;
+    }
+    let html = '<div class="folder-grid">';
+    data.folders.forEach(f => {
+      html += `<div class="folder-card" onclick="${config.containerPrefix}Explorer.openFolder('${f.id}')">
+        <div class="folder-del" onclick="event.stopPropagation();${config.containerPrefix}Explorer.delFolder('${f.id}')">✕</div>
+        <div class="folder-icon">${config.folderIcon}</div>
+        <div class="folder-name">${escapeHtml(f.name)}</div>
+        <div class="folder-meta">${f.docs.length} 篇文档</div>
+      </div>`;
+    });
+    html += '</div>';
+    ct.innerHTML = html;
+  }
+
+  function renderDocs(bc, ar, ct){
+    const folder = findFolder(state.folderId);
+    if (!folder){ state.view = 'folders'; renderFolders(bc, ar, ct); return; }
+    bc.innerHTML = `<span class="crumb" onclick="${config.containerPrefix}Explorer.goRoot()">📁 全部文件夹</span><span class="sep">›</span><span class="crumb current">📄 ${escapeHtml(folder.name)}</span>`;
+    ar.innerHTML = `<input id="${config.containerPrefix}NewDoc" placeholder="${config.addDocText}" onkeydown="if(event.key==='Enter'){${config.containerPrefix}Explorer.addDoc();}"><button onclick="${config.containerPrefix}Explorer.addDoc()">📄 新建文档</button>`;
+    if (folder.docs.length === 0){
+      ct.innerHTML = `<div class="doc-empty"><div class="doc-empty-icon">📄</div><div class="doc-empty-text">「${escapeHtml(folder.name)}」里还没有文档</div></div>`;
+      return;
+    }
+    let html = '<div class="doc-list">';
+    folder.docs.forEach(d => {
+      const preview = d.content.replace(/<[^>]+>/g,'').replace(/[#*\-`>]/g,'').trim().slice(0, 60) || '空文档';
+      html += `<div class="doc-item" onclick="${config.containerPrefix}Explorer.openDoc('${d.id}')">
+        <span class="doc-icon">${config.docIcon}</span>
+        <div class="doc-info">
+          <div class="doc-title">${escapeHtml(d.title)}</div>
+          <div class="doc-preview">${escapeHtml(preview)}</div>
+        </div>
+        <span class="doc-date">${d.time || ''}</span>
+        <div class="doc-del" onclick="event.stopPropagation();${config.containerPrefix}Explorer.delDoc('${d.id}')">✕</div>
+      </div>`;
+    });
+    html += '</div>';
+    ct.innerHTML = html;
+  }
+
+  function renderEditor(bc, ar, ct){
+    const folder = findFolder(state.folderId);
+    const doc = findDoc(state.folderId, state.docId);
+    if (!doc){ state.view = 'docs'; renderDocs(bc, ar, ct); return; }
+    bc.innerHTML = `<span class="crumb" onclick="${config.containerPrefix}Explorer.goRoot()">📁 全部文件夹</span><span class="sep">›</span><span class="crumb" onclick="${config.containerPrefix}Explorer.backToDocs()">📄 ${escapeHtml(folder.name)}</span><span class="sep">›</span><span class="crumb current">✏️ 编辑</span>`;
+    ar.innerHTML = '';
+    ct.innerHTML = `
+      <div class="doc-editor">
+        <div class="doc-editor-head">
+          <input class="doc-editor-title-input" id="${config.containerPrefix}DocTitle" value="${escapeHtml(doc.title)}" placeholder="文档标题" oninput="${config.containerPrefix}Explorer.updateTitle(this.value)">
+          <span class="doc-editor-meta">${doc.time || ''} · 自动保存</span>
+        </div>
+        <div class="doc-editor-body">
+          <textarea class="doc-editor-textarea" id="${config.containerPrefix}DocContent" placeholder="在这里写你的长篇内容... 支持任意长度，自动保存。" oninput="${config.containerPrefix}Explorer.updateContent(this.value)">${escapeHtml(doc.content)}</textarea>
+        </div>
+        <div class="doc-editor-foot">
+          <span class="doc-save-status" id="${config.containerPrefix}SaveStatus">✅ 已保存</span>
+          <div class="doc-editor-actions">
+            <button class="ghost-btn" onclick="${config.containerPrefix}Explorer.backToDocs()">← 返回列表</button>
+          </div>
+        </div>
+      </div>`;
+    // 自动聚焦到内容区
+    setTimeout(() => {
+      const ta = document.getElementById(config.containerPrefix + 'DocContent');
+      if (ta) ta.focus();
+    }, 100);
+  }
+
+  // 防抖保存
+  let saveTimer = null;
+  function debounceSave(){
+    const ss = document.getElementById(config.containerPrefix + 'SaveStatus');
+    if (ss) ss.textContent = '⏳ 保存中...';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      save();
+      if (ss) ss.textContent = '✅ 已保存';
+    }, 500);
+  }
+
+  return {
+    state, data,
+    render,
+    reload(){ data = STORE.get(config.storeKey, config.defaultData); render(); },
+    goRoot(){ state.view = 'folders'; state.folderId = null; render(); },
+    backToDocs(){ state.view = 'docs'; state.docId = null; render(); },
+    openFolder(fid){ state.folderId = fid; state.view = 'docs'; render(); },
+    openDoc(did){ state.docId = did; state.view = 'editor'; render(); },
+    addFolder(){
+      const inp = document.getElementById(config.containerPrefix + 'NewFolder');
+      if (!inp || !inp.value.trim()) return;
+      data.folders.unshift({ id: uid(), name: inp.value.trim(), docs: [] });
+      inp.value = ''; save(); render();
+    },
+    delFolder(fid){
+      const f = findFolder(fid);
+      if (!f) return;
+      if (!confirm(`确定删除文件夹「${f.name}」及其下所有文档吗？\n\n文件夹里有 ${f.docs.length} 篇文档，删除后不可恢复。`)) return;
+      data.folders = data.folders.filter(x => x.id !== fid);
+      save(); render();
+    },
+    addDoc(){
+      const inp = document.getElementById(config.containerPrefix + 'NewDoc');
+      if (!inp || !inp.value.trim()) return;
+      const folder = findFolder(state.folderId);
+      if (!folder) return;
+      const newDoc = { id: uid(), title: inp.value.trim(), content: '', time: now() };
+      folder.docs.unshift(newDoc);
+      inp.value = ''; save();
+      state.docId = newDoc.id; state.view = 'editor'; render();
+    },
+    delDoc(did){
+      if (!confirm('确定删除这篇文档吗？删除后不可恢复。')) return;
+      const folder = findFolder(state.folderId);
+      if (!folder) return;
+      folder.docs = folder.docs.filter(x => x.id !== did);
+      save(); render();
+    },
+    updateTitle(val){
+      const doc = findDoc(state.folderId, state.docId);
+      if (doc){ doc.title = val; doc.time = now(); debounceSave(); }
+    },
+    updateContent(val){
+      const doc = findDoc(state.folderId, state.docId);
+      if (doc){ doc.content = val; doc.time = now(); debounceSave(); }
+    }
+  };
 }
-function addMemo(){ const input = document.getElementById('memoInput'); if (!input.value.trim()) return; memos.unshift({ id: uid(), text: input.value.trim(), time: now() }); input.value = ''; renderMemos(); }
-function delMemo(id){ memos = memos.filter(x => x.id !== id); renderMemos(); }
+
+// ============ 备忘录（文件夹式） ============
+const memoExplorer = createDocExplorer({
+  storeKey: 'memoFolders',
+  defaultData: { folders: [
+    { id: uid(), name: '灵感想法', docs: [
+      { id: uid(), title: '30岁女性最焦虑的3个话题', content: '作为内容方向参考：\n1. 经济独立与职业焦虑\n2. 婚恋与自我价值的平衡\n3. 容貌焦虑与自我接纳\n\n可以围绕这三个话题展开系列内容。', time: now() }
+    ]},
+    { id: uid(), name: '日常提醒', docs: [
+      { id: uid(), title: '我适合做什么 - 自我分析', content: '把"我适合做什么"想清楚：\n\n核心优势：\n- 表达力强，镜头感好\n- 珠宝行业经验和专业知识\n- 女性视角，有共情力\n\n可以结合这三个点做差异化定位。', time: now() }
+    ]}
+  ]},
+  containerPrefix: 'memo',
+  folderIcon: '📝',
+  docIcon: '📄',
+  addFolderText: '文件夹名称，如：灵感想法 / 日常提醒 / 项目笔记',
+  addDocText: '文档标题，如：7月直播复盘思路',
+  emptyText: '还没有文件夹，创建一个开始整理你的笔记吧'
+});
 
 // ============ 每日灵感 ============
 const HOT_POOL = {
@@ -1532,7 +1902,115 @@ const HOT_POOL = {
   ],
   '情绪管理': [
     { title: '高敏感女孩的自我救赎', desc: '不再因为别人内耗。', tag: '情绪' },
-    { title: '成年人的崩溃释放指南', desc: '科学释放压力。', tag: '情绪' }
+    { title: '成年人的崩溃释放指南', desc: '科学释放压力。', tag: '情绪' },
+    { title: '如何应对精神内耗', desc: '3个方法让你停止自我消耗。', tag: '情绪管理' },
+    { title: '情绪稳定是最好的修养', desc: '遇事不慌的人都有这些特质。', tag: '情绪管理' }
+  ],
+  '职场进阶': [
+    { title: '打工人的清醒发言：别把平台当能力', desc: '离开平台你还能做什么？', tag: '职场' },
+    { title: '月薪5k到5w，我做了这3件事', desc: '普通人可复制的升职加薪路径。', tag: '职场进阶' },
+    { title: '如何向上管理你的老板', desc: '聪明人都在用的职场策略。', tag: '职场' },
+    { title: '30岁还没当上管理层怎么办', desc: '别焦虑，先想清楚这3个问题。', tag: '职场' },
+    { title: '被领导PUA了怎么办', desc: '识别职场精神控制的5个信号。', tag: '职场' }
+  ],
+  '副业搞钱': [
+    { title: '下班后的3小时，决定了你的第二收入', desc: '适合普通人的5个副业方向。', tag: '副业' },
+    { title: '靠自媒体月入过万，我做对了什么', desc: '从0到1的实操分享。', tag: '副业' },
+    { title: '别再穷忙了，学会让钱生钱', desc: '普通人也能做的被动收入。', tag: '搞钱' },
+    { title: '那些闷声发大财的小生意', desc: '不起眼但利润惊人。', tag: '创业' },
+    { title: '2024年还值得做的副业有哪些', desc: '避坑指南+实操建议。', tag: '副业' }
+  ],
+  '理财存钱': [
+    { title: '月入5000如何一年存下5万', desc: '真实有效的存钱方法。', tag: '理财' },
+    { title: '记账3年，我的财务发生了什么变化', desc: '记账是理财的第一步。', tag: '理财' },
+    { title: '普通人适合的3种低风险理财', desc: '不炒股也能让钱增值。', tag: '理财' },
+    { title: '那些悄悄攒钱的人，后来都怎样了', desc: '存钱改变的不只是账户余额。', tag: '存钱' },
+    { title: '消费降级后，我发现生活更好了', desc: '极简消费观。', tag: '理财' }
+  ],
+  '极简生活': [
+    { title: '极简3年，我扔掉了80%的东西', desc: '扔东西让我找回了生活。', tag: '极简' },
+    { title: '断舍离的正确打开方式', desc: '不是扔东西，而是理清关系。', tag: '极简' },
+    { title: '少即是多：我的极简生活清单', desc: '100件物品过一年。', tag: '极简' },
+    { title: '为什么我不再买买买', desc: '从消费主义中醒来的故事。', tag: '极简' }
+  ],
+  '健康管理': [
+    { title: '坚持早睡30天，身体发生了什么变化', desc: '亲测有效的养生打卡。', tag: '健康' },
+    { title: '打工人的颈椎自救指南', desc: '5个动作缓解颈椎不适。', tag: '健康' },
+    { title: '我是怎么从130斤瘦到100斤的', desc: '不节食的健康减重方法。', tag: '健康' },
+    { title: '女生一定要补的铁和钙', desc: '营养师推荐的科学补充方案。', tag: '健康' },
+    { title: '体态纠正：圆肩驼背怎么改善', desc: '每天10分钟，气质大不同。', tag: '健康' }
+  ],
+  '穿搭美学': [
+    { title: '微胖女孩穿搭公式', desc: '显瘦10斤的搭配技巧。', tag: '穿搭' },
+    { title: '30岁女人的衣橱断舍离', desc: '留下这10件就够了。', tag: '穿搭' },
+    { title: '通勤穿搭：简约不简单的秘密', desc: '上班族必备搭配法则。', tag: '穿搭' },
+    { title: '色彩搭配入门：什么颜色显白', desc: '冷暖皮选色指南。', tag: '穿搭' },
+    { title: '小个子穿搭显高攻略', desc: '155也能穿出170的气场。', tag: '穿搭' }
+  ],
+  '读书思考': [
+    { title: '读书改变命运，是真的吗', desc: '读完100本书后的思考。', tag: '读书' },
+    { title: '适合女生自我提升的10本书', desc: '从认知到行动的升级。', tag: '读书' },
+    { title: '如何建立自己的知识体系', desc: '不只是读，更要思考。', tag: '读书' },
+    { title: '那些让我顿悟的书摘', desc: '值得反复品味的句子。', tag: '读书' }
+  ],
+  '护肤美容': [
+    { title: '精简护肤：我的5步护肤法', desc: '少即是多的护肤哲学。', tag: '护肤' },
+    { title: '敏感肌自救指南', desc: '烂脸到恢复的3个月。', tag: '护肤' },
+    { title: '抗初老从25岁开始', desc: '皮肤科医生的建议。', tag: '护肤' },
+    { title: '平价护肤品也能养出好皮肤', desc: '不交智商税的选购指南。', tag: '护肤' }
+  ],
+  '旅行探索': [
+    { title: '一个人旅行是什么体验', desc: '独行女生的安全与自由。', tag: '旅行' },
+    { title: '低预算也能玩转一座城市', desc: '穷游不穷体验的攻略。', tag: '旅行' },
+    { title: '那些治愈我的小众目的地', desc: '人少景美还便宜。', tag: '旅行' },
+    { title: '旅行打包的极简清单', desc: '一个背包走天下。', tag: '旅行' }
+  ],
+  '美食生活': [
+    { title: '一个人也要好好吃饭', desc: '独居女生的快手餐。', tag: '美食' },
+    { title: '周末备餐法，工作日不愁吃', desc: '高效又健康的饮食规划。', tag: '美食' },
+    { title: '厨房小白的第一道菜', desc: '零失败入门食谱。', tag: '美食' },
+    { title: '养生汤谱：女生要多喝这些汤', desc: '由内而外的滋补。', tag: '美食' }
+  ],
+  '家居整理': [
+    { title: '小户型收纳神器推荐', desc: '让空间翻倍的整理术。', tag: '家居' },
+    { title: '每天10分钟，家里永远整洁', desc: '懒人适用的家务系统。', tag: '家居' },
+    { title: '出租屋改造：花500块住出高级感', desc: '租来的房子也要好好住。', tag: '家居' },
+    { title: '厨房整理的5个黄金法则', desc: '告别凌乱从厨房开始。', tag: '家居' }
+  ],
+  '人际关系': [
+    { title: '成年人的社交断舍离', desc: '不是所有人都值得深交。', tag: '社交' },
+    { title: '如何优雅地拒绝别人', desc: '讨好型人格必看。', tag: '社交' },
+    { title: '高情商聊天的5个技巧', desc: '让人舒服的沟通方式。', tag: '社交' },
+    { title: '为什么你的朋友越来越少', desc: '这不是坏事。', tag: '社交' }
+  ],
+  '两性情感': [
+    { title: '好的感情是什么样的', desc: '不是轰轰烈烈而是这些细节。', tag: '情感' },
+    { title: '恋爱中的清醒发言', desc: '别把感动当感情。', tag: '情感' },
+    { title: '分手后才明白的3件事', desc: '每一段感情都是成长。', tag: '情感' },
+    { title: '如何判断一个人值不值得在一起', desc: '看这5个细节就够了。', tag: '情感' }
+  ],
+  '育儿心得': [
+    { title: '当妈后才懂的5个真相', desc: '育儿先育己。', tag: '育儿' },
+    { title: '职场妈妈如何平衡工作与带娃', desc: '不焦虑的育儿方式。', tag: '育儿' },
+    { title: '高质量陪伴的10个小游戏', desc: '每天30分钟胜过一整天。', tag: '育儿' }
+  ],
+  '心理成长': [
+    { title: '你不需要成为"完美的人"', desc: '接纳不完美的自己。', tag: '心理' },
+    { title: '如何建立内核稳定', desc: '不被外界评价左右的3个方法。', tag: '心理' },
+    { title: '原生家庭对我们的影响', desc: '看见即是改变的开始。', tag: '心理' },
+    { title: '自卑感从何而来又如何化解', desc: '阿德勒心理学给我们的启示。', tag: '心理' }
+  ],
+  '创业故事': [
+    { title: '从0到1创业，我踩过的坑', desc: '真实创业经验分享。', tag: '创业' },
+    { title: '一个人也能做的小生意', desc: '低成本创业方向。', tag: '创业' },
+    { title: '辞职创业第一年，我赚了多少', desc: '真实的数字和感悟。', tag: '创业' },
+    { title: '珠宝行业的潜规则', desc: '入行多年才知道的秘密。', tag: '创业' }
+  ],
+  '生活记录': [
+    { title: '普通的一天vlog', desc: '记录平凡生活的美好。', tag: '生活' },
+    { title: '我的早晨仪式感', desc: '开启元气满满的一天。', tag: '生活' },
+    { title: '下班后的独处时光', desc: '属于自己的充电时刻。', tag: '生活' },
+    { title: '周末该怎么过才有意义', desc: '不虚度周末的10种方式。', tag: '生活' }
   ]
 };
 function fetchDouyinHot(){
@@ -1548,7 +2026,19 @@ function fetchDouyinHot(){
   document.getElementById('lastFetch').textContent = '上次抓取：' + now();
 }
 function goDouyinSearch(keyword){ window.open('https://www.douyin.com/search/'+encodeURIComponent(keyword)+'?type=video', '_blank'); }
-function saveInspiration(title){ memos.unshift({ id: uid(), text: '【选题】'+title, time: now() }); renderMemos(); alert('✅ 已保存到备忘录'); }
+function saveInspiration(title){
+  // 保存到备忘录的"灵感想法"文件夹
+  let memoData = STORE.get('memoFolders', memoExplorer.data);
+  let folder = memoData.folders.find(f => f.name === '灵感想法');
+  if (!folder){
+    folder = { id: uid(), name: '灵感想法', docs: [] };
+    memoData.folders.unshift(folder);
+  }
+  folder.docs.unshift({ id: uid(), title: '【选题】' + title, content: '选题灵感：' + title + '\n\n（点击编辑补充详情）', time: now() });
+  STORE.set('memoFolders', memoData);
+  memoExplorer.reload();
+  alert('✅ 已保存到备忘录「灵感想法」文件夹');
+}
 
 // ============ 爆款热点视频 ============
 const HOT_VIDEOS = [
@@ -1571,27 +2061,24 @@ function renderHotVideos(){
 }
 
 // ============ 内容复盘 ============
-let reviews = STORE.get('reviews', [
-  { id: uid(), title: '《女生最该投资的3样东西》', platform: '抖音', data: '播放 120w / 涨粉 3200', time: '07-20' },
-  { id: uid(), title: '《30岁女性的清醒发言》', platform: '小红书', data: '阅读 8.6w / 收藏 2400', time: '07-18' }
-]);
-function renderReviews(){
-  const list = document.getElementById('reviewList'); list.innerHTML = '';
-  reviews.forEach(r => {
-    const div = document.createElement('div'); div.className = 'review-item';
-    div.innerHTML = `<div><div class="review-title">${escapeHtml(r.title)}</div><div class="review-meta">${r.platform} · ${r.time}</div></div><span class="review-data">${escapeHtml(r.data)}</span><button class="del-btn" onclick="delReview('${r.id}')">删除</button>`;
-    list.appendChild(div);
-  });
-  STORE.set('reviews', reviews);
-}
-function addReview(){
-  const t = document.getElementById('reviewTitle').value.trim(), p = document.getElementById('reviewPlatform').value.trim(), d = document.getElementById('reviewData').value.trim();
-  if (!t) return;
-  reviews.unshift({ id: uid(), title: t, platform: p || '抖音', data: d || '待填', time: now().slice(0,5) });
-  document.getElementById('reviewTitle').value = ''; document.getElementById('reviewPlatform').value = ''; document.getElementById('reviewData').value = '';
-  renderReviews();
-}
-function delReview(id){ reviews = reviews.filter(x => x.id !== id); renderReviews(); }
+// ============ 内容复盘（文件夹式） ============
+const reviewExplorer = createDocExplorer({
+  storeKey: 'reviewFolders',
+  defaultData: { folders: [
+    { id: uid(), name: '抖音复盘', docs: [
+      { id: uid(), title: '《女生最该投资的3样东西》', content: '发布时间：7月20日\n平台：抖音\n\n数据表现：\n- 播放量：120w\n- 点赞：8600\n- 涨粉：3200\n\n爆款分析：\n标题用了"投资"这个有冲突感的词，引发好奇。\n内容结构是"列举式"，3个点清晰好记。\n\n可复用的点：\n- 标题公式：XX最该投资的N样东西\n- 内容节奏：每一点先抛观点再给理由\n\n改进方向：\n下次可以试试加一个反常识的点来提升完播率。', time: '07-20' }
+    ]},
+    { id: uid(), name: '小红书复盘', docs: [
+      { id: uid(), title: '《30岁女性的清醒发言》', content: '发布时间：7月18日\n平台：小红书\n\n数据表现：\n- 阅读量：8.6w\n- 收藏：2400\n- 评论：180\n\n爆款分析：\n"清醒发言"这个措辞在小红书非常吃香，自带传播属性。\n封面用了大字报风格，点击率高。\n\n可复用的点：\n- 关键词：清醒、独立、不将就\n- 封面风格：大字+纯色背景\n\n下一步：\n围绕"清醒"做系列内容，比如《30岁女性的清醒消费观》。', time: '07-18' }
+    ]}
+  ]},
+  containerPrefix: 'review',
+  folderIcon: '📊',
+  docIcon: '📋',
+  addFolderText: '文件夹名称，如：抖音复盘 / 小红书复盘 / 视频号复盘',
+  addDocText: '复盘标题，如：《XXX》7月25日复盘',
+  emptyText: '还没有复盘文件夹，按平台或主题创建文件夹开始整理'
+});
 
 // ============ 话术库 ============
 let scripts = STORE.get('scripts', [
@@ -1657,14 +2144,78 @@ function renderKnowledges(){
   STORE.set('knowledges', knowledges);
 }
 function doSearch(){
-  const kw = document.getElementById('searchInput').value.trim(); if (!kw) return;
+  const kw = document.getElementById('searchInput').value.trim();
+  if (!kw) return;
   const result = document.getElementById('searchResult');
+  const platforms = document.getElementById('searchPlatforms');
+  const kwLabel = document.getElementById('searchKwLabel');
+
+  // 更新平台搜索链接
+  const enc = encodeURIComponent(kw);
+  document.getElementById('plDouyin').href = `https://www.douyin.com/search/${enc}?type=video`;
+  document.getElementById('plXhs').href = `https://www.xiaohongshu.com/search_result?keyword=${enc}`;
+  document.getElementById('plBilibili').href = `https://search.bilibili.com/all?keyword=${enc}`;
+  document.getElementById('plZhihu').href = `https://www.zhihu.com/search?type=content&q=${enc}`;
+  document.getElementById('plBaidu').href = `https://www.baidu.com/s?wd=${enc}`;
+  document.getElementById('plKuaishou').href = `https://www.kuaishou.com/search/video?searchKey=${enc}`;
+  document.getElementById('plToutiao').href = `https://so.toutiao.com/search?keyword=${enc}&pd=information`;
+  kwLabel.textContent = kw;
+  platforms.style.display = 'block';
+
+  // 1. 先在本地知识库搜索
   let matched = null;
-  for (const key of Object.keys(KNOWLEDGE_BASE)){ if (kw.includes(key.slice(0,2)) || key.includes(kw.slice(0,2))){ matched = key; break; } }
-  if (matched){
-    result.innerHTML = `<h4>📖 ${matched} · 知识库检索结果</h4><ul>${KNOWLEDGE_BASE[matched].map(x => `<li>${x}</li>`).join('')}</ul><div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); color:var(--text-2); font-size:12px">💡 这些资料可以保存到知识库，或作为直播话术素材</div>`;
+  for (const key of Object.keys(KNOWLEDGE_BASE)){
+    if (kw.includes(key.slice(0,2)) || key.includes(kw.slice(0,2)) || kw === key){
+      matched = key; break;
+    }
+  }
+
+  // 2. 也在类目资料文件夹里搜索
+  let catMatches = [];
+  try {
+    const catData = STORE.get('catFolders', catExplorer.data);
+    catData.folders.forEach(f => {
+      f.docs.forEach(d => {
+        if (d.title.includes(kw) || d.content.includes(kw) || f.name.includes(kw)){
+          catMatches.push({ folder: f.name, doc: d });
+        }
+      });
+    });
+  } catch(e){}
+
+  if (matched && catMatches.length === 0){
+    // 只有本地知识库匹配
+    result.innerHTML = `<h4>📖 ${matched} · 本地知识库</h4><ul>${KNOWLEDGE_BASE[matched].map(x => `<li>${x}</li>`).join('')}</ul><div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); color:var(--text-2); font-size:12px">💡 可保存到知识库，或去各大平台搜索更多深度内容</div>`;
+  } else if (catMatches.length > 0){
+    // 在类目资料里找到了
+    let html = '';
+    if (matched){
+      html += `<h4>📖 ${matched} · 本地知识库</h4><ul>${KNOWLEDGE_BASE[matched].map(x => `<li>${x}</li>`).join('')}</ul>`;
+    }
+    html += `<h4 style="margin-top:${matched?'16px':'0'}">📂 类目资料中找到 ${catMatches.length} 篇相关文档</h4><ul>`;
+    catMatches.slice(0, 8).forEach(m => {
+      const preview = m.doc.content.replace(/<[^>]+>/g,'').replace(/[#*\-`>]/g,'').trim().slice(0, 80);
+      html += `<li><strong>${escapeHtml(m.folder)} / ${escapeHtml(m.doc.title)}</strong><br><span style="color:var(--text-2);font-size:12px">${escapeHtml(preview)}...</span></li>`;
+    });
+    html += '</ul>';
+    result.innerHTML = html;
   } else {
-    result.innerHTML = `<p class="empty-tip">🔍 暂未匹配到「${escapeHtml(kw)}」的本地知识<br><br>建议搜索：${Object.keys(KNOWLEDGE_BASE).map(k => `<button class="ghost-btn" style="margin:2px" onclick="quickSearch('${k}')">${k}</button>`).join('')}<br><br><span style="font-size:11px">你也可以把找到的外部资料用「保存到知识库」记录</span></p>`;
+    // 本地没有，引导去平台搜索
+    result.innerHTML = `
+      <div style="text-align:center; padding:20px 0">
+        <p style="font-size:15px; margin-bottom:8px">🔍 本地知识库暂无「${escapeHtml(kw)}」的资料</p>
+        <p style="font-size:13px; color:var(--text-2); margin-bottom:16px">但你可以：</p>
+      </div>
+      <div style="background:var(--green-light); padding:14px; border-radius:10px; margin-bottom:12px">
+        <p style="font-size:13px; font-weight:600; margin-bottom:8px">💡 搜索建议：</p>
+        <div style="display:flex; flex-wrap:wrap; gap:6px">
+          ${Object.keys(KNOWLEDGE_BASE).map(k => `<button class="ghost-btn" style="margin:2px; font-size:12px" onclick="quickSearch('${k}')">${k}</button>`).join('')}
+        </div>
+      </div>
+      <div style="background:#fff; padding:14px; border-radius:10px; border:1px solid var(--border)">
+        <p style="font-size:13px; font-weight:600; margin-bottom:8px">🔗 下方一键跳转各大平台搜索「${escapeHtml(kw)}」</p>
+        <p style="font-size:12px; color:var(--text-2)">找到有用的内容后，可以用「保存到知识库」记录下来</p>
+      </div>`;
   }
 }
 function quickSearch(kw){ document.getElementById('searchInput').value = kw; doSearch(); }
@@ -1704,119 +2255,58 @@ function renderLivePlans(){
 function addLivePlan(){ const d = document.getElementById('lpDate').value, t = document.getElementById('lpTime').value, th = document.getElementById('lpTheme').value.trim(), pr = document.getElementById('lpProducts').value.trim(); if (!d || !th) return; liveplans.unshift({ id: uid(), date: d, time: t || '全天', theme: th, products: pr || '待定' }); ['lpDate','lpTime','lpTheme','lpProducts'].forEach(id => document.getElementById(id).value = ''); renderLivePlans(); }
 function delLivePlan(id){ liveplans = liveplans.filter(x => x.id !== id); renderLivePlans(); }
 
-// ============ 类目资料 ============
-let categories = STORE.get('categories', [
-  { id: uid(), name: '翡翠', notes: [
-    { id: uid(), text: '种水分级：玻璃种 > 冰种 > 糯种 > 豆种，种水决定基础价值。', time: now() },
-    { id: uid(), text: '颜色讲究"浓阳正匀"，帝王绿最贵，翠绿次之。', time: now() }
+// ============ 类目资料（文件夹式） ============
+const catExplorer = createDocExplorer({
+  storeKey: 'catFolders',
+  defaultData: { folders: [
+    { id: uid(), name: '翡翠', docs: [
+      { id: uid(), title: '种水分级与价值', content: '翡翠种水分级\n\n种水是翡翠价值的基础，从高到低：\n\n1. 玻璃种：透明度最高，像玻璃一样通透，价格最高\n2. 冰种：透明有少许棉，价格中上\n3. 糯种：半透明，像糯米汤，常见品种\n4. 豆种：颗粒感强，透明度低，性价比款\n\n选购口诀：种水色工，先看种水\n\n市场行情参考：\n- 玻璃种帝王绿：几十万到上百万\n- 冰种飘花：几千到几万\n- 糯种：几百到几千\n\n注意：种水只是基础，颜色和工艺同样重要。同样冰种，帝王绿和油青的价格天差地别。', time: now() },
+      { id: uid(), title: '颜色讲究与分级', content: '翡翠颜色讲究"浓阳正匀"\n\n浓：颜色要饱满浓郁，不能淡\n阳：颜色要明亮鲜艳，不能暗\n正：颜色要纯正，不能偏色\n匀：颜色要分布均匀\n\n颜色价值排序：\n1. 帝王绿（最贵）\n2. 翠绿\n3. 苹果绿\n4. 黄阳绿\n5. 油青（偏灰，价值低）\n\n其他色系：\n- 紫罗兰：粉紫>茄紫>蓝紫\n- 红翡：红褐色，少见正红\n- 黄翡：鸡油黄最贵\n- 墨翠：看起来黑，透光看是绿色\n- 春带彩：绿+紫双色\n- 福禄寿：绿+紫+白三色', time: now() }
+    ]},
+    { id: uid(), name: '和田玉', docs: [
+      { id: uid(), title: '分类与颜色', content: '和田玉分类（按颜色）\n\n1. 白玉：羊脂白最贵，像凝固的羊油\n2. 青白玉：白中带淡青\n3. 青玉：淡青到深青\n4. 碧玉：菠菜绿最贵，黑点越少越好\n5. 墨玉：全黑，漆黑如墨\n6. 黄玉：非常稀少，价值高\n\n白玉分级：\n- 羊脂白玉：顶级，细腻油润\n- 一级白：很白，略逊于羊脂\n- 二级白：白中泛青或灰\n\n碧玉选购要点：\n- 颜色越绿越正越好\n- 黑点越少越好，完全无黑点的非常稀少\n- 俄罗斯碧玉颜色艳但黑点多\n- 新疆碧玉颜色偏深但质地细腻', time: now() },
+      { id: uid(), title: '产地与价值', content: '和田玉产地\n\n1. 新疆籽料：最贵，从玉龙喀什河捞出，经过亿年冲刷，质地最细腻油润\n2. 新疆山料：从矿上开采，品质参差不齐\n3. 青海料：水头好但偏透，润度不如新疆料\n4. 俄料：白度高但偏干，盘玩后容易泛黄\n5. 韩料：颜色偏黄，结构粗，价格低\n\n如何辨别产地（经验之谈）：\n- 新疆籽料：油润度最好，有"温润如玉"的感觉\n- 俄料：白但干，像瓷\n- 青海料：透但水，像水晶\n- 韩料：结构粗，能看到颗粒感\n\n注意：产地不是唯一标准，要看具体料子。好的俄料比差的新疆料贵也很正常。', time: now() }
+    ]},
+    { id: uid(), name: '南红', docs: [
+      { id: uid(), title: '产地对比', content: '南红产地\n\n1. 保山南红：\n   - 特点：细腻润，质感像玉\n   - 颜色：柿子红最正\n   - 缺点：裂多，完整大料少\n   - 定位：高端收藏\n\n2. 凉山南红（四川凉山）：\n   - 特点：颜色艳，完整度好\n   - 分类：\n     · 联合料：樱桃红，偏亮\n     · 九口料：柿子红，颜色浓郁\n     · 瓦西料：冰飘，有特色\n   - 定位：中端市场主力\n\n选购建议：\n- 预算高选保山柿子红\n- 追求颜色艳选凉山九口\n- 喜欢特色选冰飘\n- 入门选凉山联合料', time: now() },
+      { id: uid(), title: '颜色分级与挑选', content: '南红颜色\n\n1. 柿子红：最正最贵，像熟透的柿子\n2. 樱桃红：偏亮偏粉，年轻时尚\n3. 玫瑰红：偏紫红\n4. 冰飘：红白相间，冰底飘红\n5. 红白料：红白分明\n\n挑选要点：\n- 颜色要"满"：满色比飘的好\n- 质地要"润"：不能干\n- 杂质要少：无水晶伴生最好\n- 避开注胶：很多南红有注胶，紫光灯下可见\n\n市场行情：\n- 保山柿子红戒面：几千到几万\n- 凉山樱桃红手串：几百到几千\n- 冰飘料：看意境，价格浮动大', time: now() }
+    ]},
+    { id: uid(), name: '蜜蜡', docs: [
+      { id: uid(), title: '分类与价值', content: '蜜蜡分类\n\n产地：以波罗的海蜜蜡为主\n\n颜色分类（从贵到便宜）：\n1. 白蜜（骨瓷白）：最贵，有松香味\n2. 白花蜜：白黄相间\n3. 鸡油黄：颜色浓郁，最受欢迎\n4. 柠檬黄：颜色浅\n5. 蜜糖色：偏深\n\n形状与价值：\n- 随形：最便宜，原石打磨\n- 水滴/圆珠：中等\n- 雕件：看工艺\n- 手镯：最费料，最贵\n\n大小与价格：\n- 10g以下：几十到几百\n- 10-50g：几百到几千\n- 50g以上：几千到几万\n- 100g以上完整大料：非常稀少', time: now() },
+      { id: uid(), title: '真假辨别方法', content: '蜜蜡辨别真假\n\n1. 盐水测试：\n   - 真：在1:4盐水中浮起\n   - 假：沉底\n   - 注意：柯巴脂也会浮，需要结合其他方法\n\n2. 静电测试：\n   - 真：摩擦后吸起碎纸屑\n   - 假：无静电或很弱\n\n3. 紫光灯：\n   - 真：有蓝绿色荧光反应\n   - 假：无荧光或颜色不对\n   - 注意：优化蜜蜡荧光弱\n\n4. 手感：\n   - 真：温润，不像塑料那么轻\n   - 假：轻飘飘，有塑料感\n\n5. 味道：\n   - 真：摩擦有淡淡松香味\n   - 假：无味或有塑料味\n   - 注意：不是所有蜜蜡都有香味\n\n常见造假：\n- 塑料：最便宜最假\n- 柯巴脂：未完全石化\n- 二代蜜蜡：蜜蜡碎料压制\n- 优化烤色：加热加深颜色（算天然但不值钱）', time: now() }
+    ]}
   ]},
-  { id: uid(), name: '和田玉', notes: [
-    { id: uid(), text: '分类：白玉（羊脂白最贵）、青白玉、青玉、碧玉、墨玉、黄玉。', time: now() },
-    { id: uid(), text: '产地：新疆籽料最贵，青海料/俄料/韩料性价比高。', time: now() }
-  ]},
-  { id: uid(), name: '南红', notes: [
-    { id: uid(), text: '产地：保山南红（细腻润）vs 凉山南红（颜色艳），各有所长。', time: now() },
-    { id: uid(), text: '颜色：柿子红最正，樱桃红偏亮，冰飘有特色。', time: now() }
-  ]},
-  { id: uid(), name: '蜜蜡', notes: [
-    { id: uid(), text: '分类：波罗的海蜜蜡为主，白蜜最贵，鸡油黄次之。', time: now() },
-    { id: uid(), text: '辨别真假：盐水测试、静电测试、紫光灯荧光反应。', time: now() }
-  ]}
-]);
-function renderCategories(){
-  const list = document.getElementById('categoryList'); list.innerHTML = '';
-  if (categories.length === 0){
-    list.innerHTML = '<p class="empty-tip">📚 还没有类目，点击上方"+ 新增类目"开始记录你学到的知识</p>';
-    STORE.set('categories', categories);
-    return;
-  }
-  categories.forEach(cat => {
-    const card = document.createElement('div'); card.className = 'cat-card';
-    const notesHtml = cat.notes.map(n => `
-      <li>
-        <span class="note-text">${escapeHtml(n.text)}</span>
-        <span class="note-time">${n.time}</span>
-        <button class="del-btn" onclick="delCatNote('${cat.id}','${n.id}')">删</button>
-      </li>`).join('');
-    card.innerHTML = `
-      <div class="cat-card-head">
-        <div>
-          <span class="cat-card-title">${escapeHtml(cat.name)}</span>
-          <span class="cat-card-meta"> · ${cat.notes.length} 条笔记</span>
-        </div>
-        <button class="del-btn" onclick="delCategory('${cat.id}')">删除类目</button>
-      </div>
-      <ul class="cat-notes">${notesHtml || '<li style="background:none;padding:4px 0;color:var(--text-2);font-size:12px">暂无笔记，下方添加</li>'}</ul>
-      <div class="cat-add-row">
-        <input id="catNoteInput_${cat.id}" placeholder="补充学到的知识、行情、选购要点...">
-        <button onclick="addCatNote('${cat.id}')">＋ 添加笔记</button>
-      </div>`;
-    list.appendChild(card);
-  });
-  STORE.set('categories', categories);
-}
-function addCategory(){
-  const input = document.getElementById('catName');
-  if (!input.value.trim()) return;
-  categories.unshift({ id: uid(), name: input.value.trim(), notes: [] });
-  input.value = ''; renderCategories();
-}
-function delCategory(id){
-  if (!confirm('确定删除整个类目及其所有笔记吗？')) return;
-  categories = categories.filter(x => x.id !== id); renderCategories();
-}
-function addCatNote(catId){
-  const input = document.getElementById('catNoteInput_' + catId);
-  if (!input.value.trim()) return;
-  const cat = categories.find(x => x.id === catId);
-  if (cat){ cat.notes.unshift({ id: uid(), text: input.value.trim(), time: now() }); }
-  input.value = ''; renderCategories();
-}
-function delCatNote(catId, noteId){
-  const cat = categories.find(x => x.id === catId);
-  if (cat){ cat.notes = cat.notes.filter(n => n.id !== noteId); renderCategories(); }
-}
+  containerPrefix: 'cat',
+  folderIcon: '💎',
+  docIcon: '📄',
+  addFolderText: '类目名，如：翡翠 / 和田玉 / 南红 / 蜜蜡 / 钻石 / 珍珠 / 彩宝',
+  addDocText: '文档标题，如：种水分级与价值 / 市场行情参考 / 选购避坑指南',
+  emptyText: '还没有类目文件夹，创建一个开始整理你的珠宝知识'
+});
 
-// ============ 自媒体计划 ============
-function setupPlanList(key, listId, inputId, addFn, delFn, defaults){
-  let arr = STORE.get(key, defaults);
-  window['render'+addFn] = function(){
-    const list = document.getElementById(listId); list.innerHTML = '';
-    if (arr.length === 0){
-      list.innerHTML = '<li style="background:none;padding:4px 0;color:var(--text-2);font-size:12px">暂无内容，下方添加</li>';
-    } else {
-      arr.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span class="note-text">${escapeHtml(item.text)}</span><span class="note-time">${item.time||''}</span><button class="del-btn" onclick="${delFn}(${arr.indexOf(item)})">删</button>`;
-        list.appendChild(li);
-      });
-    }
-    STORE.set(key, arr);
-  };
-  window[addFn] = function(){
-    const input = document.getElementById(inputId);
-    if (!input.value.trim()) return;
-    arr.unshift({ text: input.value.trim(), time: now() });
-    input.value = '';
-    window['render'+addFn]();
-  };
-  window[delFn] = function(i){ arr.splice(i, 1); window['render'+addFn](); };
-}
-setupPlanList('goals', 'goalList', 'goalInput', 'addGoal', 'delGoal', [
-  { text: '方向：女性成长 + 珠宝主播经验（表达力强是核心优势）', time: now() },
-  { text: '30天目标：确定人设、注册账号、发第一条视频', time: now() }
-]);
-setupPlanList('topics', 'topicList', 'topicInput', 'addTopic', 'delTopic', [
-  { text: '《一个珠宝主播的日常：凌晨4点选品》', time: now() },
-  { text: '《月入3万的女主播，如何管钱》', time: now() },
-  { text: '《不会说话的人，如何练表达力》', time: now() }
-]);
-setupPlanList('phases', 'phaseList', 'phaseInput', 'addPhase', 'delPhase', [
-  { text: '第1周：确定人设 + 注册账号 + 拍3条自我介绍', time: now() },
-  { text: '第2周：每周更新4条，找节奏和风格', time: now() },
-  { text: '第3周：做1次直播连麦，扩圈', time: now() },
-  { text: '第4周：复盘数据，迭代内容方向', time: now() }
-]);
+// ============ 自媒体计划（文件夹式） ============
+const growthExplorer = createDocExplorer({
+  storeKey: 'growthFolders',
+  defaultData: { folders: [
+    { id: uid(), name: '🎯 定位与目标', docs: [
+      { id: uid(), title: '我的方向定位', content: '方向：女性成长 + 珠宝主播经验\n\n核心优势：\n- 表达力强，这是最重要的优势\n- 珠宝行业经验和专业知识\n- 女性视角，有共情力\n\n差异化：不做纯珠宝科普，也不做纯鸡汤，而是用珠宝主播的身份讲女性成长的故事。', time: now() },
+      { id: uid(), title: '30天目标计划', content: '30天目标：\n1. 确定人设和账号定位\n2. 注册账号，完善主页\n3. 发第一条视频\n4. 找到内容节奏，每周更新4条\n5. 第一阶段复盘', time: now() }
+    ]},
+    { id: uid(), name: '📌 选题库', docs: [
+      { id: uid(), title: '珠宝主播日常系列', content: '选题方向：珠宝主播的日常\n\n具体选题：\n1.《一个珠宝主播的日常：凌晨4点选品》\n2.《月入3万的女主播，如何管钱》\n3.《直播间里那些奇葩的客人》\n4.《一件翡翠从原石到上架的全过程》\n\n风格：真实、接地气、有故事性', time: now() },
+      { id: uid(), title: '表达力提升系列', content: '选题方向：表达力\n\n具体选题：\n1.《不会说话的人，如何练表达力》\n2.《直播3年，我总结的5个说话技巧》\n3.《一开口就让人喜欢你》\n\n这个方向可以和我的核心优势结合。', time: now() }
+    ]},
+    { id: uid(), name: '🚀 阶段计划', docs: [
+      { id: uid(), title: '第一个月执行计划', content: '第1周：确定人设 + 注册账号 + 拍3条自我介绍\n第2周：每周更新4条，找节奏和风格\n第3周：做1次直播连麦，扩圈\n第4周：复盘数据，迭代内容方向\n\n关键指标：\n- 粉丝：目标500\n- 视频：16条\n- 直播：4场', time: now() }
+    ]}
+  ]},
+  containerPrefix: 'growth',
+  folderIcon: '🌱',
+  docIcon: '📄',
+  addFolderText: '文件夹名称，如：定位与目标 / 选题库 / 阶段计划 / 数据分析',
+  addDocText: '文档标题，如：我的方向定位 / 第一个月执行计划',
+  emptyText: '还没有文件夹，创建一个开始规划你的自媒体路径'
+});
 
 // ============ 灵感导航站 ============
 const HUB_LINKS = {
@@ -2033,7 +2523,8 @@ function renderSummary(){
 }
 
 // ============ 初始化 ============
-renderPlans(); renderMemos(); renderHotVideos(); renderReviews(); renderScripts(); renderProducts(); renderKnowledges(); renderProjects(); renderLivePlans(); renderCategories(); renderaddGoal(); renderaddTopic(); renderaddPhase();
+renderPlans(); renderHotVideos(); renderScripts(); renderProducts(); renderKnowledges(); renderProjects(); renderLivePlans();
+memoExplorer.render(); reviewExplorer.render(); growthExplorer.render(); catExplorer.render();
 renderHub('hotRankGrid', HUB_LINKS.hotRank);
 renderHub('videoHubGrid', HUB_LINKS.video);
 renderHub('articleHubGrid', HUB_LINKS.article);
@@ -2275,6 +2766,104 @@ function renderFinSummary(){
 }
 document.getElementById('finSummaryMonth').addEventListener('change', renderFinSummary);
 renderIncomeTable(); renderExpenseTable(); renderDebtTable();
+
+// ============ 储蓄计划 ============
+let savingsGoals = STORE.get('savingsGoals', [
+  { id: uid(), name: '养老金储备', target: 100000, deadline: '2028-12', deposits: [
+    { id: uid(), amount: 2000, note: '7月存入', time: '2026-07' },
+    { id: uid(), amount: 2000, note: '6月存入', time: '2026-06' }
+  ]},
+  { id: uid(), name: '买车基金', target: 150000, deadline: '2027-06', deposits: [
+    { id: uid(), amount: 5000, note: '启动资金', time: '2026-07' }
+  ]}
+]);
+function renderSavings(){
+  const list = document.getElementById('savingsList');
+  if (!list) return;
+  if (savingsGoals.length === 0){
+    list.innerHTML = '<div class="doc-empty"><div class="doc-empty-icon">🏦</div><div class="doc-empty-text">还没有储蓄目标，创建一个开始为未来存钱吧</div></div>';
+    STORE.set('savingsGoals', savingsGoals);
+    return;
+  }
+  list.innerHTML = savingsGoals.map(g => {
+    const total = g.deposits.reduce((s, d) => s + d.amount, 0);
+    const pct = g.target > 0 ? Math.min(100, (total / g.target * 100)) : 0;
+    const remain = Math.max(0, g.target - total);
+    const depositsHtml = g.deposits.length === 0
+      ? '<div class="savings-empty-goal">还没有存入记录，下方添加第一笔存款</div>'
+      : g.deposits.map(d => `
+        <div class="savings-deposit-row">
+          <div>
+            <span class="dep-amount">+¥${d.amount.toLocaleString()}</span>
+            <span class="dep-info"> · ${d.time} ${d.note ? '· ' + escapeHtml(d.note) : ''}</span>
+          </div>
+          <button class="del-btn" onclick="delSavingsDeposit('${g.id}','${d.id}')">删</button>
+        </div>`).join('');
+    return `
+      <div class="savings-goal">
+        <div class="savings-goal-head">
+          <div>
+            <span class="savings-goal-name">🎯 ${escapeHtml(g.name)}</span>
+            <span class="savings-goal-deadline"> · 目标日期 ${g.deadline || '未设置'}</span>
+          </div>
+          <button class="savings-goal-del" onclick="delSavingsGoal('${g.id}')">删除目标</button>
+        </div>
+        <div class="savings-progress-info">
+          <span class="savings-amount">¥${total.toLocaleString()} <span class="total">/ ¥${g.target.toLocaleString()}</span></span>
+          <span class="savings-pct">${pct.toFixed(1)}%</span>
+        </div>
+        <div class="savings-bar"><div class="savings-bar-fill" style="width:${pct}%"></div></div>
+        <div style="font-size:12px;color:var(--text-2);margin-bottom:8px">
+          ${remain > 0 ? `还需 ¥${remain.toLocaleString()} 达成目标` : '🎉 已达成目标！'}
+          ${g.deposits.length > 0 ? ` · 共 ${g.deposits.length} 笔存款` : ''}
+        </div>
+        <div class="savings-deposits">${depositsHtml}</div>
+        <div class="savings-add-row">
+          <input id="savDepAmount_${g.id}" type="number" placeholder="存入金额" style="max-width:120px">
+          <input id="savDepNote_${g.id}" placeholder="备注（如：7月工资存入）">
+          <input id="savDepMonth_${g.id}" type="month" style="max-width:140px">
+          <button onclick="addSavingsDeposit('${g.id}')">＋ 存入</button>
+        </div>
+      </div>`;
+  }).join('');
+  STORE.set('savingsGoals', savingsGoals);
+}
+function addSavingsGoal(){
+  const name = document.getElementById('savName').value.trim();
+  const target = parseFloat(document.getElementById('savTarget').value);
+  const deadline = document.getElementById('savDeadline').value;
+  if (!name || !target) return;
+  savingsGoals.unshift({ id: uid(), name, target, deadline: deadline || '', deposits: [] });
+  document.getElementById('savName').value = '';
+  document.getElementById('savTarget').value = '';
+  document.getElementById('savDeadline').value = '';
+  renderSavings();
+}
+function delSavingsGoal(id){
+  if (!confirm('确定删除这个储蓄目标吗？所有存入记录也会一起删除。')) return;
+  savingsGoals = savingsGoals.filter(x => x.id !== id);
+  renderSavings();
+}
+function addSavingsDeposit(goalId){
+  const amt = parseFloat(document.getElementById('savDepAmount_' + goalId).value);
+  const note = document.getElementById('savDepNote_' + goalId).value.trim();
+  const month = document.getElementById('savDepMonth_' + goalId).value;
+  if (!amt || amt <= 0) return;
+  const goal = savingsGoals.find(g => g.id === goalId);
+  if (!goal) return;
+  goal.deposits.unshift({ id: uid(), amount: amt, note, time: month || new Date().toISOString().slice(0,7) });
+  document.getElementById('savDepAmount_' + goalId).value = '';
+  document.getElementById('savDepNote_' + goalId).value = '';
+  document.getElementById('savDepMonth_' + goalId).value = '';
+  renderSavings();
+}
+function delSavingsDeposit(goalId, depId){
+  const goal = savingsGoals.find(g => g.id === goalId);
+  if (!goal) return;
+  goal.deposits = goal.deposits.filter(d => d.id !== depId);
+  renderSavings();
+}
+renderSavings();
 
 // ============ 日历行程 ============
 let calCurrentDate = new Date();
@@ -2528,7 +3117,24 @@ const TRENDING_POOL = [
   { title: '表达力差请做这5件事', heat: '2100w', type: 'hot', tag: '个人成长', source: '抖音热榜' },
   { title: '珠宝主播的觉醒之路', heat: '410w', type: 'rising', tag: '主播心法', source: '视频号' },
   { title: '自律生活微习惯养成', heat: '360w', type: 'new', tag: '自律生活', source: '知乎' },
-  { title: '翡翠选购避坑指南', heat: '290w', type: 'new', tag: '珠宝穿搭', source: '抖音' }
+  { title: '翡翠选购避坑指南', heat: '290w', type: 'new', tag: '珠宝穿搭', source: '抖音' },
+  { title: '下班后3小时搞副业月入过万', heat: '680w', type: 'hot', tag: '副业搞钱', source: '抖音热榜' },
+  { title: '月入5000一年存下5万的方法', heat: '520w', type: 'rising', tag: '理财存钱', source: '小红书' },
+  { title: '极简3年我扔掉了80%的东西', heat: '450w', type: 'rising', tag: '极简生活', source: 'B站' },
+  { title: '打工人颈椎自救5个动作', heat: '390w', type: 'new', tag: '健康管理', source: '抖音' },
+  { title: '微胖女孩显瘦穿搭公式', heat: '580w', type: 'hot', tag: '穿搭美学', source: '小红书' },
+  { title: '读完100本书后的顿悟', heat: '340w', type: 'new', tag: '读书思考', source: '知乎' },
+  { title: '精简护肤5步法养出好皮肤', heat: '430w', type: 'rising', tag: '护肤美容', source: '小红书' },
+  { title: '一个人旅行是什么体验', heat: '370w', type: 'new', tag: '旅行探索', source: '抖音' },
+  { title: '独居女生快手晚餐食谱', heat: '310w', type: 'new', tag: '美食生活', source: '小红书' },
+  { title: '小户型收纳让空间翻倍', heat: '420w', type: 'rising', tag: '家居整理', source: '抖音' },
+  { title: '成年人社交断舍离', heat: '460w', type: 'rising', tag: '人际关系', source: '知乎' },
+  { title: '好的感情是什么样的', heat: '510w', type: 'hot', tag: '两性情感', source: '微博热搜' },
+  { title: '当妈后才懂的5个真相', heat: '380w', type: 'new', tag: '育儿心得', source: '小红书' },
+  { title: '如何建立内核稳定', heat: '440w', type: 'rising', tag: '心理成长', source: '知乎' },
+  { title: '辞职创业第一年真实收入', heat: '630w', type: 'hot', tag: '创业故事', source: '抖音' },
+  { title: '普通一天vlog记录生活美好', heat: '290w', type: 'new', tag: '生活记录', source: '小红书' },
+  { title: '职场向上管理的3个策略', heat: '470w', type: 'rising', tag: '职场进阶', source: '知乎' }
 ];
 
 const VIRAL_TEMPLATES = [
@@ -2545,7 +3151,25 @@ const TOPIC_TEMPLATES = [
   { title: '《珠宝主播的一天：凌晨4点在干什么》', tag: '主播心法', angle: '职业揭秘+反差时间' },
   { title: '《为什么越努力越焦虑？4个信号自查》', tag: '情绪管理', angle: '痛点提问+数字+行动' },
   { title: '《女生最该投资的3样东西，不是包包》', tag: '女性成长', angle: '反常识+数字+否定' },
-  { title: '《月入3万后我才懂的消费观》', tag: '个人成长', angle: '收入数字+时间节点+认知升级' }
+  { title: '《月入3万后我才懂的消费观》', tag: '个人成长', angle: '收入数字+时间节点+认知升级' },
+  { title: '《下班后3小时，我的第二份收入》', tag: '副业搞钱', angle: '时间差+收入悬念' },
+  { title: '《记账3年，我的财务变化》', tag: '理财存钱', angle: '时间长度+变化结果' },
+  { title: '《极简生活：我扔掉的80%东西》', tag: '极简生活', angle: '数字反差+生活方式' },
+  { title: '《早睡30天身体的变化》', tag: '健康管理', angle: '时间挑战+真实变化' },
+  { title: '《微胖女孩显瘦穿搭公式》', tag: '穿搭美学', angle: '人群定位+解决方案' },
+  { title: '《读完100本书，我顿悟了》', tag: '读书思考', angle: '数字+认知升级' },
+  { title: '《精简护肤5步养出好皮肤》', tag: '护肤美容', angle: '方法论+结果导向' },
+  { title: '《一个人旅行的N个瞬间》', tag: '旅行探索', angle: '独处+情感共鸣' },
+  { title: '《独居女生的快手晚餐》', tag: '美食生活', angle: '人群+场景+实用性' },
+  { title: '《出租屋花500块改造记》', tag: '家居整理', angle: '低成本+反差效果' },
+  { title: '《成年人社交断舍离》', tag: '人际关系', angle: '成长认知+行动' },
+  { title: '《好的感情都有这5个细节》', tag: '两性情感', angle: '数字+细节+共鸣' },
+  { title: '《当妈后才知道的真相》', tag: '育儿心得', angle: '身份转变+认知升级' },
+  { title: '《如何建立内核稳定》', tag: '心理成长', angle: '方法论+自我成长' },
+  { title: '《辞职创业第一年真实收入》', tag: '创业故事', angle: '悬念+真实数字' },
+  { title: '《普通一天vlog的美好瞬间》', tag: '生活记录', angle: '日常+治愈感' },
+  { title: '《职场向上管理的3个策略》', tag: '职场进阶', angle: '方法论+数字' },
+  { title: '《别把平台当能力，离开后我才知道》', tag: '职场进阶', angle: '反常识+经历' }
 ];
 
 function fetchAllHot() {
