@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>主播培训资料 · 娱乐运营</title>
+<style>
+:root {
+  --bg: #1A1A2E;
+  --bg2: #16213E;
+  --primary: #6C5CF6;
+  --primary-light: #9B8AFF;
+  --accent: #FF6B9D;
+  --accent2: #4EC9B0;
+  --gold: #FFD700;
+  --white: #FFFFFF;
+  --light: #E0E0E8;
+  --gray: #A0A0B8;
+  --dark: #2A2A3E;
+  --card: #1E1E38;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.6;
+  font-size: 15px;
+}
+/* 导航 */
+.tab-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; background: var(--bg2);
+  border-bottom: 1px solid var(--primary);
+  padding: 0; height: 48px; align-items: center;
+}
+.tab-btn {
+  flex: 1; text-align: center; padding: 12px 4px;
+  font-size: 13px; color: var(--gray); font-weight: 600;
+  border: none; background: none; cursor: pointer;
+}
+.tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+/* 内容区 */
+.content { padding: 60px 16px 40px; display: none; max-width: 800px; margin: 0 auto; }
+.content.active { display: block; }
+/* 封面 */
+.cover { text-align: center; padding: 30px 0; }
+.cover-tag {
+  display: inline-block; background: var(--primary); color: var(--white);
+  font-size: 10px; padding: 4px 12px; border-radius: 12px;
+  font-weight: 700; letter-spacing: 1px; margin-bottom: 16px;
+}
+.cover h1 { font-size: 24px; font-weight: 800; margin-bottom: 10px; line-height: 1.3; }
+.cover .subtitle { font-size: 15px; color: var(--primary-light); margin-bottom: 20px; line-height: 1.5; }
+.cover .divider { width: 60px; height: 3px; background: var(--accent); margin: 16px auto; border-radius: 2px; }
+.cover .desc { font-size: 13px; color: var(--gray); line-height: 1.6; }
+.cover .meta { font-size: 11px; color: var(--gray); margin-top: 30px; }
+/* 章节 */
+.chapter {
+  background: var(--bg2); border-radius: 12px; padding: 16px;
+  margin-bottom: 14px; border-left: 3px solid var(--primary);
+}
+.chapter-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.chapter-title .ch-num {
+  display: inline-block; background: var(--primary); color: var(--white);
+  font-size: 11px; width: 22px; height: 22px; line-height: 22px;
+  text-align: center; border-radius: 6px; margin-right: 8px;
+}
+.ch-desc { font-size: 12px; color: var(--gray); margin-bottom: 12px; }
+/* 卡片 */
+.card {
+  background: var(--card); border-radius: 10px; padding: 14px;
+  margin-bottom: 10px; border-left: 3px solid var(--accent);
+}
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.card-title.accent { color: var(--accent); }
+.card-title.gold { color: var(--gold); }
+.card-title.primary { color: var(--primary-light); }
+.card-title.green { color: var(--accent2); }
+.card ul { list-style: none; padding: 0; }
+.card li { font-size: 13px; color: var(--light); padding: 4px 0; line-height: 1.5; }
+.card li::before { content: "· "; color: var(--accent); font-weight: bold; }
+/* 话术框 */
+.script-box {
+  background: rgba(108,92,246,0.1); border-radius: 8px;
+  padding: 10px 12px; margin: 6px 0;
+}
+.script-label { font-size: 11px; color: var(--accent2); font-weight: 700; margin-bottom: 2px; }
+.script-text { font-size: 13px; color: var(--light); line-height: 1.5; }
+/* 表格 */
+.tbl { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+.tbl th { background: var(--primary); color: var(--white); padding: 8px 6px; text-align: left; font-weight: 600; }
+.tbl td { background: var(--card); padding: 8px 6px; color: var(--light); border-bottom: 1px solid var(--dark); vertical-align: top; }
+.tbl tr td:first-child { color: var(--gold); font-weight: 600; }
+/* 提示 */
+.tip {
+  background: rgba(255,215,0,0.08); border-left: 3px solid var(--gold);
+  padding: 8px 12px; border-radius: 6px; margin: 8px 0;
+  font-size: 12px; color: var(--gold); line-height: 1.5;
+}
+/* 时间轴 */
+.timeline-item {
+  display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start;
+}
+.timeline-time {
+  background: var(--primary); color: var(--white); font-size: 10px;
+  padding: 4px 8px; border-radius: 6px; font-weight: 700;
+  white-space: nowrap; min-width: 60px; text-align: center;
+}
+.timeline-body { flex: 1; }
+.timeline-body .t-name { font-size: 13px; font-weight: 700; color: var(--white); }
+.timeline-body .t-desc { font-size: 12px; color: var(--gray); margin-top: 2px; }
+/* 标签色条 */
+.color-bar { width: 4px; height: 100%; border-radius: 2px; display: inline-block; vertical-align: middle; margin-right: 8px; }
+/* 标签 */
+.tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: 700; margin-right: 4px; }
+.tag.red { background: rgba(255,107,157,0.2); color: var(--accent); }
+.tag.green { background: rgba(78,201,176,0.2); color: var(--accent2); }
+.tag.gold { background: rgba(255,215,0,0.15); color: var(--gold); }
+.tag.purple { background: rgba(108,92,246,0.2); color: var(--primary-light); }
+/* 大标题 */
+.section-title {
+  font-size: 18px; font-weight: 800; margin: 20px 0 10px;
+  padding-bottom: 6px; border-bottom: 2px solid var(--primary);
+}
+/* 数字徽章 */
+.badge {
+  display: inline-block; background: var(--accent); color: var(--white);
+  width: 20px; height: 20px; line-height: 20px; text-align: center;
+  border-radius: 50%; font-size: 11px; font-weight: 700; margin-right: 6px;
+}
+/* 底部 */
+.footer-note {
+  text-align: center; margin-top: 30px; padding: 16px;
+  background: var(--bg2); border-radius: 12px;
+  border-top: 3px solid var(--accent);
+}
+.footer-note .quote { font-size: 14px; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+.footer-note .sub { font-size: 11px; color: var(--gray); }
+</style>
+</head>
+<body>
+
+<!-- 导航 -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('all')">综合培训</button>
+  <button class="tab-btn" onclick="switchTab('maint')">维护话术</button>
+</div>
+
+<!-- ============ TAB 1: 综合培训 ============ -->
+<div class="content active" id="tab-all">
+
+<!-- 封面 -->
+<div class="cover">
+  <span class="cover-tag">INTERNAL TRAINING</span>
+  <h1>主播综合能力培训手册</h1>
+  <div class="subtitle">表现力 · 表情管理 · 舞蹈才艺 · 粉丝维护</div>
+  <div class="divider"></div>
+  <div class="desc">面向娱乐秀场主播的全阶段能力提升体系<br>从镜头前的第一秒，到粉丝心里的每一秒</div>
+  <div class="meta">娱乐运营培训组 · 编制 · v1.0</div>
+</div>
+
+<!-- 第一章 -->
+<div class="section-title">第一章 主播职业认知</div>
+<div class="chapter">
+  <div class="ch-desc">认清行业 · 找准定位 · 管好心态</div>
+  <div class="card">
+    <div class="card-title accent">▎行业现状</div>
+    <ul>
+      <li><b>流量集中化</b>：头部主播吃70%流量，中腰部靠特色突围</li>
+      <li><b>内容同质化</b>：单纯颜值已不稀缺，"有趣+有记忆点"才有竞争力</li>
+      <li><b>监管规范化</b>：合规是红线，擦边内容随时可能封号</li>
+      <li><b>变现多元化</b>：打赏之外，带货、商单、IP衍生都是收入来源</li>
+      <li><b>生命周期短</b>：不持续学习的主播，平均活跃周期不足6个月</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title green">▎职业素养五要素</div>
+    <ul>
+      <li><b>守时</b>：准时开播 = 尊重观众。迟到5分钟，流失30%在线观众</li>
+      <li><b>稳定</b>：固定时段、固定时长，养成粉丝的生物钟</li>
+      <li><b>真诚</b>：人设可以设计，但情绪必须真实，假嗨观众一眼看穿</li>
+      <li><b>自律</b>：下播后的复盘、练习、学习，才是拉开差距的地方</li>
+      <li><b>抗压</b>：数据波动是常态，别因一天的低谷影响第二天的状态</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 第二章 -->
+<div class="section-title">第二章 镜头表现力训练</div>
+
+<div class="chapter">
+  <div class="ch-desc">镜头就是你的舞台，观众就是你的评委</div>
+
+  <div class="card">
+    <div class="card-title accent">2.1 肢体语言：让身体会说话</div>
+    <div style="margin-top:8px;">
+      <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin-bottom:4px;">坐姿与站位</div>
+      <ul>
+        <li>坐播：上身挺直，微微前倾，别瘫在椅子上</li>
+        <li>站播：重心稳，双脚与肩同宽，别来回晃</li>
+        <li>镜头距离：半身或胸像最佳，别贴太近</li>
+      </ul>
+      <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:4px 0;">手势运用</div>
+      <ul>
+        <li>手势要配合内容，别无意识乱动</li>
+        <li>指向镜头时手心朝上，亲和力+50%</li>
+        <li>空手时自然放在桌面上或轻搭膝盖</li>
+      </ul>
+      <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:4px 0;">头部与朝向</div>
+      <ul>
+        <li>身体微侧30°比正对镜头更上镜</li>
+        <li>说话时头部微微前倾 = 倾听感</li>
+        <li>别频繁转头看弹幕，眼神会散</li>
+      </ul>
+      <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:4px 0;">动作节奏</div>
+      <ul>
+        <li>动作要慢于日常，镜头会放大动作幅度</li>
+        <li>关键动作做"定格"，让观众看清</li>
+        <li>音乐卡点动作是最抓眼的表现手段</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accent">2.2 眼神交流：建立连接的桥梁</div>
+    <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin-top:6px;">▎ 眼神三原则</div>
+    <ul>
+      <li><b>盯镜头 = 看观众</b>：把镜头当成对面坐着的一个人，眼神定在镜头，观众才有"被看见"的感觉</li>
+      <li><b>3-5秒法则</b>：看镜头3-5秒，自然移开看弹幕1-2秒，再回到镜头。别死盯也别不看</li>
+      <li><b>用眼神带情绪</b>：微笑时眼睛要"跟着笑"（眼角微弯），不然就是假笑</li>
+    </ul>
+    <div class="tip">⚠ 常见错误：只看屏幕不看镜头、眼神飘忽、念弹幕时背对镜头、低头看手机式开播</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title gold">2.3 声音控制：声音是你的第二张脸</div>
+    <table class="tbl">
+      <tr><th>维度</th><th>要点</th><th>说明</th></tr>
+      <tr><td>音量</td><td>开头30秒提20%</td><td>声音小=没状态=划走。开场略大声，正题后回落</td></tr>
+      <tr><td>语速</td><td>快慢交替</td><td>念弹幕ID时快，讲情绪时慢。一直快=焦虑，一直慢=催眠</td></tr>
+      <tr><td>语调</td><td>别平要有起伏</td><td>平调念稿最赶客，把关键词音调抬高</td></tr>
+      <tr><td>停顿</td><td>关键处停1-2秒</td><td>说到重点前停一下，说到金句后停一下</td></tr>
+    </table>
+    <div class="tip">⚠ 每天开播前练声5分钟：发"啊——"从低到高，念绕口令，活动面部肌肉</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title green">2.4 状态管理：保持"在线"4小时</div>
+    <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:6px 0;">▎ 4小时直播状态曲线</div>
+    <div class="timeline-item">
+      <div class="timeline-time">0-15min</div>
+      <div class="timeline-body">
+        <div class="t-name">热场期</div>
+        <div class="t-desc">高能！声音最大最热情，快速念ID打招呼</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">15-60min</div>
+      <div class="timeline-body">
+        <div class="t-name">上升期</div>
+        <div class="t-desc">才艺展示+核心互动，状态峰值，最好内容放这里</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">60-150min</div>
+      <div class="timeline-body">
+        <div class="t-name">稳定期</div>
+        <div class="t-desc">聊天+点歌+互动，节奏放缓但保持"在线"</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">150-210min</div>
+      <div class="timeline-body">
+        <div class="t-name">冲刺期</div>
+        <div class="t-desc">二次高潮，舞蹈/才艺/话题爆点，拉回流失观众</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">210-240min</div>
+      <div class="timeline-body">
+        <div class="t-name">收尾期</div>
+        <div class="t-desc">感谢+预告下次，情绪温暖收束，留期待感</div>
+      </div>
+    </div>
+    <div class="tip">状态维持技巧：每30-40分钟离镜10秒休息、准备3-5个"瞬间嗨"的BGM、主动cue老粉、每20分钟小口补水</div>
+  </div>
+</div>
+
+<!-- 第三章 -->
+<div class="section-title">第三章 表情管理系统</div>
+<div class="chapter">
+  <div class="ch-desc">表情是直播间的情绪货币，观众的情绪是被你的表情带起来的</div>
+
+  <div class="card">
+    <div class="card-title green">3.1 主播必备基础表情库</div>
+    <table class="tbl">
+      <tr><th>表情</th><th>动作</th><th>使用场景</th></tr>
+      <tr><td>甜笑</td><td>嘴角上扬+眼角微弯</td><td>日常招呼、念ID、感谢礼物</td></tr>
+      <tr><td>大笑</td><td>张嘴露齿+眼弯月牙</td><td>整活成功、老粉回归</td></tr>
+      <tr><td>撒娇笑</td><td>歪头+抿嘴+眨眼</td><td>求礼物、互动调情、卖萌</td></tr>
+      <tr><td>惊讶</td><td>眉上挑+嘴微张+眼睁大</td><td>看大礼物、听八卦、转折</td></tr>
+      <tr><td>委屈</td><td>撇嘴+低头+眼神上飘</td><td>被黑粉说、撒娇要礼物</td></tr>
+      <tr><td>生气</td><td>鼓腮+皱眉+别头</td><td>假装生气让粉丝哄</td></tr>
+      <tr><td>认真</td><td>收表情+直视镜头</td><td>讲观点、回应争议</td></tr>
+      <tr><td>酷脸</td><td>微抬下巴+斜45°</td><td>跳舞入场、换装定格</td></tr>
+    </table>
+    <div class="tip">⚠ 训练法：每天对镜练10分钟，每个表情定格3秒，手机录下来回看</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accent">3.2 情绪表达与微表情</div>
+    <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:6px 0;">▎ 情绪表达三层结构</div>
+    <ul>
+      <li><b>第一层：面部表情</b>——笑就笑到位，每个情绪做到"满"再收</li>
+      <li><b>第二层：声音配合</b>——表情和语调必须同步</li>
+      <li><b>第三层：肢体呼应</b>——大笑拍手/前倾，惊讶捂嘴/后仰</li>
+    </ul>
+    <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:8px 0;">▎ 微表情：高级感的秘密</div>
+    <ul>
+      <li><b>眼角</b>：笑时眼角要弯，练"杜乡微笑"——嘴角眼角同时上扬</li>
+      <li><b>嘴角</b>：不说话时嘴角微微上提0.5cm，"待笑"状态最亲和</li>
+      <li><b>眼神</b>：说话时眼神要有"光"，略微睁大+专注镜头</li>
+      <li><b>下巴</b>：微收下巴比仰头显亲和</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title accent">3.3 表情管理禁忌</div>
+    <ul>
+      <li>× 假笑：嘴在笑眼不笑，观众秒看出</li>
+      <li>× 面瘫：长时间无表情念词</li>
+      <li>× 浮夸：每个反应都"哇哦！"表情过度</li>
+      <li>× 黑脸：被说一句就垮脸，不专业</li>
+      <li>× 复制：每次都用同一表情套路</li>
+    </ul>
+    <div class="tip">日常训练：镜面训练10分钟/天 + 情绪日记 + 模仿3个喜欢的主播 + 控制训练（练憋笑、秒切情绪）</div>
+  </div>
+</div>
+
+<!-- 第四章 -->
+<div class="section-title">第四章 舞蹈才艺训练</div>
+<div class="chapter">
+  <div class="ch-desc">舞蹈是秀场主播的硬通货，一支好舞 = 一波大礼物 + 一批新粉</div>
+
+  <div class="card">
+    <div class="card-title gold">4.1 选曲五原则</div>
+    <ul>
+      <li><b>热度优先</b>：选当前平台热门BGM，蹭流量</li>
+      <li><b>风格匹配</b>：曲风要和人设匹配，甜妹跳古风，酷姐跳性感</li>
+      <li><b>难度适配</b>：稳的中难度 > 跳崩了的高难度</li>
+      <li><b>时长控制</b>：单支舞1-1.5分钟最佳</li>
+      <li><b>备曲3首</b>：甜系1支、燃系1支、慢柔1支</li>
+    </ul>
+    <div style="font-size:13px;font-weight:700;color:var(--primary-light);margin:8px 0;">▎ 一支1分钟舞的结构</div>
+    <table class="tbl">
+      <tr><th>时间</th><th>段落</th><th>要点</th></tr>
+      <tr><td>0-5秒</td><td>入场定格</td><td>慢走入画，定镜pose 2秒</td></tr>
+      <tr><td>5-20秒</td><td>主歌轻跳</td><td>动作幅度中等，建立节奏感</td></tr>
+      <tr><td>20-35秒</td><td>过渡蓄力</td><td>动作收一点，为高潮蓄势</td></tr>
+      <tr><td>35-50秒</td><td>副歌爆发</td><td>最大幅度+卡点+表情管理</td></tr>
+      <tr><td>50-55秒</td><td>定点定格</td><td>最后一个卡点pose，定住2-3秒</td></tr>
+      <tr><td>55-60秒</td><td>谢幕</td><td>微笑+鞠躬/飞吻</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title gold">4.2 动作训练四步法</div>
+    <ul>
+      <li><b>① 拆解</b>：把舞拆成8-12个"动作块"，每块4-8拍</li>
+      <li><b>② 慢练</b>：0.5倍速练，每个动作做到位。慢练100遍 > 快练1000遍</li>
+      <li><b>③ 连接</b>：块与块的过渡是难点，单独练衔接</li>
+      <li><b>④ 全速</b>：原速完整跳，录视频回看，找别扭的点回到②</li>
+    </ul>
+    <div style="font-size:13px;font-weight:700;color:var(--accent);margin:8px 0;">▎ 舞蹈镜头感六要点</div>
+    <ul>
+      <li>正面占比70%，大部分时间正对镜头</li>
+      <li>关键卡点时眼神定到镜头</li>
+      <li>别出画，动作幅度大的段落提前确认站位</li>
+      <li>表情别掉——跳舞时最容易专注动作忘了脸</li>
+      <li>副歌高潮可以前进一步靠近镜头</li>
+      <li>最后一拍必须定格，别跳完就松</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 第五章 -->
+<div class="section-title">第五章 粉丝维护运营</div>
+<div class="chapter">
+  <div class="ch-desc">粉丝不是数字，是关系。维护一个老粉 > 拉十个新粉</div>
+
+  <div class="card">
+    <div class="card-title primary">5.1 粉丝打赏的5种心理</div>
+    <ul>
+      <li><b>陪伴型</b>：孤独，想要"被需要感"。让他觉得你离不开他</li>
+      <li><b>炫耀型</b>：想要排面。念ID、感谢、给头衔满足他</li>
+      <li><b>审美型</b>：纯喜欢你人设。保持稳定风格别崩人设</li>
+      <li><b>社交型</b>：在直播间找同类。给他社交位置</li>
+      <li><b>养成型</b>：看你成长有满足感。让他参与你的决策</li>
+    </ul>
+    <div style="font-size:13px;font-weight:700;color:var(--accent);margin:8px 0;">▎ 高质量互动六技巧</div>
+    <ul>
+      <li>念ID必带情绪，让他觉得被特殊对待</li>
+      <li>记得老粉细节："XX哥你上次说女儿考试考过了吗？"</li>
+      <li>抛话题给粉丝："你们觉得A好还是B好？"</li>
+      <li>差异化对待：大粉给排面，小粉给亲和</li>
+      <li>制造专属梗：粉丝群内部笑话、专属称呼</li>
+      <li>下播后私域：粉丝群、朋友圈运营</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title primary">5.2 粉丝分层运营策略</div>
+    <table class="tbl">
+      <tr><th>层级</th><th>特征</th><th>目标</th><th>动作</th></tr>
+      <tr><td>S级 大哥</td><td>月打赏过万</td><td>防流失</td><td>私聊维护、专属称呼、生日祝福、征求意见</td></tr>
+      <tr><td>A级 大粉</td><td>月1k-1w</td><td>转S级</td><td>点名感谢、粉丝群置顶、给小头衔</td></tr>
+      <tr><td>B级 小粉</td><td>偶打赏常来</td><td>转A级</td><td>念ID感谢、互动话题引导</td></tr>
+      <tr><td>C级 路人</td><td>不打赏在线</td><td>转互动</td><td>低门槛互动、@引导、投票扣字</td></tr>
+      <tr><td>黑粉</td><td>恶意攻击</td><td>隔离</td><td>禁言/拉黑，别对线</td></tr>
+    </table>
+    <div class="tip">核心：80%精力放在AB级粉丝上。C级靠漏斗转化，黑粉0精力。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accent">5.3 危机处理预案</div>
+    <table class="tbl">
+      <tr><th>场景</th><th>处理</th></tr>
+      <tr><td>黑粉带节奏</td><td>别对线！禁言+转移话题，别超30秒</td></tr>
+      <tr><td>节奏发酵</td><td>第一时间下播冷静，声明要"快、诚、稳"</td></tr>
+      <tr><td>人设崩塌</td><td>承认变化 > 死撑假人设，真诚道歉</td></tr>
+      <tr><td>大粉流失</td><td>私聊了解原因，留不住体面告别</td></tr>
+      <tr><td>PK输赢</td><td>输了幽默自嘲，赢了夸对手</td></tr>
+      <tr><td>设备故障</td><td>先打招呼，5分钟修不好下播补播</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 第六章 -->
+<div class="section-title">第六章 日常训练计划</div>
+<div class="chapter">
+  <div class="card">
+    <div class="card-title accent">6.1 新手每日课表（0-3个月）</div>
+    <table class="tbl">
+      <tr><th>时长</th><th>项目</th><th>内容</th></tr>
+      <tr><td>30min</td><td>练声+表情</td><td>发"啊"爬音阶、绕口令、对镜练8基础表情</td></tr>
+      <tr><td>30min</td><td>舞蹈训练</td><td>1支舞拆解慢练，每块重复50遍</td></tr>
+      <tr><td>30min</td><td>内容准备</td><td>准备3个互动话题、2个故事、1个整活</td></tr>
+      <tr><td>30min</td><td>复盘学习</td><td>回看昨日录像标3个问题；看1个优质同行</td></tr>
+      <tr><td>---</td><td>直播</td><td>正式直播 2-4 小时</td></tr>
+      <tr><td>15min</td><td>下播复盘</td><td>数据复盘+粉丝维护+明日预告</td></tr>
+    </table>
+    <div class="tip">3个月目标：独立完成4小时直播、稳定8基础表情、熟练2支完整舞、30+活跃粉丝</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title gold">6.2 进阶每日课表（3个月+）</div>
+    <table class="tbl">
+      <tr><th>时长</th><th>项目</th><th>内容</th></tr>
+      <tr><td>20min</td><td>声乐进阶</td><td>气息控制+音色变化，学1首新歌/周</td></tr>
+      <tr><td>40min</td><td>舞蹈进阶</td><td>新舞编排+镜头感专项+卡点精度</td></tr>
+      <tr><td>30min</td><td>内容创新</td><td>研发新整活/新互动玩法/新话题库</td></tr>
+      <tr><td>20min</td><td>数据复盘</td><td>完播率/流失点/礼物转化分析</td></tr>
+      <tr><td>---</td><td>直播</td><td>4-6小时（含1场PK）</td></tr>
+      <tr><td>30min</td><td>私域运营</td><td>粉丝群互动+朋友圈+大粉私聊</td></tr>
+      <tr><td>20min</td><td>行业学习</td><td>看头部主播+研究趋势+平台规则</td></tr>
+    </table>
+    <div class="tip">进阶目标：形成个人风格、稳定私域、月收入翻倍、具备带新人和做活动能力</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title primary">6.3 能力自测评分表（每项1-5分，满分30）</div>
+    <table class="tbl">
+      <tr><th>能力项</th><th>标准</th></tr>
+      <tr><td>镜头表现力</td><td>对镜自然、肢体协调、不僵硬</td></tr>
+      <tr><td>表情丰富度</td><td>8基础表情流畅切换、不假笑</td></tr>
+      <tr><td>声音控制</td><td>音量/语速/语调/停顿有节奏</td></tr>
+      <tr><td>状态稳定</td><td>4小时不掉状态、能自我调节</td></tr>
+      <tr><td>舞蹈才艺</td><td>至少2支完整舞、镜头感好</td></tr>
+      <tr><td>互动能力</td><td>念ID有情绪、能记住老粉细节</td></tr>
+    </table>
+    <div class="tip">&lt;12分 补基础 | 12-20分 进阶期 | 20-25分 成熟期 | &gt;25分 头部水平</div>
+  </div>
+</div>
+
+<div class="footer-note">
+  <div class="quote">主播这行，天赋决定上限，训练决定下限。<br>技巧可以学，状态可以练，唯一学不来的是真诚。</div>
+  <div class="sub">娱乐运营培训组 · 共勉</div>
+</div>
+
+</div><!-- end tab-all -->
+
+
+<!-- ============ TAB 2: 维护话术 ============ -->
+<div class="content" id="tab-maint">
+
+<!-- 封面 -->
+<div class="cover">
+  <span class="cover-tag">GIRL GROUP</span>
+  <h1>公屏回复与私域维护话术手册</h1>
+  <div class="subtitle">新粉引导 · 公屏互动 · 私下维护 · 存在感打造</div>
+  <div class="divider"></div>
+  <div class="desc">让每一个进来的大哥都觉得：这个直播间，有我在的位置<br>话术即战力，维护即留量</div>
+  <div class="meta">娱乐运营培训组 · 编制 · v2.0</div>
+</div>
+
+<!-- 核心原则 -->
+<div class="section-title">核心原则</div>
+<div class="chapter">
+  <div class="card">
+    <div class="card-title accent">▎ 维护的三个底层逻辑</div>
+    <ul>
+      <li><b>存在感 &gt; 礼物</b>：先让大哥觉得"被看见"，再谈打赏。@他、念他ID、记住他的细节，比催礼物有效十倍</li>
+      <li><b>公屏是面，私域是底</b>：公屏做排面和氛围，私域做关系和深度。只有公屏没有私域 = 留不住人</li>
+      <li><b>分层差异化</b>：大哥给排面，中粉给亲和，新粉给引导。一套话术打天下 = 谁都不满意</li>
+    </ul>
+  </div>
+</div>
+
+<!-- P3 新粉识别 -->
+<div class="section-title">新粉识别与@引导</div>
+<div class="chapter">
+  <div class="card">
+    <div class="card-title gold">▎ 大哥进房的6个信号</div>
+    <ul>
+      <li>头像高级（真人/风景/豪车），非默认头像</li>
+      <li>昵称带符号/英文名/VIP标识，非随机数字</li>
+      <li>进场即送礼物（哪怕小礼物），不是白嫖</li>
+      <li>弹幕发言有逻辑、字数多，不是扣字水军</li>
+      <li>关注了主播，或加了粉丝团</li>
+      <li>停留超过3分钟，没有马上划走</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title accent">▎ @新粉引导话术模板（6步）</div>
+    <div class="script-box">
+      <div class="script-label">第一句 · 欢迎</div>
+      <div class="script-text">"欢迎@XX哥！等你好久了，今天来得好巧~"</div>
+    </div>
+    <div class="script-box">
+      <div class="script-label">第二句 · 找话题</div>
+      <div class="script-text">"@XX哥 你是第一次来吧？从哪看到我的呀？"</div>
+    </div>
+    <div class="script-box">
+      <div class="script-label">第三句 · 给位置</div>
+      <div class="script-text">"@XX哥 你先坐这儿，我给你留了个VIP位~"</div>
+    </div>
+    <div class="script-box">
+      <div class="script-label">第四句 · 抛互动</div>
+      <div class="script-text">"@XX哥 喜欢听歌还是看舞？你点一个我给你安排~"</div>
+    </div>
+    <div class="script-box">
+      <div class="script-label">第五句 · 念ID感谢</div>
+      <div class="script-text">"谢谢@XX哥 的小心心！第一次来就这么捧场，记住你了！"</div>
+    </div>
+    <div class="script-box">
+      <div class="script-label">第六句 · 留钩子</div>
+      <div class="script-text">"@XX哥 别走啊，马上到我的新舞了，专门给你跳的~"</div>
+    </div>
+  </div>
+</div>
+
+<!-- P4 公屏六类话术 -->
+<div class="section-title">公屏互动六类话术库</div>
+<div class="chapter">
+  <div class="card">
+    <div class="card-title accent">① 欢迎话术</div>
+    <ul>
+      <li>"欢迎X哥回家！今天差一点就见不到你了"</li>
+      <li>"X姐来了！快快快，给你腾C位"</li>
+      <li>"这个ID好眼熟，是不是上周来过？"</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title gold">② 感谢话术</div>
+    <ul>
+      <li>"谢谢X哥的花！这是今天收到最用心的礼物"</li>
+      <li>"X姐你太宠我了，我都不知道怎么还你了"</li>
+      <li>"记住X哥了，下播我私聊谢谢你"</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title primary">③ 点名互动</div>
+    <ul>
+      <li>"@X哥 你刚才说的那个话题，展开说说"</li>
+      <li>"@X姐 你觉得我今天发型好看吗？你说了算"</li>
+      <li>"@X哥 怎么不说话了？是不是我去哪里惹你了"</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title green">④ 撒娇留人</div>
+    <ul>
+      <li>"X哥别走嘛，再待5分钟，求你了~"</li>
+      <li>"X姐你一走我就没状态了，你忍心吗"</li>
+      <li>"X哥你再不走，我下播就不吃饭了"</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title accent">⑤ 节奏带场</div>
+    <ul>
+      <li>"想要的扣1，觉得一般的扣2，让X哥看看排面"</li>
+      <li>"全场给X哥刷波666，让他看看我们家的氛围"</li>
+      <li>"觉得X姐大气的把>X姐<打在公屏上"</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title primary">⑥ 氛围调控</div>
+    <ul>
+      <li>"刚进来的人别急，正在给X哥跳专属舞"</li>
+      <li>"今天气氛到这了，还有想看节目的吗？没了我收了"</li>
+      <li>"热闹的时候跟着热闹，安静的时候我陪你们聊"</li>
+    </ul>
+  </div>
+</div>
+
+<!-- P5 节奏与红线 -->
+<div class="section-title">回复节奏与三条红线</div>
+<div class="chapter">
+  <div class="card">
+    <div class="card-title green">▎ 公屏回复节奏表</div>
+    <table class="tbl">
+      <tr><th>时间</th><th>场景</th><th>动作</th></tr>
+      <tr><td>0-5秒</td><td>大哥进场/发礼物</td><td>立刻@+念ID+感谢，超过5秒=冷落</td></tr>
+      <tr><td>5-15秒</td><td>大哥发言</td><td>15秒内回应，念出来再接话</td></tr>
+      <tr><td>15-30秒</td><td>普通粉丝弹幕</td><td>挑有内容的回，扣字的带节奏即可</td></tr>
+      <tr><td>30秒+</td><td>没人说话时</td><td>主动抛话题@最近发言的粉</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title accent">▎ 三条红线 ×</div>
+    <ul>
+      <li><b>× 别只看礼物大小回复</b>：小礼物也要回。小礼物点名感谢，大礼物点名+情绪+承诺</li>
+      <li><b>× 别和黑粉对线</b>：对线超过2条 = 全场氛围毁。禁言+无视+切话题，30秒内恢复</li>
+      <li><b>× 别当众催礼物</b>：用价值引导，"马上到精彩环节了，X哥要不要坐镇一下"</li>
+    </ul>
+  </div>
+</div>
+
+<!-- P6 私域路径 -->
+<div class="section-title">私下维护：三条触达路径</div>
+<div class="chapter">
+  <div class="card">
+    <div class="card-title accent">路径一：粉丝群（每日触达，做氛围）</div>
+    <ul>
+      <li>早安/晚安："早安哥们们，今天X点开播，记得来"</li>
+      <li>开播提醒：开播前30分钟发"马上开播了，先到先有C位"</li>
+      <li>下播感谢："今天感谢X哥X姐，你们让我有底气"</li>
+      <li>日常碎片：发自拍/排练视频/日常，保持存在感</li>
+      <li>话题互动：抛投票/话题，"下次穿哪套？你们定"</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title gold">路径二：朋友圈（每周2-3条，做人设）</div>
+    <ul>
+      <li>开播预告：配好看的定妆照+开播时间</li>
+      <li>幕后日常：排练/化妆/选歌，展示努力</li>
+      <li>情绪表达：真实的开心或小失落，让大哥有"保护欲"</li>
+      <li>感谢展示：晒大哥送的礼物/守护，给排面</li>
+      <li>避免：别刷屏、别负能量、别发广告</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title primary">路径三：一对一私聊（大哥专属，做深度）</div>
+    <ul>
+      <li>首次大礼后："X哥，今天真的谢谢你，让我觉得很被认可"</li>
+      <li>节日祝福：生日/节日发专属祝福，别群发</li>
+      <li>缺席关怀："X哥今天没来，是不是太忙了？注意休息"</li>
+      <li>征求意见："X哥你觉得我下次尝试什么风格好？想听你的"</li>
+      <li>记住细节：他提过的事主动问后续，"上次说女儿考试，考过了吗"</li>
+    </ul>
+  </div>
+</div>
+
+<!-- P7 分层维护 -->
+<div class="section-title">粉丝分层维护打法</div>
+<div class="chapter">
+  <table class="tbl">
+    <tr><th>层级</th><th>特征</th><th>目标</th><th>具体动作</th></tr>
+    <tr><td>S级 核心大哥</td><td>月打赏过万，长期守护</td><td>深度绑定+防流失</td><td>每周私聊2次+节日祝福+生日专属+征求意见+下播优先回</td></tr>
+    <tr><td>A级 活跃大粉</td><td>月1k-1w，常驻</td><td>提升粘性+转S级</td><td>粉丝群置顶+每场点名3次+朋友圈点赞评论+专属称呼</td></tr>
+    <tr><td>B级 活跃小粉</td><td>偶打赏，常来互动</td><td>提升参与+转A级</td><td>公屏点名感谢+引导参与互动话题+粉丝群活跃引导</td></tr>
+    <tr><td>C级 潜水/新粉</td><td>不打赏但在线</td><td>转化互动+留人</td><td>低门槛互动（扣字/投票）+@引导+抛话题降低门槛</td></tr>
+  </table>
+  <div class="tip">核心原则：80%精力放在S/A级上 · B级靠漏斗转化 · C级靠@引导 · 新粉第一时间@</div>
+</div>
+
+<!-- P8 每日SOP -->
+<div class="section-title">下播后30分钟维护SOP</div>
+<div class="chapter">
+  <div class="card">
+    <div class="timeline-item">
+      <div class="timeline-time">0-5min</div>
+      <div class="timeline-body">
+        <div class="t-name">粉丝群</div>
+        <div class="t-desc">发下播感谢+今日高光截图+预告下次<br>"今天谢谢X哥X姐，你们是我的底气。明天X点见~"</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">5-10min</div>
+      <div class="timeline-body">
+        <div class="t-name">朋友圈</div>
+        <div class="t-desc">发1条今日高光（自拍/礼物/名场面）<br>配文走心，别硬广。让没来的大哥看到错过感</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">10-20min</div>
+      <div class="timeline-body">
+        <div class="t-name">私聊S级</div>
+        <div class="t-desc">给今天打赏的S级大哥发专属感谢<br>"X哥今天真的感谢，你让我觉得被认可。下次给你准备个惊喜"</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">20-25min</div>
+      <div class="timeline-body">
+        <div class="t-name">回消息</div>
+        <div class="t-desc">回粉丝群未回消息+朋友圈评论互动<br>每条都回，别群发。让粉丝觉得"被重视"</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">25-30min</div>
+      <div class="timeline-body">
+        <div class="t-name">记笔记</div>
+        <div class="t-desc">记录今日大哥动态+下次维护重点<br>谁打了赏、谁没来、谁说了什么，建立粉丝档案</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-note">
+  <div class="quote">维护的本质：让每一个支持过你的人，都觉得这一趟没白来。</div>
+  <div class="sub">娱乐运营培训组 · v2.0</div>
+</div>
+
+</div><!-- end tab-maint -->
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
